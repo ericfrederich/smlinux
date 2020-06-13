@@ -2,7 +2,7 @@
 # Change optional make parameters on line 8 if desired, including:
 # BETTERCAMERA=1 NODRAWINGDISTANCE=1 TEXTURE_FIX=1 EXTERNAL_DATA=1 RENDER_API=GL_LEGACY VERSION=jp DISCORDRPC=1 -j
 # Change line 12 to modify dependencies for other linux distributions.
-# 2020-0610-workingonit
+# 2020-0613-test
 
 domake(){
 	make BETTERCAMERA=1 NODRAWINGDISTANCE=1 TEXTURE_FIX=1 EXTERNAL_DATA=1 DISCORDRPC=1 -j
