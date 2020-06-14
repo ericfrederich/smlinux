@@ -1,14 +1,11 @@
 #!/bin/bash
 # This should do everything required to build & install under Ubuntu and update itself.
 # Change line 7 to modify dependencies for other linux distributions.
-# 2020-0613-1707
+# 2020-0613-1800
 
 getdepends(){
 	sudo apt install -y build-essential git python3 libaudiofile-dev libglew-dev libsdl2-dev
 	}
-
-LAUNCH_DIR=$(pwd)
-mapfile -t -d: <<<"$PATH"
 
 domake(){
 	make BETTERCAMERA=$BETTERCAMERA NODRAWINGDISTANCE=$NODRAWINGDISTANCE TEXTURE_FIX=$TEXTURE_FIX EXTERNAL_DATA=$EXTERNAL_DATA DISCORDRPC=$DISCORDRPC "$JOBS"
@@ -67,6 +64,43 @@ exec ubu-install.sh "$@"' > ~/ubu-scriptUpdate
 	fi
 fi
 }
+
+#Before we do anything real, make sure folders and installer config file exist, if not create them.
+
+LAUNCH_DIR=$(pwd)
+mapfile -t -d: <<<"$PATH"
+
+
+if [ ! -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/ubu-cfg.txt ]; then		
+	echo Creating ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/ubu-cfg.txt
+	if [ ! -d ${XDG_DATA_HOME:-$HOME/.local/share} ]; then mkdir ${XDG_DATA_HOME:-$HOME/.local/share}
+	fi
+	if [ ! -d ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc ]; then mkdir ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc
+	fi
+	echo '#Script 
+AutoUpdate=1
+Branch=nightly
+InstallHD=1
+UpdateHD=0
+
+#Make
+BETTERCAMERA=1
+NODRAWINGDISTANCE=1
+TEXTURE_FIX=1
+EXTERNAL_DATA=1
+DISCORDRPC=1
+RENDER_API=GL
+#RENDER_API=GL_LEGACY
+VERSION=us
+#VERSION=jp
+#VERSION=eu
+JOBS=-j'> ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/ubu-cfg.txt
+	if(whiptail --title "Script and Make Options" --yesno "$(cat ~/.local/share/sm64pc/ubu-cfg.txt)" 23 40 --yes-button "Edit Options" --no-button "Proceed" --defaultno); then
+	whiptail --msgbox "The config file will open in your default xdg editor.  When you exit your editor, script will continue.  Don't close the terminal window the script is currently running in while editing your config file.  In the future you will not be automatically prompted to edit this unless ubu-cfg.txt is missing, but you can always edit it manually in any editor before updating your build.  For most people, these options which include community enhancements are reccommended.  If you mess up the config file, delete and it will be recreated." 16 60
+	xdg-open ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/ubu-cfg.txt 
+	fi
+fi
+source ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/ubu-cfg.txt
 
 if [ "$1" = "-u" ] || [ "$1" = "--update" ] ; then
 	if ((AutoUpdate)); then scriptUpdate
@@ -154,38 +188,7 @@ echo
 echo [1] Installing required build tools...
 getdepends
 
-#Before we do anything real, make sure folders and installer config file exist, if not create them.
 
-if [ ! -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/ubu-cfg.txt ]; then		
-	echo Creating ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/ubu-cfg.txt
-	if [ ! -d ${XDG_DATA_HOME:-$HOME/.local/share} ]; then mkdir ${XDG_DATA_HOME:-$HOME/.local/share}
-	fi
-	if [ ! -d ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc ]; then mkdir ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc
-	fi
-	echo '#Script 
-AutoUpdate=1
-Branch=nightly
-InstallHD=1
-UpdateHD=0
-
-#Make
-BETTERCAMERA=1
-NODRAWINGDISTANCE=1
-TEXTURE_FIX=1
-EXTERNAL_DATA=1
-DISCORDRPC=1
-RENDER_API=GL
-#RENDER_API=GL_LEGACY
-VERSION=us
-#VERSION=jp
-#VERSION=eu
-JOBS=-j'> ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/ubu-cfg.txt
-	if(whiptail --title "First Build Detected" --yesno "$(cat ~/.local/share/sm64pc/ubu-cfg.txt)" 23 40 --yes-button "Edit Options" --no-button "Proceed" --defaultno); then
-	whiptail --msgbox "The config file will open in your default xdg editor.  When you exit your editor, script will continue.  Don't close the terminal window the script is currently running in while editing your config file.  In the future you will not be automatically prompted to edit this unless ubu-cfg.txt is missing, but you can always edit it manually in any editor before updating your build.  For most people, these options which include community enhancements are reccommended.  If you mess up the config file, delete and it will be recreated." 16 60
-	xdg-open ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/ubu-cfg.txt 
-	fi
-fi
-source ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/ubu-cfg.txt
 if ((AutoUpdate)); then scriptUpdate
 	fi
 if [ -f "~/.ubu-scriptUpdate" ]; then rm ~/.ubu-scriptUpdate
