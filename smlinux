@@ -4,7 +4,7 @@
 # 2020-0613-1800
 
 getdepends(){
-	#sudo apt install -y build-essential git python3 libaudiofile-dev libglew-dev libsdl2-dev
+	#sudo apt install build-essential git python3 libaudiofile-dev libglew-dev libsdl2-dev -y
 	$Linux
 	}
 
@@ -85,13 +85,7 @@ if [ ! -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinuxcfg.txt ]; then
 	fi
 	if [ ! -d ${XDG_DATA_HOME:-$HOME/.local/share}/applications ]; then mkdir ${XDG_DATA_HOME:-$HOME/.local/share}/applications
 	fi
-	echo '#[Script] 
-AutoUpdate=1
-Branch=nightly
-InstallHD=1
-UpdateHD=0
-Linux="sudo apt install -y build-essential git python3 libaudiofile-dev libglew-dev libsdl2-dev"
-#[Make]
+	echo '#[Make]
 BETTERCAMERA=1
 NODRAWINGDISTANCE=1
 TEXTURE_FIX=1
@@ -102,9 +96,15 @@ RENDER_API=GL
 VERSION=us
 #VERSION=jp
 #VERSION=eu
-JOBS=-j'> ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinuxcfg.txt
-	if(whiptail --title "Script and Make Options" --yesno "$(cat ~/.local/share/sm64pc/smlinuxcfg.txt)" 23 40 --yes-button "Edit Options" --no-button "Proceed" --defaultno); then
-	whiptail --msgbox "The config file will open in your default xdg editor.  When you exit your editor, script will continue.  Don't close the terminal window the script is currently running in while editing your config file.  In the future you will not be automatically prompted to edit this unless smlinuxcfg.txt is missing, but you can always edit it manually in any editor before updating your build.  For most people, these options which include community enhancements are reccommended.  If you mess up the config file, delete and it will be recreated." 16 60
+JOBS=-j
+#[Script] 
+AutoUpdate=1
+Branch=nightly
+InstallHD=1
+UpdateHD=0
+Linux="sudo apt install -y build-essential git python3 libaudiofile-dev libglew-dev libsdl2-dev"'> ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinuxcfg.txt
+	if(whiptail --title "Build Options" --yesno "$(cat ~/.local/share/sm64pc/smlinuxcfg.txt)" 24 70 --yes-button "Edit Options" --no-button "Proceed" --defaultno); then
+	whiptail --msgbox "The config file will open in your default xdg editor.  When you exit your editor, script will continue.  Do not close the terminal window the script is currently running in while editing your config file.  In the future you will not be automatically prompted to edit this unless smlinuxcfg.txt is missing, but you can always edit it manually in any editor before updating your build.  For most people, these options which include community enhancements are reccommended.  If you mess up the config file, delete and it will be recreated." 16 60
 	xdg-open ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinuxcfg.txt 
 	fi
 fi
@@ -163,12 +163,12 @@ if [ ! -f "$1" ]; then
 	
 	echo "/-----------------------------------------------------------------------------\\"
 	echo "|                                                                             |"
-	echo "|First Install: ./smlinux <romfile>                                           |"
+	echo "|First Install: smlinux <romfile>                                             |"
 	echo "|                                                                             |"
 	echo "|Examples:                                                                    |"
-	echo "|       ./smlinux ~/roms/n64/sm64.z64                                         |"
+	echo "|        smlinux ~/roms/n64/sm64.z64                                          |"
 	echo "|                         or                                                  |"
-	echo "|       ./smlinux \"Super Mario 64 (U) [!].z64\"                                |"
+	echo "|         smlinux \"Super Mario 64 (U) [!].z64\"                                |"
 	echo "|                                                                             |"
 	echo "|Update: smlinux --update <options>                                           |" 
 	echo "|Updates existing install to latest from github, preserving external textures.|"
