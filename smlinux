@@ -140,7 +140,7 @@ if [ "$1" = "-u" ] || [ "$1" = "--update" ] ; then
 		cp -Rn ~/sm64pc/build/us_pc/res.bak/* ~/sm64pc/build/us_pc/res
 	fi
 	echo Update Complete.  Testing Application...
-	gtk-launch sm64 --cheats&disown
+	gtk-launch sm64&disown
 	sleep 10
 	echo
 	echo Script Done.  You may exit or close this terminal window.
@@ -256,7 +256,7 @@ echo Path=~/sm64pc/build/us_pc >>${XDG_DATA_HOME:-$HOME/.local/share}/applicatio
 fi
 
 echo [6] Build Succesful!  Testing Application Launch Via Shortcut...
-gtk-launch sm64 --cheats&disown
+gtk-launch sm64&disown
 sleep 10
 echo
 echo Script Done.  You may exit or close this terminal window.
