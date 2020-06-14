@@ -1,7 +1,7 @@
 #!/bin/bash
 # This should do everything required to build & install under Ubuntu and update itself.
 # Change line 7 to modify dependencies for other linux distributions.
-# 2020-0613-321
+# 2020-0613-1707
 
 getdepends(){
 	sudo apt install -y build-essential git python3 libaudiofile-dev libglew-dev libsdl2-dev
@@ -34,11 +34,47 @@ dohd(){
 	git apply enhancements/3d_coin_v2.patch --ignore-whitespace
 	}
 
-if [ "$1" = "-u" ] || [ "$1" = "--update" ] ; then
+scriptUpdate(){
+if [ ! -f "~/.ubu-scriptUpdate" ]; then
+	cd ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc
+	if [ ! -f "${MAPFILE[0]}"/ubu-install.sh ]; then
+		echo [2] Installing Script 		
+		mv ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc.baq
+		git clone https://github.com/enigma9o7/ubu-install.git ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc
+		cp -Rn ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc.baq/* ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc
+		rm -rf ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc.baq
+		touch ~/.ubu-scriptUpdate
+		mv ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/ubu-install.sh "${MAPFILE[0]}"/
+		chmod +x "${MAPFILE[0]}"/ubu-install.sh
+		exec ubu-install.sh "$@"
+		exit
+	else
+		echo [2] Checking for Script Updates from Github...
+		git fetch
+		if [ "$(git diff HEAD origin/HEAD)" != "" ]; then
+			git merge
+			if [ ! -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/ubu-install.sh ]; then
+				echo "ERROR WTF!  Script Update Unsuccesful."
+				echo "Try #help-desk if script udpates continue to fail"
+			else
+			echo 'mapfile -t -d: <<<"$PATH"
+mv -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/ubu-install.sh "${MAPFILE[0]}"/
+chmod +x "${MAPFILE[0]}"/ubu-install.sh	
+ubu-install.sh "$@"' > ~/ubu-scriptUpdate
+			sudo chmod +x ~/ubu-scriptUpdate
+			exec ~/ubu-scriptUpdate "$@"
+			exit
+			fi
+		fi
+	fi
+fi}
 
+if [ "$1" = "-u" ] || [ "$1" = "--update" ] ; then
+	scriptUpdate
+	source ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/ubu-cfg.txt
 	cd ~/sm64pc
 	echo Getting updates from Github...
-	git checkout "$BRANCH"
+	git checkout "$Branch"
 	git fetch
 	git merge
 
@@ -148,50 +184,14 @@ JOBS=-j'> ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/ubu-cfg.txt
 	whiptail --msgbox "The config file will open in your default xdg editor.  When you exit your editor, script will continue.  Don't close the terminal window the script is currently running in while editing your config file.  In the future you will not be automatically prompted to edit this unless ubu-cfg.txt is missing, but you can always edit it manually in any editor before updating your build.  For most people, these options which include community enhancements are reccommended.  If you mess up the config file, delete and it will be recreated." 16 60
 	xdg-open ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/ubu-cfg.txt 
 	fi
-source ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/ubu-cfg.txt
 fi
-
-#check for latest script in path
-
-if [ ! -f "~/.ubu-scriptUpdate" ]; then
-	cd ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc
-	if [ ! -f "${MAPFILE[0]}"/ubu-install.sh ]; then
-		echo [2] Installing Script 		
-		mv ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc.baq
-		git clone https://github.com/enigma9o7/ubu-install.git ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc
-		cp -Rn ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc.baq/* ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc
-		rm -rf ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc.baq
-		touch ~/.ubu-scriptUpdate
-		mv ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/ubu-install.sh "${MAPFILE[0]}"/
-		chmod +x "${MAPFILE[0]}"/ubu-install.sh
-		exec ubu-install.sh "$@"
-		exit
-	else
-		echo [2] Checking for Script Updates from Github...
-		git fetch
-		if [ "$(git diff HEAD origin/HEAD)" != "" ]; then
-			git merge
-			if [ ! -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/ubu-install.sh ]; then
-				echo "ERROR WTF!  Script Update Unsuccesful."
-				echo "Try #help-desk if script udpates continue to fail"
-			else
-			echo 'mapfile -t -d: <<<"$PATH"
-mv -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/ubu-install.sh "${MAPFILE[0]}"/
-chmod +x "${MAPFILE[0]}"/ubu-install.sh	
-ubu-install.sh "$@"' > ~/ubu-scriptUpdate
-			sudo chmod +x ~/ubu-scriptUpdate
-			exec ~/ubu-scriptUpdate "$@"
-			exit
-			fi
-		fi
-	fi
-fi
+scriptUpdate
 if [ -f "~/.ubu-scriptUpdate" ]; then rm ~/.ubu-scriptUpdate
 fi
-
 if [ -f ~/Downloads/ubu-install.sh ]; then
 	mv ~/Downloads/ubu-install.sh ~/Downloads/ubu-install.old
 fi
+source ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/ubu-cfg.txt
 
 echo
 echo [3] Downloading sm64pc source from github... 
@@ -200,7 +200,7 @@ if [ -d ~/sm64pc ]; then
 	echo Existing sm64pc directory renamed.  
 fi
 cd
-git clone https://github.com/sm64pc/sm64pc.git -b "$BRANCH"
+git clone https://github.com/sm64pc/sm64pc.git -b "$Branch"
 if [ ! -d ~/sm64pc ]; then
 	echo "ERROR: Could not reach github.  "
 	echo "Script Ending Incomplete.  Contact #Help-Desk."
