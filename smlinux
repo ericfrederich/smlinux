@@ -66,6 +66,9 @@ chmod +x "${MAPFILE[0]}"/smlinux
 exec smlinux "$@"' > ~/.ubu-scriptUpdate
 			chmod +x ~/.ubu-scriptUpdate
 			exec ~/.ubu-scriptUpdate "$@"
+
+echo "$@"
+exit
 			fi
 		fi
 	fi
@@ -167,7 +170,6 @@ if [ ! -f "$1" ]; then
 	echo "/-----------------------------------------------------------------------------\\"
 	echo "|                                                                             |"
 	echo "|First Install: smlinux <romfile>                                             |"
-	echo "|                                                                             |"
 	echo "|Examples:                                                                    |"
 	echo "|        smlinux ~/roms/n64/sm64.z64                                          |"
 	echo "|                         or                                                  |"
