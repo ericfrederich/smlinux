@@ -3,11 +3,6 @@
 # Other distros edit config file when prompted or anytime afterwards
 # 2020-0613-2149
 
-getdepends(){
-	#sudo apt install build-essential git python3 libaudiofile-dev libglew-dev libsdl2-dev -y
-	$Linux
-	}
-
 domake(){
 	make BETTERCAMERA=$BETTERCAMERA NODRAWINGDISTANCE=$NODRAWINGDISTANCE TEXTURE_FIX=$TEXTURE_FIX EXTERNAL_DATA=$EXTERNAL_DATA DISCORDRPC=$DISCORDRPC "$JOBS"
 	}
@@ -35,7 +30,8 @@ dohd(){
 	}
 
 scriptUpdate(){
-if [ ! -f "~/.smlinuxUpdate" ]; then
+if [ -f "~/.smlinuxUpdate" ]; then rm ~/.smlinuxUpdate
+else
 	cd ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc
 	if [ ! -f "${MAPFILE[0]}"/smlinux ]; then
 		echo Installing Script... 		
@@ -69,7 +65,6 @@ exec smlinux "$@"' > ~/.smlinuxUpdate
 			fi
 		fi
 	fi
-else rm ~/.smlinuxUpdate
 fi
 }
 
@@ -113,8 +108,7 @@ Linux="sudo apt install -y build-essential git python3 libaudiofile-dev libglew-
 	fi
 fi
 source ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinuxcfg.txt
-
-if [ -f ~/Downloads/smlinux ]; then mv ~/Downloads/smlinux ~/Downloads/smlinux.old
+if [ -f ~/Downloads/smlinux ]; then mv -f ~/Downloads/smlinux ~/Downloads/smlinux.old.backup
 fi
 
 if [ "$1" = "-u" ] || [ "$1" = "--update" ] ; then
