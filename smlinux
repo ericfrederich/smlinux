@@ -36,7 +36,7 @@ else
 	if [ ! -f "${MAPFILE[0]}"/smlinux ]; then
 		echo Installing Script... 		
 		if [ -d ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc ]; then
-			if [ -d ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc.baq ] then
+			if [ -d ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc.baq ]; then
 				rm -rf ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc.baq
 			fi
 			mv -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc.baq
