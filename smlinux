@@ -35,7 +35,7 @@ dohd(){
 	}
 
 scriptUpdate(){
-if [ ! -f "~/.ubu-scriptUpdate" ]; then
+if [ ! -f "~/.smlinuxUpdate" ]; then
 	cd ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc
 	if [ ! -f "${MAPFILE[0]}"/smlinux ]; then
 		echo Installing Script... 		
@@ -47,7 +47,7 @@ if [ ! -f "~/.ubu-scriptUpdate" ]; then
 			cp -Rn ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc.baq/* ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc
 			rm -rf ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc.baq
 		fi
-		touch ~/.ubu-scriptUpdate
+		touch ~/.smlinuxUpdate
 		mv ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinux "${MAPFILE[0]}"/
 		chmod +x "${MAPFILE[0]}"/smlinux
 		exec smlinux "$@"
@@ -63,19 +63,16 @@ if [ ! -f "~/.ubu-scriptUpdate" ]; then
 			echo 'mapfile -t -d: <<<"$PATH"
 mv -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinux "${MAPFILE[0]}"/
 chmod +x "${MAPFILE[0]}"/smlinux	
-exec smlinux "$@"' > ~/.ubu-scriptUpdate
-			chmod +x ~/.ubu-scriptUpdate
-			#exec ~/.ubu-scriptUpdate "$@"
-
-echo "$@"
-exit
+exec smlinux "$@"' > ~/.smlinuxUpdate
+			chmod +x ~/.smlinuxUpdate
+			exec ~/.smlinuxUpdate "$@"
 			fi
 		fi
 	fi
 fi
 }
 
-#Before we do anything real, make sure folders and installer config file exist, if not create them.
+#First make sure folders and installer config file exist, if not create them.
 
 LAUNCH_DIR=$(pwd)
 mapfile -t -d: <<<"$PATH"
@@ -117,7 +114,7 @@ fi
 source ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinuxcfg.txt
 
 if [ "$1" = "-u" ] || [ "$1" = "--update" ] ; then
-	if ((AutoUpdate)); then scriptUpdate
+	if ((AutoUpdate)); then scriptUpdate "$@"
 	fi
 	cd ~/sm64pc
 	echo Getting updates from Github...
@@ -195,9 +192,9 @@ fi
 echo
 echo [1] Installing required build tools...
 getdepends
-if ((AutoUpdate)); then scriptUpdate
+if ((AutoUpdate)); then scriptUpdate "$@"
 	fi
-if [ -f "~/.ubu-scriptUpdate" ]; then rm ~/.ubu-scriptUpdate
+if [ -f "~/.smlinuxUpdate" ]; then rm ~/.smlinuxUpdate
 fi
 if [ -f ~/Downloads/smlinux ]; then
 	mv ~/Downloads/smlinux ~/Downloads/smlinux.old
