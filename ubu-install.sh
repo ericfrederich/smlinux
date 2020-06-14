@@ -67,7 +67,8 @@ ubu-install.sh "$@"' > ~/ubu-scriptUpdate
 			fi
 		fi
 	fi
-fi}
+fi
+}
 
 if [ "$1" = "-u" ] || [ "$1" = "--update" ] ; then
 	scriptUpdate
