@@ -42,7 +42,7 @@ else
 			mv -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc.baq
 		fi
 		git clone https://github.com/enigma9o7/smlinux.git ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc
-		if [ -d ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/baq ]; then
+		if [ -d ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc.baq ]; then
 			cp -Rn ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc.baq/* ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/
 			rm -rf ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc.baq
 		fi
