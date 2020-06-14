@@ -65,7 +65,7 @@ mv -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinux "${MAPFILE[0]}"/
 chmod +x "${MAPFILE[0]}"/smlinux	
 exec smlinux "$@"' > ~/.ubu-scriptUpdate
 			chmod +x ~/.ubu-scriptUpdate
-			exec ~/.ubu-scriptUpdate "$@"
+			#exec ~/.ubu-scriptUpdate "$@"
 
 echo "$@"
 exit
