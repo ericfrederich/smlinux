@@ -47,7 +47,6 @@ if [ ! -f "~/.ubu-scriptUpdate" ]; then
 		mv ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/ubu-install.sh "${MAPFILE[0]}"/
 		chmod +x "${MAPFILE[0]}"/ubu-install.sh
 		exec ubu-install.sh "$@"
-		exit
 	else
 		echo [2] Checking for Script Updates from Github...
 		git fetch
@@ -60,10 +59,9 @@ if [ ! -f "~/.ubu-scriptUpdate" ]; then
 			echo 'mapfile -t -d: <<<"$PATH"
 mv -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/ubu-install.sh "${MAPFILE[0]}"/
 chmod +x "${MAPFILE[0]}"/ubu-install.sh	
-ubu-install.sh "$@"' > ~/ubu-scriptUpdate
+exec ubu-install.sh "$@"' > ~/ubu-scriptUpdate
 			sudo chmod +x ~/ubu-scriptUpdate
 			exec ~/ubu-scriptUpdate "$@"
-			exit
 			fi
 		fi
 	fi
@@ -71,7 +69,8 @@ fi
 }
 
 if [ "$1" = "-u" ] || [ "$1" = "--update" ] ; then
-	scriptUpdate
+	if ((AutoUpdate)); then scriptUpdate
+	fi
 	source ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/ubu-cfg.txt
 	cd ~/sm64pc
 	echo Getting updates from Github...
@@ -165,7 +164,7 @@ if [ ! -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/ubu-cfg.txt ]; then
 	fi
 	echo '#Script 
 AutoUpdate=1
-Branch=Nightly
+Branch=nightly
 InstallHD=1
 UpdateHD=0
 
@@ -186,13 +185,15 @@ JOBS=-j'> ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/ubu-cfg.txt
 	xdg-open ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/ubu-cfg.txt 
 	fi
 fi
-scriptUpdate
+source ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/ubu-cfg.txt
+if ((AutoUpdate)); then scriptUpdate
+	fi
 if [ -f "~/.ubu-scriptUpdate" ]; then rm ~/.ubu-scriptUpdate
 fi
 if [ -f ~/Downloads/ubu-install.sh ]; then
 	mv ~/Downloads/ubu-install.sh ~/Downloads/ubu-install.old
 fi
-source ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/ubu-cfg.txt
+
 
 echo
 echo [3] Downloading sm64pc source from github... 
