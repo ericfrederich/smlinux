@@ -62,8 +62,10 @@ else
 			echo 'mapfile -t -d: <<<"$PATH"
 mv -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinux "${MAPFILE[0]}"/
 chmod +x "${MAPFILE[0]}"/smlinux	
+echo frog 1 "$@"
 exec smlinux "$@"' > ~/.smlinuxUpdate
 			chmod +x ~/.smlinuxUpdate
+			echo frog 2 "$@"
 			exec ~/.smlinuxUpdate "$@"
 			fi
 		fi
