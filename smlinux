@@ -1,10 +1,10 @@
 #!/bin/bash
 # This should do everything required to build & install under Ubuntu and update itself.
-# Other distros edit config file when prompted or anytime afterwards
-# 2020-0613-2149
+# Other distros edit config file when prompted or anytime afterwards to set adjust dependencies.
+# 2020-0614-0000
 
 domake(){
-	make BETTERCAMERA=$BETTERCAMERA NODRAWINGDISTANCE=$NODRAWINGDISTANCE TEXTURE_FIX=$TEXTURE_FIX EXTERNAL_DATA=$EXTERNAL_DATA DISCORDRPC=$DISCORDRPC "$JOBS"
+	make BETTERCAMERA=$BETTERCAMERA NODRAWINGDISTANCE=$NODRAWINGDISTANCE TEXTURE_FIX=$TEXTURE_FIX EXTERNAL_DATA=$EXTERNAL_DATA DISCORDRPC=$DISCORDRPC VERSION=$VERSION RENDER_API=$RENDER_API "$JOBS"
 	}
 
 dohd(){
@@ -49,6 +49,7 @@ else
 		touch ~/.smlinuxUpdate
 		mv ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinux "${MAPFILE[0]}"/
 		chmod +x "${MAPFILE[0]}"/smlinux
+		cd "$LAUNCH_DIR"
 		exec smlinux "$@"
 	else
 		echo Checking for Script Updates from Github...
@@ -64,6 +65,7 @@ mv -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinux "${MAPFILE[0]}"/
 chmod +x "${MAPFILE[0]}"/smlinux	
 exec smlinux "$@"' > ~/.smlinuxUpdate
 			chmod +x ~/.smlinuxUpdate
+			cd "$LAUNCH_DIR"
 			exec ~/.smlinuxUpdate "$@"
 			fi
 		fi
@@ -211,7 +213,7 @@ if [ ! -d ~/sm64pc ]; then
 	exit
 fi
 cd $LAUNCH_DIR
-cp "$1" ~/sm64pc/baserom.us.z64 
+cp "$1" ~/sm64pc/baserom."$VERSION".z64 
 
 if (($InstallHD)); then dohd
 fi
