@@ -163,8 +163,13 @@ if [ "$1" = "--purge" ] ; then
         exit
 fi
 
-if [ ! -f "$1" ]; then if [ ! -f $LAUNCH_DIR/"$1" ]; then
-	
+if [ -f "$1" ]||[ -f "$LAUNCH_DIR"/"$1" ]; then
+	echo
+	echo [1] Installing required build tools...
+	$Linux
+	if ((AutoUpdate)); then scriptUpdate "$@"
+	fi
+else
 	echo "/-----------------------------------------------------------------------------\\"
 	echo "|                                                                             |"
 	echo "|      Super Mario 64 Install * Build * Update Script for Linux               |"
@@ -190,12 +195,6 @@ if [ ! -f "$1" ]; then if [ ! -f $LAUNCH_DIR/"$1" ]; then
 	fi
 	echo
 	exit
-fi;fi
-
-echo
-echo [1] Installing required build tools...
-$Linux
-if ((AutoUpdate)); then scriptUpdate "$@"
 fi
 
 echo
