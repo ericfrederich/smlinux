@@ -35,7 +35,7 @@ scriptUpdate(){
 if [ ! -f "~/.ubu-scriptUpdate" ]; then
 	cd ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc
 	if [ ! -f "${MAPFILE[0]}"/ubu-install.sh ]; then
-		echo [2] Installing Script 		
+		echo Installing Script... 		
 		mv ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc.baq
 		git clone https://github.com/enigma9o7/ubu-install.git ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc
 		cp -Rn ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc.baq/* ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc
@@ -45,7 +45,7 @@ if [ ! -f "~/.ubu-scriptUpdate" ]; then
 		chmod +x "${MAPFILE[0]}"/ubu-install.sh
 		exec ubu-install.sh "$@"
 	else
-		echo [2] Checking for Script Updates from Github...
+		echo Checking for Script Updates from Github...
 		git fetch
 		if [ "$(git diff HEAD origin/HEAD)" != "" ]; then
 			git merge
@@ -58,6 +58,10 @@ mv -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/ubu-install.sh "${MAPFILE[0]}"
 chmod +x "${MAPFILE[0]}"/ubu-install.sh	
 exec ubu-install.sh "$@"' > ~/ubu-scriptUpdate
 			sudo chmod +x ~/ubu-scriptUpdate
+
+echo exit exit next lines the one
+
+
 			exec ~/ubu-scriptUpdate "$@"
 			fi
 		fi
@@ -187,8 +191,6 @@ fi
 echo
 echo [1] Installing required build tools...
 getdepends
-
-
 if ((AutoUpdate)); then scriptUpdate
 	fi
 if [ -f "~/.ubu-scriptUpdate" ]; then rm ~/.ubu-scriptUpdate
@@ -197,9 +199,8 @@ if [ -f ~/Downloads/ubu-install.sh ]; then
 	mv ~/Downloads/ubu-install.sh ~/Downloads/ubu-install.old
 fi
 
-
 echo
-echo [3] Downloading sm64pc source from github... 
+echo [2] Downloading sm64pc source from github... 
 if [ -d ~/sm64pc ]; then
 	mv ~/sm64pc ~/sm64pc-"$(date -r ~/sm64pc +"%Y%m%d_%H%M%S")"
 	echo Existing sm64pc directory renamed.  
@@ -218,7 +219,7 @@ if (($InstallHD)); then dohd
 fi
 
 echo
-echo [4] Compiling...
+echo [3] Compiling...
 cd ~/sm64pc
 domake
 if [ ! -f ~/sm64pc/build/us_pc/sm64.us.f3dex2e ]; then
@@ -228,7 +229,7 @@ if [ ! -f ~/sm64pc/build/us_pc/sm64.us.f3dex2e ]; then
 fi
 
 echo
-echo [5] Checking ${XDG_DATA_HOME:-$HOME/.local/share}/icons for existing sm64 icon...
+echo [4] Checking ${XDG_DATA_HOME:-$HOME/.local/share}/icons for existing sm64 icon...
 if [ ! -f ${XDG_DATA_HOME:-$HOME/.local/share}/icons/sm64.* ]; then
 	echo WARNING: Icon for desktop shortcut not found!
 	if [ ! -d $HOME/.local ]; then mkdir $HOME/.local
@@ -244,7 +245,7 @@ if [ ! -f ${XDG_DATA_HOME:-$HOME/.local/share}/icons/sm64.* ]; then
 fi
 
 echo
-echo [6] Checking ${XDG_DATA_HOME:-$HOME/.local/share}/applications for Desktop Shortcut
+echo [5] Checking ${XDG_DATA_HOME:-$HOME/.local/share}/applications for Desktop Shortcut
 if [ ! -f ${XDG_DATA_HOME:-$HOME/.local/share}/applications/sm64.desktop ]; then
 	echo Creating Menu Entry and Desktop Shortcut...
 	echo '[Desktop Entry]
@@ -259,7 +260,7 @@ echo Path=~/sm64pc/build/us_pc >>${XDG_DATA_HOME:-$HOME/.local/share}/applicatio
 	cp ${XDG_DATA_HOME:-$HOME/.local/share}/applications/sm64.desktop ${XDG_DESKTOP_DIR:-$HOME/Desktop}
 fi
 
-echo [7] Build Succesful!  Testing Application Launch Via Shortcut...
+echo [6] Build Succesful!  Testing Application Launch Via Shortcut...
 gtk-launch sm64&disown
 sleep 10
 echo
