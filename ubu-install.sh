@@ -56,13 +56,10 @@ if [ ! -f "~/.ubu-scriptUpdate" ]; then
 			echo 'mapfile -t -d: <<<"$PATH"
 mv -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/ubu-install.sh "${MAPFILE[0]}"/
 chmod +x "${MAPFILE[0]}"/ubu-install.sh	
-exec ubu-install.sh "$@"' > ~/ubu-scriptUpdate
-			sudo chmod +x ~/ubu-scriptUpdate
-
-echo exit exit next lines the one
-
-
-			exec ~/ubu-scriptUpdate "$@"
+exec ubu-install.sh "$@"' > ~/.ubu-scriptUpdate
+			sudo chmod +x ~/.ubu-scriptUpdate
+exit
+			exec ~/.ubu-scriptUpdate "$@"
 			fi
 		fi
 	fi
@@ -73,8 +70,6 @@ fi
 
 LAUNCH_DIR=$(pwd)
 mapfile -t -d: <<<"$PATH"
-
-
 if [ ! -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/ubu-cfg.txt ]; then		
 	echo Creating ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/ubu-cfg.txt
 	if [ ! -d ${XDG_DATA_HOME:-$HOME/.local/share} ]; then mkdir ${XDG_DATA_HOME:-$HOME/.local/share}
