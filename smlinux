@@ -1,7 +1,7 @@
 #!/bin/bash
 # This should do everything required to build & install under Ubuntu and update itself.
 # Other distros edit config file when prompted or anytime afterwards to set adjust dependencies.
-# 2020-0615-1139
+# 2020-0615-1226
 
 domake(){
 	make BETTERCAMERA=$BETTERCAMERA NODRAWINGDISTANCE=$NODRAWINGDISTANCE TEXTURE_FIX=$TEXTURE_FIX EXTERNAL_DATA=$EXTERNAL_DATA DISCORDRPC=$DISCORDRPC VERSION=$VERSION RENDER_API=$RENDER_API "$JOBS"
@@ -101,6 +101,20 @@ else
 fi
 }
 
+rungame(){
+	gtk-launch sm64&disown
+	if [ -f ~/.smlinuxNopath ]; then
+		rm ~/.smlinuxNopath
+		whiptail --msgbox 'You did not have a home folder in your path so ~/bin was created.\n\nReboot or type \n\n      PATH=~/bin:$PATH\n\nbefore running smlinux again.' 13 70
+		printf 'You did not have a home folder in your path so ~/bin was created.\n\nReboot or type \n\n      PATH=~/bin:$PATH\n\nbefore running smlinux again.\n\n'
+	else
+		sleep 10
+	fi
+	echo
+	echo Script Done.  You may exit or close this terminal window.
+	echo
+}
+
 #First make sure folders and installer config file exist, if not create them.
 
 LAUNCH_DIR=$(pwd)
@@ -173,11 +187,7 @@ if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ]; then
 		cp -Rn ~/sm64pc/build/"$Version"_pc/res.bak/* ~/sm64pc/build/"$Version"_pc/res
 	fi
 	echo Update Complete.  Testing Application...
-	gtk-launch sm64&disown
-	sleep 10
-	echo
-	echo Script Done.  You may exit or close this terminal window.
-	echo
+	rungame
 	exit
 fi
 
@@ -290,13 +300,4 @@ fi
 
 echo [7] Build Succesful!  Testing Application Launch Via Shortcut...
 echo Do not worry about texture format warnings.
-gtk-launch sm64&disown
-if [ -f ~/.smlinuxNopath ]; then
-	rm ~/.smlinuxNopath
-	whiptail --msgbox 'You did not have a home folder in your path so ~/bin was created.\n\nReboot or type \n\n      PATH=~/bin:$PATH\n\nbefore running smlinux again.' 13 70
-	printf 'You did not have a home folder in your path so ~/bin was created.\n\nReboot or type \n\n      PATH=~/bin:$PATH\n\nbefore running smlinux again.\n\n'
-else
-	sleep 10
-fi
-echo
-echo Script Done.  You may exit or close this terminal window.
+rungame
