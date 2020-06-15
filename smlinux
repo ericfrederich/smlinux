@@ -76,7 +76,7 @@ else
 mv -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinux "${MAPFILE[0]}"/
 if [ ! -f "${MAPFILE[0]}"/smlinux ]; then
 	echo WARNING: Could not write to first path directory.  Creating ~/bin.
-	NOLOCALPATH=1
+	touch ~/.smlinuxNopath
 	mkdir ~/bin
 	export PATH=~/bin:$PATH
 	mapfile -t -d: <<<"$PATH"
