@@ -118,10 +118,10 @@ fi
 if [ -f ~/Downloads/smlinux.sh ]; then mv -f ~/Downloads/smlinux.sh ~/Downloads/smlinux.old.backup
 fi
 
-if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ] ; then
+if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ]; then
 	if ((AutoUpdate)); then scriptUpdate "$@"
 	fi
-	if [ ! -d ~/sm64pc ];
+	if [ ! -d ~/sm64pc ]; then
 		echo ERROR: No ~/sm64pc folder to update!  Specify romfile to install sm64pc.
 		exit
 	fi
