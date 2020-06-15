@@ -10,9 +10,9 @@ domake(){
 dohd(){
 	echo Getting HD Enhancements...
 	mkdir ~/sm64pc/build
-	mkdir ~/sm64pc/build/"$Version"_pc
-	mkdir ~/sm64pc/build/"$Version"_pc/res	
-	cd ~/sm64pc/build/"$Version"_pc/res
+	mkdir ~/sm64pc/build/"$VERSION"_pc
+	mkdir ~/sm64pc/build/"$VERSION"_pc/res	
+	cd ~/sm64pc/build/"$VERSION"_pc/res
 	wget https://cdn.discordapp.com/attachments/711253314855108629/720369471105269831/upscaled-3.zip
 	wget https://cdn.discordapp.com/attachments/711253314855108629/720369940317863946/upscaled-2.zip
 	wget https://cdn.discordapp.com/attachments/711253314855108629/720370004171817080/upscaled-1.zip
@@ -64,7 +64,6 @@ else
 		cd "$LAUNCH_DIR"
 		exec smlinux "$@"
 	else
-		echo Checking for Script Updates from Github...
 		git fetch
 		if [ "$(git diff HEAD origin/HEAD)" != "" ]; then
 			git merge
@@ -169,22 +168,22 @@ if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ]; then
 	git checkout "$Branch"
 	git fetch
 	git merge
-	if [ -d ~/sm64pc/build/"$Version"_pc/res ]; then
+	if [ -d ~/sm64pc/build/"$VERSION"_pc/res ]; then
 		echo Preserving Textures.
-		mv ~/sm64pc/build/"$Version"_pc/res ~/sm64pc
+		mv ~/sm64pc/build/"$VERSION"_pc/res ~/sm64pc
 	fi
 	rm -rf build
 	if [ "$2" = "--hd" ] || [ "$2" = "--HD" ] || (($UpdateHD)); then
 		dohd
-		mv ~/sm64pc/res ~/sm64pc/build/"$Version"_pc/res.bak
+		mv ~/sm64pc/res ~/sm64pc/build/"$VERSION"_pc/res.bak
 		echo Previous res folder saved as res.bak
 	fi	
 	echo Compiling...
 	domake
 	if [ -d ~/sm64pc/res ]; then
 		echo Restoring Textures.
-		mv ~/sm64pc/res ~/sm64pc/build/"$Version"_pc/res.bak
-		cp -Rn ~/sm64pc/build/"$Version"_pc/res.bak/* ~/sm64pc/build/"$Version"_pc/res
+		mv ~/sm64pc/res ~/sm64pc/build/"$VERSION"_pc/res.bak
+		cp -Rn ~/sm64pc/build/"$VERSION"_pc/res.bak/* ~/sm64pc/build/"$VERSION"_pc/res
 	fi
 	echo Update Complete.  Testing Application...
 	rungame
@@ -211,7 +210,7 @@ if [ -f "$1" ]||[ -f "$LAUNCH_DIR"/"$1" ]; then
 	echo [1] Installing required build tools...
 	$Linux
 	
-	echo [2] Checking for script updates...
+	echo [2] Checking for Script Updates from Github...
 	if ((AutoUpdate)); 
 		then scriptUpdate "$@"
 	else
@@ -272,8 +271,8 @@ echo
 echo [5] Compiling...
 cd ~/sm64pc
 domake
-if [ ! -f ~/sm64pc/build/"$Version"_pc/sm64."$VERSION".f3dex2e ]; then
-	echo ERROR: You do not have the expected binary ~/sm64pc/build/"$Version"_pc/sm64."$VERSION".f3dex2e
+if [ ! -f ~/sm64pc/build/"$VERSION"_pc/sm64."$VERSION".f3dex2e ]; then
+	echo ERROR: You do not have the expected binary ~/sm64pc/build/"$VERSION"_pc/sm64."$VERSION".f3dex2e
 	echo "Script Exiting incomplete.  Contact #help-desk"
 	exit
 fi
@@ -292,9 +291,9 @@ Type=Application
 Name=Super Mario 64
 StartupNotify=false
 Categories=Game;'>${XDG_DATA_HOME:-$HOME/.local/share}/applications/sm64.desktop
-echo Exec=~/sm64pc/build/"$Version"_pc/sm64."$VERSION".f3dex2e --cheats>>${XDG_DATA_HOME:-$HOME/.local/share}/applications/sm64.desktop
+echo Exec=~/sm64pc/build/"$VERSION"_pc/sm64."$VERSION".f3dex2e --cheats>>${XDG_DATA_HOME:-$HOME/.local/share}/applications/sm64.desktop
 echo Icon=${XDG_DATA_HOME:-$HOME/.local/share}/icons/sm64.png >>${XDG_DATA_HOME:-$HOME/.local/share}/applications/sm64.desktop
-echo Path=~/sm64pc/build/"$Version"_pc >>${XDG_DATA_HOME:-$HOME/.local/share}/applications/sm64.desktop
+echo Path=~/sm64pc/build/"$VERSION"_pc >>${XDG_DATA_HOME:-$HOME/.local/share}/applications/sm64.desktop
 	cp ${XDG_DATA_HOME:-$HOME/.local/share}/applications/sm64.desktop ${XDG_DESKTOP_DIR:-$HOME/Desktop}
 fi
 
