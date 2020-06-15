@@ -10,9 +10,9 @@ domake(){
 dohd(){
 	echo Getting HD Enhancements...
 	mkdir ~/sm64pc/build
-	mkdir ~/sm64pc/build/us_pc
-	mkdir ~/sm64pc/build/us_pc/res	
-	cd ~/sm64pc/build/us_pc/res
+	mkdir ~/sm64pc/build/"$Version"_pc
+	mkdir ~/sm64pc/build/"$Version"_pc/res	
+	cd ~/sm64pc/build/"$Version"_pc/res
 	wget https://cdn.discordapp.com/attachments/711253314855108629/720369471105269831/upscaled-3.zip
 	wget https://cdn.discordapp.com/attachments/711253314855108629/720369940317863946/upscaled-2.zip
 	wget https://cdn.discordapp.com/attachments/711253314855108629/720370004171817080/upscaled-1.zip
@@ -73,25 +73,25 @@ else
 				echo "Try #help-desk if script udpates continue to fail"
 			else
 			echo 'mapfile -t -d: <<<"$PATH"
-mv -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinux "${MAPFILE[0]}"/
-if [ ! -f "${MAPFILE[0]}"/smlinux ]; then
-	echo WARNING: Could not write to first path directory.  Creating ~/bin.
-	touch ~/.smlinuxNopath
-	mkdir ~/bin
-	export PATH=~/bin:$PATH
-	mapfile -t -d: <<<"$PATH"
-	mv -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinux "${MAPFILE[0]}"/
-	if [ ! -f "${MAPFILE[0]}"/smlinux ]; then
-		echo ERROR - Could not add to path.  Run without AutoUpdate enabled.
-		exit
-	fi
-fi
-chmod +x "${MAPFILE[0]}"/smlinux
-if [ -f ~/Downloads/smlinux ]; then mv -f ~/Downloads/smlinux ~/Downloads/smlinux.old.backup
-fi
-if [ -f ~/Downloads/smlinux.sh ]; then mv -f ~/Downloads/smlinux.sh ~/Downloads/smlinux.old.backup
-fi	
-exec smlinux "$@"' > ~/.smlinuxUpdate
+			mv -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinux "${MAPFILE[0]}"/
+			if [ ! -f "${MAPFILE[0]}"/smlinux ]; then
+				echo WARNING: Could not write to first path directory.  Creating ~/bin.
+				touch ~/.smlinuxNopath
+				mkdir ~/bin
+				export PATH=~/bin:$PATH
+				mapfile -t -d: <<<"$PATH"
+				mv -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinux "${MAPFILE[0]}"/
+				if [ ! -f "${MAPFILE[0]}"/smlinux ]; then
+					echo ERROR - Could not add to path.  Run without AutoUpdate enabled.
+				exit
+				fi
+			fi
+			chmod +x "${MAPFILE[0]}"/smlinux
+			if [ -f ~/Downloads/smlinux ]; then mv -f ~/Downloads/smlinux ~/Downloads/smlinux.old.backup
+			fi
+			if [ -f ~/Downloads/smlinux.sh ]; then mv -f ~/Downloads/smlinux.sh ~/Downloads/smlinux.old.backup
+			fi	
+			exec smlinux "$@"' > ~/.smlinuxUpdate
 			chmod +x ~/.smlinuxUpdate
 			cd "$LAUNCH_DIR"
 			exec ~/.smlinuxUpdate "$@"
@@ -155,22 +155,22 @@ if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ]; then
 	git checkout "$Branch"
 	git fetch
 	git merge
-	if [ -d ~/sm64pc/build/us_pc/res ]; then
+	if [ -d ~/sm64pc/build/"$Version"_pc/res ]; then
 		echo Preserving Textures.
-		mv ~/sm64pc/build/us_pc/res ~/sm64pc
+		mv ~/sm64pc/build/"$Version"_pc/res ~/sm64pc
 	fi
 	rm -rf build
 	if [ "$2" = "--hd" ] || [ "$2" = "--HD" ] || (($UpdateHD)); then
 		dohd
-		mv ~/sm64pc/res ~/sm64pc/build/us_pc/res.bak
+		mv ~/sm64pc/res ~/sm64pc/build/"$Version"_pc/res.bak
 		echo Previous res folder saved as res.bak
 	fi	
 	echo Compiling...
 	domake
 	if [ -d ~/sm64pc/res ]; then
 		echo Restoring Textures.
-		mv ~/sm64pc/res ~/sm64pc/build/us_pc/res.bak
-		cp -Rn ~/sm64pc/build/us_pc/res.bak/* ~/sm64pc/build/us_pc/res
+		mv ~/sm64pc/res ~/sm64pc/build/"$Version"_pc/res.bak
+		cp -Rn ~/sm64pc/build/"$Version"_pc/res.bak/* ~/sm64pc/build/"$Version"_pc/res
 	fi
 	echo Update Complete.  Testing Application...
 	gtk-launch sm64&disown
@@ -262,8 +262,8 @@ echo
 echo [5] Compiling...
 cd ~/sm64pc
 domake
-if [ ! -f ~/sm64pc/build/us_pc/sm64."$VERSION".f3dex2e ]; then
-	echo ERROR: You do not have the expected binary ~/sm64pc/build/us_pc/sm64."$VERSION".f3dex2e
+if [ ! -f ~/sm64pc/build/"$Version"_pc/sm64."$VERSION".f3dex2e ]; then
+	echo ERROR: You do not have the expected binary ~/sm64pc/build/"$Version"_pc/sm64."$VERSION".f3dex2e
 	echo "Script Exiting incomplete.  Contact #help-desk"
 	exit
 fi
@@ -282,13 +282,14 @@ Type=Application
 Name=Super Mario 64
 StartupNotify=false
 Categories=Game;'>${XDG_DATA_HOME:-$HOME/.local/share}/applications/sm64.desktop
-echo Exec=~/sm64pc/build/us_pc/sm64."$VERSION".f3dex2e --cheats>>${XDG_DATA_HOME:-$HOME/.local/share}/applications/sm64.desktop
+echo Exec=~/sm64pc/build/"$Version"_pc/sm64."$VERSION".f3dex2e --cheats>>${XDG_DATA_HOME:-$HOME/.local/share}/applications/sm64.desktop
 echo Icon=${XDG_DATA_HOME:-$HOME/.local/share}/icons/sm64.png >>${XDG_DATA_HOME:-$HOME/.local/share}/applications/sm64.desktop
-echo Path=~/sm64pc/build/us_pc >>${XDG_DATA_HOME:-$HOME/.local/share}/applications/sm64.desktop
+echo Path=~/sm64pc/build/"$Version"_pc >>${XDG_DATA_HOME:-$HOME/.local/share}/applications/sm64.desktop
 	cp ${XDG_DATA_HOME:-$HOME/.local/share}/applications/sm64.desktop ${XDG_DESKTOP_DIR:-$HOME/Desktop}
 fi
 
 echo [7] Build Succesful!  Testing Application Launch Via Shortcut...
+echo Do not worry about texture format warnings.
 gtk-launch sm64&disown
 if [ -f ~/.smlinuxNopath ]; then
 	rm ~/.smlinuxNopath
@@ -299,6 +300,3 @@ else
 fi
 echo
 echo Script Done.  You may exit or close this terminal window.
-if ((InstallHD)); then 
-echo Do not worry about bad texture warnings, the upscale project is wip.
-fi
