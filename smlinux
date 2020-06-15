@@ -50,7 +50,7 @@ else
 		mv ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinux "${MAPFILE[0]}"/
 		if [ ! -f "${MAPFILE[0]}"/smlinux ]; then
 			echo WARNING: Could not write to first path directory.  Creating ~/bin.
-			NOLOCALPATH=1
+			touch ~/.smlinuxNopath
 			mkdir ~/bin
 			export PATH=~/bin:$PATH
 			mapfile -t -d: <<<"$PATH"
@@ -290,7 +290,8 @@ fi
 
 echo [7] Build Succesful!  Testing Application Launch Via Shortcut...
 gtk-launch sm64&disown
-if ((NOLOCALPATH)); then
+if [ -f ~/.smlinuxNopath ]; then
+	rm ~/.smlinuxNopath
 	whiptail --msgbox 'You did not have a home folder in your path so ~/bin was created.\n\nReboot or type \n\n      PATH=~/bin:$PATH\n\nbefore running smlinux again.' 13 70
 	printf 'You did not have a home folder in your path so ~/bin was created.\n\nReboot or type \n\n      PATH=~/bin:$PATH\n\nbefore running smlinux again.\n\n'
 else
