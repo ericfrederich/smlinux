@@ -36,7 +36,7 @@ Note the script installs itself as 'smlinux' to the first directory in your path
 
 **What branch should I use?**
 
-There are at least two active branches. master, which hasn't been updated in the past couple weeks, and nightly, which is regularly updated and has features and fixes not included in master. At this time nightly is strongly recommended, however there's always a chance a recent code could break something.
+There are at least two active branches. master, which isn't updated often, and nightly, which is regularly updated and has features and fixes not included in master. At this time nightly is strongly recommended, however there's always a chance a recent code change could break something.
 
 **When to use RENDER_API=GL_LEGACY?** 
 
