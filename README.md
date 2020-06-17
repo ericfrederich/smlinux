@@ -23,9 +23,8 @@ Examples:
              ./smlinux ~/roms/n64/sm64.z64
 
 That's Everything. That's all you have to do..
-You'll be asked sudo password to install build tools at the beginning, then it will update and itsell itself to the first directory in your path (or create ~/bin if nothing available), and prompt you to confirm the reccommended options on change them before your start, then will run as user unattended and before the time you finish reading the FAQ you will hear "It's me, Mario!".
+You'll be asked sudo password to install build tools at the beginning, then it will update and intsall itself to the first directory in your path (or create ~/bin if nothing available), and prompt you to approve (or change) the reccommended options before your build starts, then will run as user unattended and before the time you finish reading the FAQ you will hear "It's me, Mario!".
 (Do not run script as root; you will be prompted for sudo password automatically if needed.)
-By default, builds with all optional enhancements enabled; If you want to remove any, you will be prompted to edit config during first install.
 
 Be sure when you backup your N64 cartridge to use the Z64 format. You must provide your own legally backed up rom file. Currently only US & JP versions have sound. If you want German or French text, and sound at the same time, you'll have to wait until the pc-port adds multilingual support, then those languages plus Spanish and every language could be supported with community effort.
 
@@ -134,7 +133,6 @@ If you wish to modify the config file for others with your distro, set the $Linu
 Backup your cartridge to z64 format with something like Retrode2 [https://www.dragonbox.de/en/accessories/cartridge-dumper/retrode2-with-all-plugins](URL)
 
 **How do I remove everything the script created during install?**
-
  
     smlinux purge
 This erases everything created running smlinux including automatically created game saves and config files.
