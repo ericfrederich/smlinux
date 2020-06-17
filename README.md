@@ -15,7 +15,7 @@
 First Time Usage:      
                 
                  chmod +x smlinux
-		 ./smlinux <romfile>
+	  	    ./smlinux <romfile>
 Examples: 
 
              ./smlinux "Super Mario 64 (U) [!].z64"
@@ -65,7 +65,7 @@ Note that precaching these textures will make the game use more memory and incre
 For example: 
  
      smlinux update
-        or
+            or
      smlinux update --hd
 Updates existing install to latest from github while retaining custom textures.
 
