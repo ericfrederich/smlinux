@@ -23,7 +23,7 @@ Examples:
              ./smlinux ~/roms/n64/sm64.z64
 
 That's Everything. That's all you have to do..
-You'll be asked sudo password to install build tools at the beginning, and to confirm reccommended options on edit before your start, then will run as user unattended and before the time you finish reading the FAQ you will hear "It's me, Mario!".
+You'll be asked sudo password to install build tools at the beginning, then it will update and itsell itself to the first directory in your path (or create ~/bin if nothing available), and prompt you to confirm the reccommended options on change them before your start, then will run as user unattended and before the time you finish reading the FAQ you will hear "It's me, Mario!".
 (Do not run script as root; you will be prompted for sudo password automatically if needed.)
 By default, builds with all optional enhancements enabled; If you want to remove any, you will be prompted to edit config during first install.
 
