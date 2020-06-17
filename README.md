@@ -133,7 +133,8 @@ If you wish to modify the config file for others with your distro, set the $Linu
 
 Backup your cartridge to z64 format with something like Retrode2 [https://www.dragonbox.de/en/accessories/cartridge-dumper/retrode2-with-all-plugins](URL)
 
-**How do I remove everything the script created during install? **
+**How do I remove everything the script created during install?**
+
  
     smlinux purge
 This erases everything created running smlinux including automatically created game saves and config files.
