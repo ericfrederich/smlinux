@@ -1,7 +1,7 @@
 #!/bin/bash
 # This should do everything required to build & install under Ubuntu and update itself.
-# Other distros edit config file when prompted or anytime afterwards to set adjust dependencies.
-# 2020-0617-1258
+# Other distros edit config file when prompted to change command to get dependencies, or install them first.
+# 2020-0617-1459
 
 domake(){
 	make BETTERCAMERA=$BETTERCAMERA NODRAWINGDISTANCE=$NODRAWINGDISTANCE TEXTURE_FIX=$TEXTURE_FIX EXTERNAL_DATA=$EXTERNAL_DATA DISCORDRPC=$DISCORDRPC VERSION=$VERSION RENDER_API=$RENDER_API "$JOBS"
@@ -168,27 +168,36 @@ if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ]; then
 	git checkout "$Branch"
 	git fetch
 	git merge
-	if [ -d ~/sm64pc/build/"$VERSION"_pc/res ]; then
-		echo Preserving Textures.
-		mv ~/sm64pc/build/"$VERSION"_pc/res ~/sm64pc
+	if [ -d ~/sm64pc/build/"$VERSION"_pc ]; then
+		if [ -d ~/sm64pc/build/"$VERSION"_pc.old ]; then
+			rm -rf ~/sm64pc/build/"$VERSION"_pc.old
+		fi
+		mv ~/sm64pc/build/"$VERSION"_pc ~/sm64pc/build/"$VERSION"_pc.old
 	fi
-	rm -rf build
 	if [ "$2" = "--hd" ] || [ "$2" = "--HD" ] || (($UpdateHD)); then
 		dohd
-		mv ~/sm64pc/res ~/sm64pc/build/"$VERSION"_pc/res.bak
-		echo Previous res folder saved as res.bak
 	fi	
 	echo Compiling...
 	domake
 	if [ ! -f ~/sm64pc/build/"$VERSION"_pc/sm64."$VERSION".f3dex2e ]; then
+		if [ -d ~/sm64pc/build/"$VERSION"_pc ]; then
+			mv ~/sm64pc/build/"$VERSION"_pc ~/sm64pc/build/"$VERSION"_pc.bad
+			if [ -d ~/sm64pc/build/"$VERSION"_pc.old ]; then
+				cp -Rn ~/sm64pc/build/"$VERSION"_pc.old ~/sm64pc/build/"$VERSION"_pc
+				cp -Rn ~/sm64pc/build/"$VERSION"_pc.bad/res/* ~/sm64pc/build/"$VERSION"_pc/res/
+			fi
+			rm -rf ~/sm64pc/build/"$VERSION"_pc.bad
+		elif [ -d ~/sm64pc/build/"$VERSION"_pc.old ]; then
+			mv ~/sm64pc/build/"$VERSION"_pc.old ~/sm64pc/build/"$VERSION"_pc
+		fi
+		echo
 		echo ERROR: You do not have the expected binary ~/sm64pc/build/"$VERSION"_pc/sm64."$VERSION".f3dex2e
-		echo "Script Exiting incomplete.  Contact #help-desk"
+		echo "Script Exiting incomplete.  Contact #help-desk for support."
 		exit
 	fi
-	if [ -d ~/sm64pc/res ]; then
+	if [ -d ~/sm64pc/build/"$VERSION"_pc.old/ ]; then
 		echo Restoring Textures.
-		mv ~/sm64pc/res ~/sm64pc/build/"$VERSION"_pc/res.bak
-		cp -Rn ~/sm64pc/build/"$VERSION"_pc/res.bak/* ~/sm64pc/build/"$VERSION"_pc/res
+		cp -Rn ~/sm64pc/build/"$VERSION"_pc.old/res/* ~/sm64pc/build/"$VERSION"_pc/res
 	fi
 	echo Update Complete.  Testing Application...
 	rungame
