@@ -60,11 +60,10 @@ I may periodically add or change what's included with this option as new mods ar
 Note that precaching these textures will make the game use more memory and increase initial startup time.
 
 **How to update, rebuild, or change build options later?**
-
+    
     smlinux update <options>
 For example: 
  
-
      smlinux update
         or
      smlinux update --hd
@@ -98,24 +97,26 @@ Just get the appropriate texture pack, then put the zip into your "res" folder i
 
 **How to apply a patch?**
 
-Put the patch file into ~/sm64pc/enhancements (or specify the path differently when applying): 
- 
+Put the patch file into ~/sm64pc/enhancements (or specify the path differently when applying):
+   
     cd ~/sm64pc
-git apply enhancements/filename.patch
-~/Downloads/smlinux update
-How to remove a patch? 
- 
+    git apply enhancements/filename.patch
+    ~/Downloads/smlinux update
+
+**How to remove a patch?** 
+   
     cd ~/sm64pc
-git apply -R enhancements/filename.patch
-~/Downloads/smlinux update
+    git apply -R enhancements/filename.patch
+    ~/Downloads/smlinux update
 
 
 **What about distros other than Ubuntu/Debian?**
 Tested on Bodhi 5.1,32 & 64-bit, so should work as-is on recent Ubuntu/debian, others untested. 
 
 If script doesn't work as is, install dependencies first then rerun script, ignoring any error regarding apt.
-Arch: 
 
+Arch: 
+    
     sudo pacman -S base-devel python audiofile sdl2 glew
 Debian:  
 
