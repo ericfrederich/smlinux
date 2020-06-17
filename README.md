@@ -29,7 +29,7 @@ By default, builds with all optional enhancements enabled; If you want to remove
 
 Be sure when you backup your N64 cartridge to use the Z64 format. You must provide your own legally backed up rom file. Currently only US & JP versions have sound. If you want German or French text, and sound at the same time, you'll have to wait until the pc-port adds multilingual support, then those languages plus Spanish and every language could be supported with community effort.
 
-If for some reason the make pauses or hangs, perhaps on single core cpu or system with low memory, then remove -j from line 8. This switch makes make run multiple jobs at once which speeds up the build process on PCs with multiple cores and plenty of memory, but occasionally causes issues on under-powered systems (that can run the game just fine).
+If for some reason the make pauses or hangs, perhaps on single core cpu or system with low memory, then change JOBS to -j1. This switch makes make run multiple jobs at once which speeds up the build process on PCs with multiple cores and plenty of memory, but occasionally causes issues on under-powered systems (that can run the game just fine).
 
 Note the script installs itself as 'smlinux' to the first directory in your path, usually something like ~/bin or ~/Applications/.bin. After first running what you download, you can delete it, and just type 'smlinux update' from anywhere when you're ready to rebuild.
 
