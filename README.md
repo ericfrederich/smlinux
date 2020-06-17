@@ -15,11 +15,11 @@
 First Time Usage:      
                 
                  chmod +x smlinux
-		         ./smlinux <romfile>
+		 ./smlinux <romfile>
 Examples: 
 
              ./smlinux "Super Mario 64 (U) [!].z64"
-			             or 
+			      or 
              ./smlinux ~/roms/n64/sm64.z64
 
 That's Everything. That's all you have to do..
