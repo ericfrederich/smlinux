@@ -1,7 +1,7 @@
 #!/bin/bash
 # This should do everything required to build & install under Ubuntu and update itself.
 # Other distros edit config file when prompted or anytime afterwards to set adjust dependencies.
-# 2020-0615-1448
+# 2020-0617-1258
 
 domake(){
 	make BETTERCAMERA=$BETTERCAMERA NODRAWINGDISTANCE=$NODRAWINGDISTANCE TEXTURE_FIX=$TEXTURE_FIX EXTERNAL_DATA=$EXTERNAL_DATA DISCORDRPC=$DISCORDRPC VERSION=$VERSION RENDER_API=$RENDER_API "$JOBS"
@@ -180,6 +180,11 @@ if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ]; then
 	fi	
 	echo Compiling...
 	domake
+	if [ ! -f ~/sm64pc/build/"$VERSION"_pc/sm64."$VERSION".f3dex2e ]; then
+		echo ERROR: You do not have the expected binary ~/sm64pc/build/"$VERSION"_pc/sm64."$VERSION".f3dex2e
+		echo "Script Exiting incomplete.  Contact #help-desk"
+		exit
+	fi
 	if [ -d ~/sm64pc/res ]; then
 		echo Restoring Textures.
 		mv ~/sm64pc/res ~/sm64pc/build/"$VERSION"_pc/res.bak
