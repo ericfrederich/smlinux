@@ -63,13 +63,40 @@ else
 				rm -rf ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc.baq
 			fi
 			mv -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc.baq
-			git clone https://github.com/enigma9o7/smlinux.git ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc
-			if [ -d ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc.baq ]; then
-				cp -Rn ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc.baq/* ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/
-				rm -rf ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc.baq
+		fi
+		git clone https://github.com/enigma9o7/smlinux.git ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc
+		if [ -d ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc.baq ]; then
+			cp -Rn ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc.baq/* ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/
+			rm -rf ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc.baq
+		fi
+		touch ~/.smlinuxUpdate
+		mv ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinux "${MAPFILE[0]}"/
+		if [ ! -f "${MAPFILE[0]}"/smlinux ]; then
+			echo WARNING: Could not write to first path directory.  Creating ~/bin.
+			touch ~/.smlinuxNopath
+			mkdir ~/bin
+			export PATH=~/bin:$PATH
+			mapfile -t -d: <<<"$PATH"
+			mv -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinux "${MAPFILE[0]}"/
+			if [ ! -f "${MAPFILE[0]}"/smlinux ]; then
+				echo ERROR - Could not add to path.  Run without AutoUpdate enabled.
+				exit
 			fi
-			touch ~/.smlinuxUpdate
-			mv ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinux "${MAPFILE[0]}"/
+		fi
+	fi
+	chmod +x "${MAPFILE[0]}"/smlinux
+	cd "$LAUNCH_DIR"
+	exec smlinux "$@"
+else
+	git fetch
+	if [ "$(git diff HEAD origin/HEAD)" != "" ]; then
+		git merge
+		if [ ! -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinux ]; then
+			echo "ERROR WTF!  Script Update Unsuccesful."
+			echo "Try #help-desk if script udpates continue to fail"
+		else
+			echo 'mapfile -t -d: <<<"$PATH"
+			mv -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinux "${MAPFILE[0]}"/
 			if [ ! -f "${MAPFILE[0]}"/smlinux ]; then
 				echo WARNING: Could not write to first path directory.  Creating ~/bin.
 				touch ~/.smlinuxNopath
@@ -82,42 +109,15 @@ else
 					exit
 				fi
 			fi
-		fi
-		chmod +x "${MAPFILE[0]}"/smlinux
-		cd "$LAUNCH_DIR"
-		exec smlinux "$@"
-	else
-		git fetch
-		if [ "$(git diff HEAD origin/HEAD)" != "" ]; then
-			git merge
-			if [ ! -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinux ]; then
-				echo "ERROR WTF!  Script Update Unsuccesful."
-				echo "Try #help-desk if script udpates continue to fail"
-			else
-				echo 'mapfile -t -d: <<<"$PATH"
-				mv -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinux "${MAPFILE[0]}"/
-				if [ ! -f "${MAPFILE[0]}"/smlinux ]; then
-					echo WARNING: Could not write to first path directory.  Creating ~/bin.
-					touch ~/.smlinuxNopath
-					mkdir ~/bin
-					export PATH=~/bin:$PATH
-					mapfile -t -d: <<<"$PATH"
-					mv -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinux "${MAPFILE[0]}"/
-					if [ ! -f "${MAPFILE[0]}"/smlinux ]; then
-						echo ERROR - Could not add to path.  Run without AutoUpdate enabled.
-						exit
-					fi
-				fi
-				chmod +x "${MAPFILE[0]}"/smlinux
-				if [ -f ~/Downloads/smlinux ]; then mv -f ~/Downloads/smlinux ~/Downloads/smlinux.old.backup
-				fi
-				if [ -f ~/Downloads/smlinux.sh ]; then mv -f ~/Downloads/smlinux.sh ~/Downloads/smlinux.old.backup	
-				fi	
-				exec smlinux "$@"' > ~/.smlinuxUpdate
-				chmod +x ~/.smlinuxUpdate
-				cd "$LAUNCH_DIR"
-				exec ~/.smlinuxUpdate "$@"
+			chmod +x "${MAPFILE[0]}"/smlinux
+			if [ -f ~/Downloads/smlinux ]; then mv -f ~/Downloads/smlinux ~/Downloads/smlinux.old.backup
 			fi
+			if [ -f ~/Downloads/smlinux.sh ]; then mv -f ~/Downloads/smlinux.sh ~/Downloads/smlinux.old.backup	
+			fi	
+			exec smlinux "$@"' > ~/.smlinuxUpdate
+			chmod +x ~/.smlinuxUpdate
+			cd "$LAUNCH_DIR"
+			exec ~/.smlinuxUpdate "$@"
 		fi
 	fi
 fi
