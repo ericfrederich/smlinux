@@ -141,7 +141,7 @@ If you wish to modify the config file for others with your distro, set the $Linu
 
 **How do I create my rom file?**
 
-Backup your cartridge to z64 format with something like Retrode2 [https://www.dragonbox.de/en/accessories/cartridge-dumper/retrode2-with-all-plugins](URL)
+Backup your cartridge to z64 format with something like Retrode2 [https://www.dragonbox.de/en/accessories/cartridge-dumper/retrode2-with-all-plugins](URL) https://stoneagegamer.com/retrode-2-cart-reader-rom-dumper-for-super-nintendo-genesis-more.html
 
 **How do I remove everything the script created during install?**
  
