@@ -1,22 +1,23 @@
 #!/bin/bash
 # This should do everything required to build & install under Ubuntu and update itself.
 # Other distros edit config file when prompted to change command to get dependencies, or install them first.
-# 2020-0619-1839
+# 2020-0624-1551
 
 domake(){ 
-	if [ "$REPO" = "sm64pc" ]; then
+	if [ "$REPO" = "sm64-port" ]; then
+		make VERSION=$VERSION "$JOBS"	
+	elif [ "$REPO" = "sm64pc" ] || [ "$REPO" = "sm64ex" ]; then
 		make BETTERCAMERA=$BETTERCAMERA NODRAWINGDISTANCE=$NODRAWINGDISTANCE TEXTURE_FIX=$TEXTURE_FIX EXTERNAL_DATA=$EXTERNAL_DATA DISCORDRPC=$DISCORDRPC VERSION=$VERSION RENDER_API=$RENDER_API "$JOBS"
-	elif [ "$REPO" = "sm64-port" ]; then
-		make VERSION=$VERSION "$JOBS"
 	else
 		echo "$REPO" is not a known repository.  Check your REPO setting and try again.
+		echo Known repos are sm64-port, sm64pc, and sm64ex.
 		echo Script exiting incomplete.
 		exit
 	fi
 	}
 
 dohd(){ if [ "$REPO" = "sm64-port" ]; then
-		echo "WARNING: Can't Apply HD to this repo.  Try setting repo to sm64pc."
+		echo "WARNING: Can't Apply HD to official repo.  Try setting repo to sm64pc or sm64ex."
 		return
 	fi
 	echo Getting HD Enhancements...
@@ -33,12 +34,20 @@ dohd(){ if [ "$REPO" = "sm64-port" ]; then
 	cd ~/sm64pc/enhancements
 	wget https://cdn.discordapp.com/attachments/716459185230970880/719758031990030427/Old_School_HD_Mario_Model.zip 
 	wget https://cdn.discordapp.com/attachments/716459185230970880/718990046442684456/hd_bowser.rar
-	wget https://cdn.discordapp.com/attachments/716459185230970880/718674249631662120/3d_coin_v2.patch
+	if [ $REPO=sm64pc ]; then
+		wget https://cdn.discordapp.com/attachments/716459185230970880/718674249631662120/3d_coin_v2.patch
+	elif [ $REPO=sm64ex ]; then	
+		wget https://cdn.discordapp.com/attachments/721806706547490868/725041183700680807/3d_coin_v2_nightly.patch
+	fi
 	cd ..	
 	cp -Rn actors actors.bak
 	unzip -o enhancements/Old_School_HD_Mario_Model 
 	unrar x -o+ enhancements/hd_bowser 
-	git apply enhancements/3d_coin_v2.patch --ignore-whitespace
+	if [ "$REPO" = "sm64pc" ]; then
+		git apply enhancements/3d_coin_v2.patch --ignore-whitespace
+	elif [ "$REPO" = "sm64ex" ]; then
+		git apply enhancements/3d_coin_v2_nightly.patch --ignore-whitespace
+	fi
 	}
 
 scriptUpdate(){
@@ -188,7 +197,7 @@ mapfile -t -d: <<<"$PATH"
 	echo 'VERSION=us
 #VERSION must correspond to rom version- us jp eu
 JOBS=-j
-#[sm64pc] these settings only apply to sm64pc repo
+#[sm64pc/sm64ex] these settings only apply to unofficial fork repository.
 BETTERCAMERA=1
 NODRAWINGDISTANCE=1
 TEXTURE_FIX=1
@@ -202,7 +211,7 @@ Branch=master
 InstallHD=1
 UpdateHD=0
 REPO=sm64pc
-#REPO supports both sm64-port offical and sm64pc unofficial early fork repos
+#REPO supports both sm64-port offical and sm64pc sm64ex unofficial early fork repos
 Linux="sudo apt install -y build-essential git python3 libaudiofile-dev libglew-dev libsdl2-dev binutils libusb-1.0-0-dev"'> ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinuxcfg.txt
 	if(whiptail --title "Build Options" --yesno "$(cat ~/.local/share/sm64pc/smlinuxcfg.txt)" 24 75 --yes-button "Edit Options" --no-button "Proceed" --defaultno); then
 		whiptail --msgbox "The config file will open in your default xdg editor.  When you exit your editor, script will continue.  Do not close the terminal window the script is currently running in while editing your config file.  In the future you will not be automatically prompted to edit this unless smlinuxcfg.txt is missing, but you can always edit it manually in any editor before updating your build.  For most people, these options which include community enhancements are reccommended.  If you mess up the config file, delete and it will be recreated." 16 60
@@ -210,13 +219,14 @@ Linux="sudo apt install -y build-essential git python3 libaudiofile-dev libglew-
 	fi
 fi
 source ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinuxcfg.txt
+if [ $REPO != sm64-port ]; then
+	if [ $BRANCH = master ]; then REPO=sm64pc
+	elif [ $BRANCH = nightly ]; then REPO=sm64ex
+	fi
+fi
 if [ ! -d ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO" ]; then 
 	mkdir ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"
 fi
-if [ $REPO = sm64ex ]; then
-	REPO=sm64pc
-fi
-
 if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ]; then
 	if ((AutoUpdate)); then
 		scriptUpdate "$@"
@@ -338,7 +348,12 @@ if [ -d ~/"$REPO" ]; then
 	echo Existing "$REPO" directory renamed.  
 fi
 cd
-git clone https://github.com/"$REPO"/"$REPO".git -b "$Branch"
+if [ "$REPO" = "sm64ex" ]; then
+	git clone https://github.com/sm64pc/"$REPO".git -b "$Branch"
+else
+	git clone https://github.com/"$REPO"/"$REPO".git -b "$Branch"
+fi
+
 if [ ! -d ~/"$REPO" ]; then
 	echo "ERROR: Could not reach github.  "
 	echo "Script Ending Incomplete.  Contact #Help-Desk."
