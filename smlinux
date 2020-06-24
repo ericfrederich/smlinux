@@ -1,7 +1,7 @@
 #!/bin/bash
 # This should do everything required to build & install under Ubuntu and update itself.
 # Other distros edit config file when prompted to change command to get dependencies, or install them first.
-# 2020-0624-1631
+# 2020-0624-1640
 
 domake(){ 
 	if [ "$REPO" = "sm64-port" ]; then
@@ -21,7 +21,7 @@ dohd(){ if [ "$REPO" = "sm64-port" ]; then
 		return
 	fi
 	echo Getting HD Enhancements...
-	if [ ~ -d ~/"$REPO"/build ] ; then mkdir ~/"$REPO"/build
+	if [ ! -d ~/"$REPO"/build ] ; then mkdir ~/"$REPO"/build
 	fi
 	mkdir ~/"$REPO"/build/"$VERSION"_pc
 	mkdir ~/"$REPO"/build/"$VERSION"_pc/res	
@@ -66,6 +66,7 @@ if [ -z $REPO ]; then
 fi
 if [ -f "~/.smlinuxUpdate" ]; then 
 	rm ~/.smlinuxUpdate
+	echo Script Update Complete
 else
 	cd ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc
 	if [ ! -f "${MAPFILE[0]}"/smlinux ]; then
