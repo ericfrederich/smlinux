@@ -23,9 +23,9 @@ First Time Usage:
 	./smlinux <romfile>
 Examples: 
 
-        ./smlinux "Super Mario 64 (U) [!].z64"
+ 	./smlinux "Super Mario 64 (U) [!].z64"
 		      or 
-        ./smlinux ~/roms/n64/sm64.z64
+	./smlinux ~/roms/n64/sm64.z64
 
 That's Everything. That's all you have to do..
 You'll be asked sudo password to install build tools at the beginning, then it will update and intsall itself to the first directory in your path (or create ~/bin if nothing available), and prompt you to approve (or change) the reccommended options before your build starts, then will run as user unattended and before the time you finish reading the FAQ you will hear "It's me, Mario!".
@@ -74,10 +74,10 @@ Note that precaching these textures will make the game use more memory and incre
 For example: 
  
 	smlinux update
-              or
-     	smlinux update --hd
-              or
-     	smlinux update --config
+	       or
+	smlinux update --hd
+	       or
+	smlinux update --config
 Updates existing install to latest from github while retaining custom textures.
 
 You can also use this option to rebuild if you edit your source files or change source assets like actors manually.
@@ -86,7 +86,7 @@ Note --hd only needs to be applied once, not with every update (unless what's in
 If you want to save your existing build, rename it (anything) before running the update, for example: 
  
 
-    mv ~/sm64pc/build ~/sm64pc/build-old
+	mv ~/sm64pc/build ~/sm64pc/build-old
 
 ## **How to I configure options like controllers, camera, rumble, etc?**
 *only applies to sm64pc/sm64ex fork*
@@ -116,16 +116,16 @@ Just get the appropriate texture pack, then put the zip into your "res" folder i
 
 Put the patch file into ~/sm64pc/enhancements (or specify the path differently when applying):
    
-    cd ~/sm64pc
-    git apply enhancements/filename.patch
-    ~/Downloads/smlinux update
+	cd ~/sm64pc
+	git apply enhancements/filename.patch
+	~/Downloads/smlinux update
 
 ## **How to remove a patch?** 
 *change path from sm64pc to sm64-port or sm64ex for newer repos*
    
-    cd ~/sm64pc
-    git apply -R enhancements/filename.patch
-    ~/Downloads/smlinux update
+	cd ~/sm64pc
+	git apply -R enhancements/filename.patch
+	~/Downloads/smlinux update
 
 
 ## **What about distros other than Ubuntu/Debian?**
@@ -136,16 +136,16 @@ Change your Linux=line during first install to one that works with your distro s
 
 Arch: 
     
-    sudo pacman -S base-devel python audiofile sdl2 glew
+	sudo pacman -S base-devel python audiofile sdl2 glew
 Debian:  
 
-    sudo apt-get install build-essential git python3 libaudiofile-dev libglew-dev libsdl2-dev
+	sudo apt-get install build-essential git python3 libaudiofile-dev libglew-dev libsdl2-dev
 Fedora: 
 
-    sudo dnf install make gcc python3 audiofile-devel glew-devel SDL2-devel
+	sudo dnf install make gcc python3 audiofile-devel glew-devel SDL2-devel
 Void: 
 
-    sudo xbps-install -S base-devel python3 audiofile-devel SDL2-devel glew-devel
+	sudo xbps-install -S base-devel python3 audiofile-devel SDL2-devel glew-devel
 If you wish to modify the config file for others with your distro, set the $Linux= with the above or what works for you.
 
 ## **How do I create my rom file?**
@@ -154,7 +154,7 @@ Backup your cartridge to z64 format with something like Retrode2 [https://www.dr
 
 ## **How do I remove everything the script created during install?**
  
-    smlinux purge
+	smlinux purge
 This erases everything created running smlinux including automatically created game saves and config files.
 This does not remove any packages installed as build tools or dependencies. Remove those with your package manager.
 (Development libraries can always safely be removed if you don't plan to build again, and binaries will still run.)
