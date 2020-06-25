@@ -129,7 +129,7 @@ Put the patch file into ~/sm64pc/enhancements (or specify the path differently w
 
 
 ## **What about distros other than Ubuntu/Debian?**
-Tested on Bodhi 5.1,32 & 64-bit, so should work as-is on recent Ubuntu/debian, others untested. 
+*Tested on Bodhi 5.1,32 & 64-bit, so should work as-is on recent Ubuntu/debian, others untested.*
 
 Change your Linux=paramater during first install to one that works with your distro such as the following, or just install dependencies first then run smlinux script, either with Linux="" in settings or just ignoring any error regarding apt.
 
@@ -145,7 +145,6 @@ Fedora:
 Void: 
 
 	sudo xbps-install -S base-devel python3 audiofile-devel SDL2-devel glew-devel
-If you wish to modify the config file for others with your distro, set the $Linux= with the above or what works for you.
 
 ## **How do I create my rom file?**
 
