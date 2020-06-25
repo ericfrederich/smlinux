@@ -1,5 +1,6 @@
 <img src=https://github.com/enigma9o7/smlinux/raw/e94a31c04fad830f9119797eaa969676d0cf5333/screenshot.jpg>
 
+<img src=https://github.com/enigma9o7/smlinux/raw/7af0e9fd3abd801c4c7c647d6f975e21ba57200a/screenshot2.jpg>
 
 # Super Mario Linux Build Install Update
 
