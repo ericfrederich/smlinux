@@ -3,7 +3,7 @@
 <img src=https://github.com/enigma9o7/smlinux/raw/383b58f706e99d849294517a0bb9df73b8aa6f3e/screenshot2.jpg>
 
 # Super Mario Linux Build Install Update
-<a href="https://raw.githubusercontent.com/enigma9o7/smlinux/master/smlinux" download>Click to View</a>  <a id="raw-url" href="https://raw.githubusercontent.com/enigma9o7/smlinux/master/smlinux">Right Click and Save as to Download</a>
+<a href="https://raw.githubusercontent.com/enigma9o7/smlinux/master/smlinux" download>Click to View</a>          <a id="raw-url" href="https://raw.githubusercontent.com/enigma9o7/smlinux/master/smlinux">Right Click and Save as to Download</a>
 
 # 
 1. Installs Required Packages (build tools & dependencies)
@@ -49,13 +49,13 @@ Both repos offer master as primary.  sm64pc also offers nightly which is current
 For video cards with old OpenGL version 1.2 or 1.3 (from year 200X). Check your OpenGL version with the following command: 
  
     glxinfo | grep "OpenGL version"
-> 2.1 or higher, don't add this option.
+2.1 or higher, don't add this option.
 
-> 2.0 Does this version even exist in the wild? If so, try normal, then legacy, report back!.
+2.0 Does this version even exist in the wild? If so, try normal, then legacy, report back!.
 
-> 1.2/1.3 This build option was made for you! Remove the # commenting that option in smlinuxcfg.txt.
+1.2/1.3 This build option was made for you! Remove the # commenting that option in smlinuxcfg.txt.
 
-> 1.0/1.1 Really? Sorry. Can you even run glxgears?
+1.0/1.1 Really? Sorry. Can you even run glxgears?
 
 ## **What does the InstallHD=1 Script option do?**
 *only applies to sm64pc/sm64ex fork*
