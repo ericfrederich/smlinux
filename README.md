@@ -52,23 +52,20 @@ Both repos offer master as primary.  sm64pc also offers nightly which is current
 For video cards with old OpenGL version 1.2 or 1.3 (from year 200X). Check your OpenGL version with the following command: 
  
     glxinfo | grep "OpenGL version"
-2.1 or higher, don't add this option.
-
-2.0 Does this version even exist in the wild? If so, try normal, then legacy, report back!.
-
-1.2/1.3 This build option was made for you! Remove the # commenting that option in smlinuxcfg.txt.
-
+2.1 or higher, don't add this option.  
+2.0 Does this version even exist in the wild? If so, try normal, then legacy, report back!  
+1.2/1.3 This build option was made for you! Remove the # commenting that option in smlinuxcfg.txt.  
 1.0/1.1 Really? Sorry. Can you even run glxgears?
 
 ## **What does the InstallHD=1 Script option do?**
 *only applies to sm64pc/sm64ex fork*
 
 This will modify your source with some community provided high resolution actors and patches and add a texture pack to your build.
-From #modding-releases HD Bowser, HD Mario (Old School V2) and the 3D Coin Patch (V2)
-From #upscaled-textures Cleaner Aesthetics Texture Pack
-From #user-submitted-content Mario Icon
-This depends on those files remaining available in discord, so if the source goes away, this option will not work anymore. 
-I may periodically add or change what's included with this option as new mods are released.
+From #modding-releases HD Bowser, HD Mario (Old School V2) and the 3D Coin Patch (V2)  
+From #upscaled-textures Cleaner Aesthetics Texture Pack  
+From #user-submitted-content Mario Icon  
+This depends on those files remaining available in discord, so if the source goes away, this option will not work anymore.   
+I may periodically add or change what's included with this option as new mods are released.  
 Note that precaching these textures will make the game use more memory and increase initial startup time.
 
 ## **How to update, rebuild, or change build options later?**
