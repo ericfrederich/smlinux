@@ -39,7 +39,7 @@ Note the script installs itself as 'smlinux' to the first directory in your path
 Both repos offer master as primary.  sm64pc also offers nightly which is currently working on implementing refresh 10 that sm64-port master started with.  If nightly available I'd reccommend it, but if something doesnt work right, try master. 
 
 **When to use RENDER_API=GL_LEGACY?** 
-*only applies to sm64pc fork*
+*only applies to sm64pc/sm64ex fork*
 
 For video cards with old OpenGL version 1.2 or 1.3 (from year 200X). Check your OpenGL version with the following command: 
  
@@ -53,7 +53,7 @@ For video cards with old OpenGL version 1.2 or 1.3 (from year 200X). Check your 
 1.0/1.1 Really? Sorry. Can you even run glxgears?
 
 **What does the InstallHD=1 Script option do?**
-*only applies to sm64pc fork*
+*only applies to sm64pc/sm64ex fork*
 
 This will modify your source with some community provided high resolution actors and patches and add a texture pack to your build.
 From #modding-releases HD Bowser, HD Mario (Old School V2) and the 3D Coin Patch (V2)
@@ -84,7 +84,7 @@ If you want to save your existing build, rename it (anything) before running the
     mv ~/sm64pc/build ~/sm64pc/build-old
 
 **How to I configure options like controllers, camera, rumble, etc?**
-*only applies to sm64pc fork*
+*only applies to sm64pc/sm64ex fork*
 
 Pause then press R with controller or R_Shift with keyboard. For the controller settings, it is recommended to keep the first column for keyboard controls and using the middle for controller. Use the third column if you want additional keys/buttons assigned to the same function, or for mouse buttons. Be sure to map something to L for use with the camera or cheats. I personally enable mouse control for camera and turn up my aggression and pan up to 100. 
 
@@ -92,21 +92,22 @@ You can also just edit the configuration file with a text editor.
 
 **Where are my configuration files and saved games stored?**
 
-~/.local/share/sm64pc (smlinux and sm64pc fork)
-~/.local/share/sm64pc-fork (Official Repo)
+~/.local/share/sm64pc (smlinux and sm64pc/sm64ex master)
+~/.local/share/sm64pex (sm64pc/sm64ex nightly)
+~/.local/share/sm64-fork (Official Repo)
 
 **Are there any cheats?**
-*only applies to sm64pc fork*
+*only applies to sm64pc/sm64ex fork*
 
 Cheats are built in and enabled automatically if launched from shortcut and available at the bottom of the options menu.
 
 **How do I apply external textures?**
-*only applies to sm64pc fork*
+*only applies to sm64pc/sm64ex fork*
 
 Just get the appropriate texture pack, then put the zip into your "res" folder in build/us_pc and the next time you run the game it'll use those textures automatically. (You do this after build.) The zip file must contain a "gfx" and/or "sound" folder within it. If it's another format, you must create a folder named build/us_pc/res/gfx put the unpacked archive in there. If you upgraded from a version of the game prior to 7-June, this is a new method and your old files need to be moved from "res" into the "gfx" sub-directory, except the old sound folder which can be deleted. Do not move or remove base.zip, it muse remain in "res" as fallback.
 
 **How to apply a patch?**
-*change path from sm64pc to sm64-port for sm64-port repo*
+*change path from sm64pc to sm64-port or sm64ex for newer repos*
 
 Put the patch file into ~/sm64pc/enhancements (or specify the path differently when applying):
    
