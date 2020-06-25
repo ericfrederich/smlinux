@@ -3,7 +3,7 @@
 <img src=https://github.com/enigma9o7/smlinux/raw/383b58f706e99d849294517a0bb9df73b8aa6f3e/screenshot2.jpg>
 
 # Super Mario Linux Build Install Update
-     (https://raw.githubusercontent.com/enigma9o7/smlinux/master/smlinux)[Click to View] &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;(https://raw.githubusercontent.com/enigma9o7/smlinux/master/smlinux)[Right Click - Save as to Download]
+ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; [Click to View](https://raw.githubusercontent.com/enigma9o7/smlinux/master/smlinux) &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; [Right Click - Save as to Download](https://raw.githubusercontent.com/enigma9o7/smlinux/master/smlinux)
 
 # 
 1. Installs Required Packages (build tools & dependencies)
@@ -151,7 +151,7 @@ If you wish to modify the config file for others with your distro, set the $Linu
 ## **How do I create my rom file?**
 
 Backup your cartridge to z64 format with a cartridge dumper such as Retrode2.  
-     [Dragonbox Store](https://www.dragonbox.de/en/accessories/cartridge-dumper/retrode2-with-all-plugins) &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; [StoneGamer](https://stoneagegamer.com/retrode-2-cart-reader-rom-dumper-for-super-nintendo-genesis-more.html)
+ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; [Dragonbox Store](https://www.dragonbox.de/en/accessories/cartridge-dumper/retrode2-with-all-plugins) &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; [StoneGamer](https://stoneagegamer.com/retrode-2-cart-reader-rom-dumper-for-super-nintendo-genesis-more.html)
 
 ## **How do I remove everything the script created during install?**
  
