@@ -19,7 +19,7 @@
 
 First Time Usage:      
                 
-        chmod +x smlinux
+	chmod +x smlinux
 	./smlinux <romfile>
 Examples: 
 
