@@ -76,7 +76,7 @@ For example:
      smlinux update
             or
      smlinux update --hd
-     	    or
+         or
      smlinux update --config
 Updates existing install to latest from github while retaining custom textures.
 
