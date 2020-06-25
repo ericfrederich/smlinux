@@ -1,60 +1,44 @@
 #!/bin/bash
 # This should do everything required to build & install under Ubuntu and update itself.
 # Other distros edit config file when prompted to change command to get dependencies, or install them first.
-# 2020-0624-2147
+# 2020-0619-1124
 
 domake(){ 
-	if [ "$REPO" = "sm64-port" ]; then
-		make VERSION=$VERSION "$JOBS"	
-	elif [ "$REPO" = "sm64pc" ] || [ "$REPO" = "sm64ex" ]; then
+	if [ "$REPO" = "sm64pc" ]; then
 		make BETTERCAMERA=$BETTERCAMERA NODRAWINGDISTANCE=$NODRAWINGDISTANCE TEXTURE_FIX=$TEXTURE_FIX EXTERNAL_DATA=$EXTERNAL_DATA DISCORDRPC=$DISCORDRPC VERSION=$VERSION RENDER_API=$RENDER_API "$JOBS"
+	elif [ "$REPO" = "sm64-port" ]; then
+		make VERSION=$VERSION "$JOBS"
 	else
 		echo "$REPO" is not a known repository.  Check your REPO setting and try again.
-		echo Known repos are sm64-port, sm64pc, and sm64ex.
 		echo Script exiting incomplete.
 		exit
 	fi
 	}
 
-doconfig(){
-	if(whiptail --title "Build Options" --yesno "$(cat ~/.local/share/sm64pc/smlinuxcfg.txt)" 24 75 --yes-button "Edit Options" --no-button "Proceed" --defaultno); then
-		whiptail --msgbox "The config file will open in your default xdg editor.  When you exit your editor, script will continue.  Do not close the terminal window the script is currently running in while editing your config file.  In the future you will not be automatically prompted to edit this unless smlinuxcfg.txt is missing, but you can always edit it manually in any editor before updating your build.  For most people, these options which include community enhancements are reccommended.  If you mess up the config file, delete and it will be recreated." 16 60
-		xdg-open ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinuxcfg.txt 
-	fi
-	}
-
 dohd(){ if [ "$REPO" = "sm64-port" ]; then
-		echo "WARNING: Can't Apply HD to official repo.  Try setting repo to sm64pc or sm64ex."
+		echo "WARNING: Can't Apply HD to this repo.  Try setting repo to sm64pc."
 		return
 	fi
 	echo Getting HD Enhancements...
-	if [ ! -d ~/"$REPO"/build ] ; then mkdir ~/"$REPO"/build
+	if [ ~ -d ~/"$REPO"/build ] ; then mkdir ~/"$REPO"/build
 	fi
-	mkdir ~/"$REPO"/build/"$VERSION"_pc
-	mkdir ~/"$REPO"/build/"$VERSION"_pc/res	
-	cd ~/"$REPO"/build/"$VERSION"_pc/res
+	mkdir ~/sm64pc/build/"$VERSION"_pc
+	mkdir ~/sm64pc/build/"$VERSION"_pc/res	
+	cd ~/sm64pc/build/"$VERSION"_pc/res
 	wget https://cdn.discordapp.com/attachments/711253314855108629/720369471105269831/upscaled-3.zip
 	wget https://cdn.discordapp.com/attachments/711253314855108629/720369940317863946/upscaled-2.zip
 	wget https://cdn.discordapp.com/attachments/711253314855108629/720370004171817080/upscaled-1.zip
+	cd ${XDG_DATA_HOME:-$HOME/.local/share}/icons
 	wget https://cdn.discordapp.com/attachments/711253314855108629/712146686834638890/sm64.png
-	mv sm64.png ${XDG_DATA_HOME:-$HOME/.local/share}/icons/"$REPO".png
-	cd ~/"$REPO"/enhancements
+	cd ~/sm64pc/enhancements
 	wget https://cdn.discordapp.com/attachments/716459185230970880/719758031990030427/Old_School_HD_Mario_Model.zip 
-	wget https://cdn.discordapp.com/attachments/716459185230970880/718990046442684456/hd_bowser.rar	
-	if [ "$REPO" = "sm64pc" ]; then
-		wget https://cdn.discordapp.com/attachments/716459185230970880/718674249631662120/3d_coin_v2.patch
-	elif [ "$REPO" = "sm64ex" ]; then	
-		wget https://cdn.discordapp.com/attachments/721806706547490868/725041183700680807/3d_coin_v2_nightly.patch
-	fi
+	wget https://cdn.discordapp.com/attachments/716459185230970880/718990046442684456/hd_bowser.rar
+	wget https://cdn.discordapp.com/attachments/716459185230970880/718674249631662120/3d_coin_v2.patch
 	cd ..	
 	cp -Rn actors actors.bak
 	unzip -o enhancements/Old_School_HD_Mario_Model 
-	unrar x -o+ enhancements/hd_bowser
- 	if [ "$REPO" = "sm64pc" ]; then
-		git apply enhancements/3d_coin_v2.patch --ignore-whitespace
-	elif [ "$REPO" = "sm64ex" ]; then
-		git apply enhancements/3d_coin_v2_nightly.patch --ignore-whitespace
-	fi
+	unrar x -o+ enhancements/hd_bowser 
+	git apply enhancements/3d_coin_v2.patch --ignore-whitespace
 	}
 
 scriptUpdate(){
@@ -70,9 +54,8 @@ if [ -z $REPO ]; then
 	cd "$LAUNCH_DIR"
 	exec smlinux "$@"
 fi
-if [ -f ~/.smlinuxUpdate ]; then 
+if [ -f "~/.smlinuxUpdate" ]; then 
 	rm ~/.smlinuxUpdate
-	echo Script Update Complete.
 else
 	cd ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc
 	if [ ! -f "${MAPFILE[0]}"/smlinux ]; then
@@ -145,7 +128,7 @@ fi
 makedesktop(){
 if [ ! -f ${XDG_DATA_HOME:-$HOME/.local/share}/icons/"$REPO".* ]; then
 	echo WARNING: Icon for desktop shortcut not found!
-	cp ~/"$REPO"/textures/segment2/segment2.05A00.rgba16.png ${XDG_DATA_HOME:-$HOME/.local/share}/icons/"$REPO".png
+	cp ~/"$REPO"/textures/segment2/segment2.05A00.rgba16.png ${XDG_DATA_HOME:-$HOME/.local/share}/icons/sm64.png
 	if [ "$REPO" = "sm64-port" ]; then  #need a different icon or get confused
 		wget https://cdn.discordapp.com/attachments/711253314855108629/719215654837682226/Super_Mario_64.png
 		mv Super_Mario_64.png ${XDG_DATA_HOME:-$HOME/.local/share}/icons/"$REPO".png
@@ -162,12 +145,12 @@ StartupNotify=false
 Categories=Game;'>${XDG_DATA_HOME:-$HOME/.local/share}/applications/"$REPO".desktop
 echo Icon=${XDG_DATA_HOME:-$HOME/.local/share}/icons/"$REPO".png >>${XDG_DATA_HOME:-$HOME/.local/share}/applications/"$REPO".desktop
 echo Name=Super Mario 64 \("$REPO"\) >>${XDG_DATA_HOME:-$HOME/.local/share}/applications/"$REPO".desktop
-	if [ "$REPO" = "sm64pc" ] || [ "$REPO" = "sm64ex" ]; then
+	if [ "$REPO" = "sm64pc" ] ; then
 		echo Path=~/"$REPO"/build/"$VERSION"_pc >>${XDG_DATA_HOME:-$HOME/.local/share}/applications/"$REPO".desktop
 		echo Exec=~/"$REPO"/build/"$VERSION"_pc/sm64."$VERSION".f3dex2e --cheats>>${XDG_DATA_HOME:-$HOME/.local/share}/applications/"$REPO".desktop
 	else
 		echo Path=${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO" >>${XDG_DATA_HOME:-$HOME/.local/share}/applications/"$REPO".desktop
-		echo Exec=~/"$REPO"/build/"$VERSION"_pc/sm64."$VERSION".f3dex2e;echo>>${XDG_DATA_HOME:-$HOME/.local/share}/applications/"$REPO".desktop
+		echo Exec=~/"$REPO"/build/"$VERSION"_pc/sm64."$VERSION".f3dex2e>>${XDG_DATA_HOME:-$HOME/.local/share}/applications/"$REPO".desktop
 	fi
 cp ${XDG_DATA_HOME:-$HOME/.local/share}/applications/"$REPO".desktop ${XDG_DESKTOP_DIR:-$HOME/Desktop}
 fi
@@ -205,7 +188,7 @@ mapfile -t -d: <<<"$PATH"
 	echo 'VERSION=us
 #VERSION must correspond to rom version- us jp eu
 JOBS=-j
-#[sm64pc/sm64ex] these settings only apply to unofficial fork repo.
+#[sm64pc] these settings only apply to sm64pc repo
 BETTERCAMERA=1
 NODRAWINGDISTANCE=1
 TEXTURE_FIX=1
@@ -215,27 +198,20 @@ RENDER_API=GL
 #RENDER_API=GL_LEGACY
 #[Script] 
 AutoUpdate=1
-Branch=master
+Branch=nightly
 InstallHD=1
 UpdateHD=0
 REPO=sm64pc
-#REPO supports both sm64-port offical and sm64pc sm64ex unofficial early fork repos
+#REPO supports both sm64-port offical and sm64pc unofficial early fork repos
 Linux="sudo apt install -y build-essential git python3 libaudiofile-dev libglew-dev libsdl2-dev binutils libusb-1.0-0-dev"'> ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinuxcfg.txt
-	doconfig
+	if(whiptail --title "Build Options" --yesno "$(cat ~/.local/share/sm64pc/smlinuxcfg.txt)" 24 75 --yes-button "Edit Options" --no-button "Proceed" --defaultno); then
+		whiptail --msgbox "The config file will open in your default xdg editor.  When you exit your editor, script will continue.  Do not close the terminal window the script is currently running in while editing your config file.  In the future you will not be automatically prompted to edit this unless smlinuxcfg.txt is missing, but you can always edit it manually in any editor before updating your build.  For most people, these options which include community enhancements are reccommended.  If you mess up the config file, delete and it will be recreated." 16 60
+		xdg-open ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinuxcfg.txt 
+	fi
 fi
 source ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinuxcfg.txt
-if [ ! "$REPO" = "sm64-port" ]; then
-	if [ "$BRANCH" = "master" ]; then REPO=sm64pc
-	elif [ "$BRANCH" = "nightly" ]; then REPO=sm64ex
-	fi
-fi
 if [ ! -d ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO" ]; then 
 	mkdir ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"
-fi
-
-if [ "$2" = "config" ] || [ "$2" = "--config" ] || [ "$3" = "--config" ]; then
-	if [ ! -f ~/.smlinuxUpdate ]; then doconfig
-	fi
 fi
 
 if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ]; then
@@ -329,20 +305,18 @@ else
 	echo "|                                                                             |"
 	echo "|      Super Mario 64 Install * Build * Update Script for Linux               |"
 	echo "|                                                                             |"
-	echo "| First Install: smlinux <romfile> <options>                                  |"
+	echo "| First Install: smlinux <romfile>                                            |"
 	echo "| Examples:                                                                   |"
 	echo "|         smlinux ~/roms/n64/sm64.z64                                         |"
 	echo "|                         or                                                  |"
 	echo "|         smlinux \"Super Mario 64 (U) [!].z64\"                                |"
 	echo "|                                                                             |"
-	echo "| Update: smlinux update <options>                                            |" 
-	echo "|  Updates existing install from github, preserving external textures.        |"
+	echo "|Update: smlinux update <options>                                             |" 
+	echo "|Updates existing install to latest from github, preserving external textures.|"
+	echo "| option --hd to also update community sourced upscale add-ons                |"
 	echo "|                                                                             |"
-	echo "| Purge:  smlinux purge                                                       |"                 
-	echo "|  Removes all traces of installation previously created by this script.      |"
-	echo "|                                                                             |"
-	echo "| options: --hd also update community sourced upscale add-ons                 |"
-	echo "|          --config show config file before build (default on first install). |"
+	echo "|Purge:  smlinux purge                                                        |"                 
+	echo "|Removes all traces of installation previously created by this script.        |"
 	echo "|                                                                             |"
 	echo "-------------------------------------------------------------------------------"
 	echo	
@@ -361,12 +335,7 @@ if [ -d ~/"$REPO" ]; then
 	echo Existing "$REPO" directory renamed.  
 fi
 cd
-if [ "$REPO" = "sm64ex" ]; then
-	git clone https://github.com/sm64pc/"$REPO".git -b "$Branch"
-else
-	git clone https://github.com/"$REPO"/"$REPO".git -b "$Branch"
-fi
-
+git clone https://github.com/"$REPO"/"$REPO".git -b "$Branch"
 if [ ! -d ~/"$REPO" ]; then
 	echo "ERROR: Could not reach github.  "
 	echo "Script Ending Incomplete.  Contact #Help-Desk."
