@@ -150,7 +150,7 @@ If you wish to modify the config file for others with your distro, set the $Linu
 
 ## **How do I create my rom file?**
 
-Backup your cartridge to z64 format with a cartridge dumper suh as Retrode2  .
+Backup your cartridge to z64 format with a cartridge dumper suh as Retrode2.  
 [  Dragonbox Store Link  ](https://www.dragonbox.de/en/accessories/cartridge-dumper/retrode2-with-all-plugins)
 [  StoneGamer Link  ](https://stoneagegamer.com/retrode-2-cart-reader-rom-dumper-for-super-nintendo-genesis-more.html)
 
@@ -162,9 +162,3 @@ This does not remove any packages installed as build tools or dependencies. Remo
 (Development libraries can always safely be removed if you don't plan to build again, and binaries will still run.)
 This also does not restore or remove any prior sm64pc folders backed up if you ran the install script more that once;
 delete those folders manually from any file manager.
-
-## **What could go wrong?**
-
-If you already have a sm64pc folder and put this script there and tried to install from there, that'd probably confuse it. It assumes this is first install and that it doesn't exist already. Don't do that unless you're running --update which can be called from anywhere.
-
-If you make with eu rom, you won't get sound. This is a known bug with the port. Sorry. 
