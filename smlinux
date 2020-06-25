@@ -1,7 +1,7 @@
 #!/bin/bash
 # This should do everything required to build & install under Ubuntu and update itself.
 # Other distros edit config file when prompted to change command to get dependencies, or install them first.
-# 2020-0624-1928
+# 2020-0624-1952
 
 domake(){ 
 	if [ "$REPO" = "sm64-port" ]; then
@@ -233,7 +233,7 @@ if [ ! -d ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO" ]; then
 	mkdir ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"
 fi
 
-if [ "$3" = "config" ] ||  [ "$3" = "--config" ] || [ "$4" = "--config" ]; then
+if [ "$2" = "config" ] || [ "$2" = "--config" ] || [ "$3" = "--config" ]; then
 	doconfig
 fi
 
