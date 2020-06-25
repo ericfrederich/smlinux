@@ -131,8 +131,7 @@ Put the patch file into ~/sm64pc/enhancements (or specify the path differently w
 ## **What about distros other than Ubuntu/Debian?**
 Tested on Bodhi 5.1,32 & 64-bit, so should work as-is on recent Ubuntu/debian, others untested. 
 
-Change your Linux=line during first install to one that works with your distro such as the following:
-(Or just install dependencies first then rerun script, ignoring any error regarding apt, or change set Linux="")
+Change your Linux=paramater during first install to one that works with your distro such as the following, or just install dependencies first then run smlinux script, either with Linux="" in settings or just ignoring any error regarding apt.
 
 Arch: 
     
