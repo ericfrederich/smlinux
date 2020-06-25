@@ -1,0 +1,404 @@
+#!/bin/bash
+# This should do everything required to build & install under Ubuntu and update itself.
+# Other distros edit config file when prompted to change command to get dependencies, or install them first.
+# 2020-0625-1341
+domake(){ 
+	if [ "$REPO" = "sm64-port" ]; then
+		make VERSION=$VERSION "$JOBS"	
+	elif [ "$REPO" = "sm64pc" ] || [ "$REPO" = "sm64ex" ]; then
+		make BETTERCAMERA=$BETTERCAMERA NODRAWINGDISTANCE=$NODRAWINGDISTANCE TEXTURE_FIX=$TEXTURE_FIX EXTERNAL_DATA=$EXTERNAL_DATA DISCORDRPC=$DISCORDRPC VERSION=$VERSION RENDER_API=$RENDER_API "$JOBS"
+	else
+		echo "$REPO" is not a known repository.  Check your REPO setting and try again.
+		echo Known repos are sm64-port, sm64pc, and sm64ex.
+		echo Script exiting incomplete.
+		exit
+	fi
+	}
+
+loadconfig(){
+	source ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinuxcfg.txt
+	if [ ! "$REPO" = "sm64-port" ]; then
+		if [ "$BRANCH" = "master" ]; then REPO=sm64pc
+		elif [ "$BRANCH" = "nightly" ]; then REPO=sm64ex
+		fi
+	fi
+	}
+
+doconfig(){
+	if(whiptail --title "Build Options" --yesno "$(cat ~/.local/share/sm64pc/smlinuxcfg.txt)" 24 75 --yes-button "Edit Options" --no-button "Proceed" --defaultno); then
+		whiptail --msgbox "The config file will open in your default xdg editor.  When you exit your editor, script will continue.  Do not close the terminal window the script is currently running in while editing your config file.  In the future you will not be automatically prompted to edit this unless smlinuxcfg.txt is missing, but you can always edit it manually in any editor before updating your build.  For most people, these options which include community enhancements are reccommended.  If you mess up the config file, delete and it will be recreated." 16 60
+		xdg-open ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinuxcfg.txt 
+	fi
+	}
+
+dohd(){ if [ "$REPO" = "sm64-port" ]; then
+		echo "WARNING: Can't Apply HD to official repo.  Try setting repo to sm64pc or sm64ex."
+		return
+	fi
+	echo Getting HD Enhancements...
+	if [ ! -d ~/"$REPO"/build ] ; then mkdir ~/"$REPO"/build
+	fi
+	mkdir ~/"$REPO"/build/"$VERSION"_pc
+	mkdir ~/"$REPO"/build/"$VERSION"_pc/res	
+	cd ~/"$REPO"/build/"$VERSION"_pc/res
+	wget https://cdn.discordapp.com/attachments/711253314855108629/720369471105269831/upscaled-3.zip
+	wget https://cdn.discordapp.com/attachments/711253314855108629/720369940317863946/upscaled-2.zip
+	wget https://cdn.discordapp.com/attachments/711253314855108629/720370004171817080/upscaled-1.zip
+	wget https://cdn.discordapp.com/attachments/711253314855108629/712146686834638890/sm64.png
+	mv sm64.png ${XDG_DATA_HOME:-$HOME/.local/share}/icons/"$REPO".png
+	cd ~/"$REPO"/enhancements
+	wget https://cdn.discordapp.com/attachments/716459185230970880/719758031990030427/Old_School_HD_Mario_Model.zip 
+	wget https://cdn.discordapp.com/attachments/716459185230970880/718990046442684456/hd_bowser.rar	
+	if [ "$REPO" = "sm64pc" ]; then
+		wget https://cdn.discordapp.com/attachments/716459185230970880/718674249631662120/3d_coin_v2.patch
+	elif [ "$REPO" = "sm64ex" ]; then	
+		wget https://cdn.discordapp.com/attachments/721806706547490868/725041183700680807/3d_coin_v2_nightly.patch
+	fi
+	cd ..	
+	cp -Rn actors actors.bak
+	unzip -o enhancements/Old_School_HD_Mario_Model 
+	unrar x -o+ enhancements/hd_bowser
+ 	if [ "$REPO" = "sm64pc" ]; then
+		git apply enhancements/3d_coin_v2.patch --ignore-whitespace
+	elif [ "$REPO" = "sm64ex" ]; then
+		git apply enhancements/3d_coin_v2_nightly.patch --ignore-whitespace
+	fi
+	}
+
+scriptUpdate(){
+# do stuff if the config file is still pre official repo version
+if [ -z $REPO ]; then
+	REPO=sm64pc
+	rm ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinuxcfg.txt
+	mv ${XDG_DATA_HOME:-$HOME/.local/share}/icons/sm64.png ${XDG_DATA_HOME:-$HOME/.local/share}/icons/"$REPO".png
+	rm ${XDG_DATA_HOME:-$HOME/.local/share}/applications/sm64.desktop
+	rm ${XDG_DESKTOP_DIR:-$HOME/Desktop}/sm64.desktop
+	makedesktop
+	whiptail --msgbox "This is the first time you've updated since the Official Repo for the PC Port (sm64-port) was made open source.  Previously this script only supported the sm64pc repo which was forked from an earlier leaked version.  You now have the option to build from the official repo with this script by setting REPO in the smlinux configuration file to sm64-port.  Both builds can coexist and you can change your config file anytime to build or update either.  Note if you do change repo to sm64-port you should also set your branch to master.\n\nBecause of this change, your smlinux config file has been reset to default.  You will be prompted to confirm your build options." 17 75
+	cd "$LAUNCH_DIR"
+	exec smlinux "$@"
+fi
+if [ -f ~/.smlinuxUpdate ]; then 
+	rm ~/.smlinuxUpdate
+	echo Script Update Complete.
+else
+	cd ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc
+	if [ ! -f "${MAPFILE[0]}"/smlinux ]; then
+		echo Installing Script... 		
+		if [ -d ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc ]; then
+			if [ -d ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc.baq ]; then
+				rm -rf ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc.baq
+			fi
+			mv -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc.baq
+		fi
+		git clone https://github.com/enigma9o7/smlinux.git ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc
+		if [ -d ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc.baq ]; then
+			cp -Rn ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc.baq/* ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/
+			rm -rf ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc.baq
+		fi
+		touch ~/.smlinuxUpdate
+		mv ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinux "${MAPFILE[0]}"/
+		if [ ! -f "${MAPFILE[0]}"/smlinux ]; then
+			echo WARNING: Could not write to first path directory.  Creating ~/bin.
+			touch ~/.smlinuxNopath
+			mkdir ~/bin
+			export PATH=~/bin:$PATH
+			mapfile -t -d: <<<"$PATH"
+			mv -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinux "${MAPFILE[0]}"/
+			if [ ! -f "${MAPFILE[0]}"/smlinux ]; then
+				echo ERROR - Could not add to path.  Run without AutoUpdate enabled.
+				exit
+			fi
+		fi
+		chmod +x "${MAPFILE[0]}"/smlinux
+		cd "$LAUNCH_DIR"
+		exec smlinux "$@"
+	else
+		git fetch
+		if [ "$(git diff HEAD origin/HEAD)" != "" ]; then
+			git merge
+			if [ ! -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinux ]; then
+				echo "ERROR WTF!  Script Update Unsuccesful."
+				echo "Try #help-desk if script udpates continue to fail"
+			else
+			echo 'mapfile -t -d: <<<"$PATH"
+			mv -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinux "${MAPFILE[0]}"/
+			if [ ! -f "${MAPFILE[0]}"/smlinux ]; then
+				echo WARNING: Could not write to first path directory.  Creating ~/bin.
+				touch ~/.smlinuxNopath
+				mkdir ~/bin
+				export PATH=~/bin:$PATH
+				mapfile -t -d: <<<"$PATH"
+				mv -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinux "${MAPFILE[0]}"/
+				if [ ! -f "${MAPFILE[0]}"/smlinux ]; then
+					echo ERROR - Could not add to path.  Run without AutoUpdate enabled.
+				exit
+				fi
+			fi
+			chmod +x "${MAPFILE[0]}"/smlinux
+			if [ -f ~/Downloads/smlinux ]; then mv -f ~/Downloads/smlinux ~/Downloads/smlinux.old.backup
+			fi
+			if [ -f ~/Downloads/smlinux.sh ]; then mv -f ~/Downloads/smlinux.sh ~/Downloads/smlinux.old.backup
+			fi	
+			exec smlinux "$@"' > ~/.smlinuxUpdate
+			chmod +x ~/.smlinuxUpdate
+			cd "$LAUNCH_DIR"
+			exec ~/.smlinuxUpdate "$@"
+			fi
+		fi
+	fi
+fi
+}
+
+makedesktop(){
+if [ ! -f ${XDG_DATA_HOME:-$HOME/.local/share}/icons/"$REPO".* ]; then
+	echo WARNING: Icon for desktop shortcut not found!
+	cp ~/"$REPO"/textures/segment2/segment2.05A00.rgba16.png ${XDG_DATA_HOME:-$HOME/.local/share}/icons/"$REPO".png
+	if [ "$REPO" = "sm64-port" ]; then  #need a different icon or get confused
+		wget https://cdn.discordapp.com/attachments/711253314855108629/719215654837682226/Super_Mario_64.png
+		mv Super_Mario_64.png ${XDG_DATA_HOME:-$HOME/.local/share}/icons/"$REPO".png
+	else
+		echo 16x16 image from ROM used.  Reccommend replacing ${XDG_DATA_HOME:-$HOME/.local/share}/icons/"$REPO".png
+	fi	
+fi
+if [ ! -f ${XDG_DATA_HOME:-$HOME/.local/share}/applications/"$REPO".desktop ]; then
+	echo Creating Menu Entry and Desktop Shortcut...
+	echo '[Desktop Entry]
+Encoding=UTF-8
+Type=Application
+StartupNotify=false
+Categories=Game;'>${XDG_DATA_HOME:-$HOME/.local/share}/applications/"$REPO".desktop
+echo Icon=${XDG_DATA_HOME:-$HOME/.local/share}/icons/"$REPO".png >>${XDG_DATA_HOME:-$HOME/.local/share}/applications/"$REPO".desktop
+echo Name=Super Mario 64 \("$REPO"\) >>${XDG_DATA_HOME:-$HOME/.local/share}/applications/"$REPO".desktop
+	if [ "$REPO" = "sm64pc" ] || [ "$REPO" = "sm64ex" ]; then
+		echo Path=~/"$REPO"/build/"$VERSION"_pc >>${XDG_DATA_HOME:-$HOME/.local/share}/applications/"$REPO".desktop
+		echo Exec=~/"$REPO"/build/"$VERSION"_pc/sm64."$VERSION".f3dex2e --cheats>>${XDG_DATA_HOME:-$HOME/.local/share}/applications/"$REPO".desktop
+	else
+		echo Path=${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO" >>${XDG_DATA_HOME:-$HOME/.local/share}/applications/"$REPO".desktop
+		echo Exec=~/"$REPO"/build/"$VERSION"_pc/sm64."$VERSION".f3dex2e;echo>>${XDG_DATA_HOME:-$HOME/.local/share}/applications/"$REPO".desktop
+	fi
+cp ${XDG_DATA_HOME:-$HOME/.local/share}/applications/"$REPO".desktop ${XDG_DESKTOP_DIR:-$HOME/Desktop}
+fi
+}
+
+rungame(){
+	gtk-launch "$REPO"&disown
+	if [ -f ~/.smlinuxNopath ]; then
+		rm ~/.smlinuxNopath
+		zenity --info --text='You did not have a home folder in your path so ~/bin was created.\n\nReboot or type \n\n    PATH=~/bin:$PATH\n\nbefore running smlinux again.' --title="Your installation is complete." --width=450	
+		printf '\nYou did not have a home folder in your path so ~/bin was created.\n\nReboot or type \n\n      PATH=~/bin:$PATH\n\nbefore running smlinux again.\n\n'
+	else
+		sleep 10
+	fi
+	echo
+	echo Script Done.  You may exit or close this terminal window.
+	echo
+}
+
+#First make sure folders and installer config file exist, if not create them.
+LAUNCH_DIR=$(pwd)
+mapfile -t -d: <<<"$PATH"
+	if [ ! -d $HOME/.local ]; then mkdir $HOME/.local
+	fi
+	if [ ! -d ${XDG_DATA_HOME:-$HOME/.local/share} ]; then mkdir ${XDG_DATA_HOME:-$HOME/.local/share}
+	fi
+	if [ ! -d ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc ]; then mkdir ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc
+	fi
+	if [ ! -d ${XDG_DATA_HOME:-$HOME/.local/share}/icons ]; then mkdir ${XDG_DATA_HOME:-$HOME/.local/share}/icons
+	fi
+	if [ ! -d ${XDG_DATA_HOME:-$HOME/.local/share}/applications ]; then mkdir ${XDG_DATA_HOME:-$HOME/.local/share}/applications
+	fi
+	if [ ! -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinuxcfg.txt ]; then
+	echo Creating ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinuxcfg.txt
+	echo 'VERSION=us
+#VERSION must correspond to rom version- us jp eu
+JOBS=-j
+#[sm64pc/sm64ex] these settings only apply to unofficial fork repo.
+BETTERCAMERA=1
+NODRAWINGDISTANCE=1
+TEXTURE_FIX=1
+EXTERNAL_DATA=1
+DISCORDRPC=1
+RENDER_API=GL
+#RENDER_API=GL_LEGACY
+#[Script] 
+AutoUpdate=1
+Branch=master
+InstallHD=1
+UpdateHD=0
+REPO=sm64pc
+#REPO supports both sm64-port offical and sm64pc sm64ex unofficial early fork repos
+Linux="sudo apt install -y build-essential git python3 libaudiofile-dev libglew-dev libsdl2-dev binutils libusb-1.0-0-dev"'> ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinuxcfg.txt
+	doconfig
+fi
+loadconfig
+if [ ! -d ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO" ]; then 
+	mkdir ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"
+fi
+
+if [ "$2" = "config" ] || [ "$2" = "--config" ] || [ "$3" = "--config" ]; then
+	if [ ! -f ~/.smlinuxUpdate ]; then 
+	doconfig
+	loadconfig
+	fi
+fi
+
+if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ]; then
+	if ((AutoUpdate)); then
+		scriptUpdate "$@"
+	fi
+	if [ ! -d ~/"$REPO" ]; then
+		echo ERROR: No ~/"$REPO" folder to update!  Specify romfile name for fresh build.
+		exit
+	fi
+	cd ~/"$REPO"
+	echo Getting updates from Github...
+	git checkout "$Branch"
+	git fetch
+	git merge
+	if [ -d ~/"$REPO"/build/"$VERSION"_pc ]; then
+		if [ -d ~/"$REPO"/build/"$VERSION"_pc.old ]; then
+			rm -rf ~/"$REPO"/build/"$VERSION"_pc.old
+		fi
+		mv ~/"$REPO"/build/"$VERSION"_pc ~/"$REPO"/build/"$VERSION"_pc.old
+	fi
+	if [ "$2" = "--hd" ] || [ "$2" = "--HD" ] || (($UpdateHD)); then
+		dohd
+	fi	
+	echo Compiling...
+	domake
+	if [ ! -f ~/"$REPO"/build/"$VERSION"_pc/sm64."$VERSION".f3dex2e ]; then
+		if [ -d ~/"$REPO"/build/"$VERSION"_pc ]; then
+			mv ~/"$REPO"/build/"$VERSION"_pc ~/"$REPO"/build/"$VERSION"_pc.bad
+			if [ -d ~/"$REPO"/build/"$VERSION"_pc.old ]; then
+				cp -Rn ~/"$REPO"/build/"$VERSION"_pc.old ~/"$REPO"/build/"$VERSION"_pc
+				cp -Rn ~/"$REPO"/build/"$VERSION"_pc.bad/res/* ~/"$REPO"/build/"$VERSION"_pc/res/
+			fi
+			rm -rf ~/"$REPO"/build/"$VERSION"_pc.bad
+		elif [ -d ~/"$REPO"/build/"$VERSION"_pc.old ]; then
+			mv ~/"$REPO"/build/"$VERSION"_pc.old ~/"$REPO"/build/"$VERSION"_pc
+		fi
+		echo
+		echo ERROR: You do not have the expected binary ~/"$REPO"/build/"$VERSION"_pc/sm64."$VERSION".f3dex2e
+		echo "Script Exiting incomplete.  Contact #help-desk for support."
+		exit
+	fi
+	if [ -d ~/"$REPO"/build/"$VERSION"_pc.old/res ]; then
+		echo Restoring Textures.
+		cp -Rn ~/"$REPO"/build/"$VERSION"_pc.old/res/* ~/"$REPO"/build/"$VERSION"_pc/res
+	fi
+	echo Update Complete.  Testing Application...
+	if [ ! -f ${XDG_DATA_HOME:-$HOME/.local/share}/applications/"$REPO".desktop ]; then
+		makedesktop
+	fi
+	rungame
+	exit
+fi
+
+if [ "$1" = "--purge" ] || [ "$1" = "purge" ]; then
+	
+	echo Note this does not remove any packages installed as build tools or dependencies.
+	echo Remove those with your package manager.  Devel libraries can always safely be removed.
+	echo This also does not remove or restore any prior sm64pc folders backed up if you 
+	echo installed more that once.  Just delete those folders manually from any file manager.
+	echo And of course you must delete this script itself from "${MAPFILE[0]}"
+	rm -rf ~/sm64pc
+	rm -rf ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc
+	rm ${XDG_DATA_HOME:-$HOME/.local/share}/icons/sm64pc.*
+	rm ${XDG_DATA_HOME:-$HOME/.local/share}/applications/sm64pc.desktop
+	rm ${XDG_DESKTOP_DIR:-$HOME/Desktop}/sm64pc.desktop
+	rm ${XDG_DATA_HOME:-$HOME/.local/share}/icons/sm64.*
+	rm ${XDG_DATA_HOME:-$HOME/.local/share}/applications/sm64.desktop
+	rm ${XDG_DESKTOP_DIR:-$HOME/Desktop}/sm64.desktop
+	rm -rf ~/sm64-port
+	rm -rf ${XDG_DATA_HOME:-$HOME/.local/share}/sm64-port
+	rm ${XDG_DATA_HOME:-$HOME/.local/share}/icons/sm64-port.*
+	rm ${XDG_DATA_HOME:-$HOME/.local/share}/applications/sm64-port.desktop
+	rm ${XDG_DESKTOP_DIR:-$HOME/Desktop}/sm64-port.desktop
+        exit
+fi
+
+if [ -f "$1" ]||[ -f "$LAUNCH_DIR"/"$1" ]; then
+	echo
+	echo [1] Installing required build tools...
+	$Linux
+	
+	echo [2] Checking for Script Updates from Github...
+	if ((AutoUpdate)); 
+		then scriptUpdate "$@"
+	else
+		echo "Warning: AutoUpdate Disabled in Config File!"
+	fi
+else
+	echo "/-----------------------------------------------------------------------------\\"
+	echo "|                                                                             |"
+	echo "|      Super Mario 64 Install * Build * Update Script for Linux               |"
+	echo "|                                                                             |"
+	echo "| First Install: smlinux <romfile> <options>                                  |"
+	echo "| Examples:                                                                   |"
+	echo "|         smlinux ~/roms/n64/sm64.z64                                         |"
+	echo "|                         or                                                  |"
+	echo "|         smlinux \"Super Mario 64 (U) [!].z64\"                                |"
+	echo "|                                                                             |"
+	echo "| Update: smlinux update <options>                                            |" 
+	echo "|  Updates existing install from github, preserving external textures.        |"
+	echo "|                                                                             |"
+	echo "| Purge:  smlinux purge                                                       |"                 
+	echo "|  Removes all traces of installation previously created by this script.      |"
+	echo "|                                                                             |"
+	echo "| options: --hd also update community sourced upscale add-ons                 |"
+	echo "|          --config show config file before build (default on first install). |"
+	echo "|                                                                             |"
+	echo "-------------------------------------------------------------------------------"
+	echo	
+	if [ -d "$REPO" ]; then
+		echo "ERROR: You must specify update or purge"
+	else echo "ERROR: No romfile specified."	
+	fi
+	echo
+	exit
+fi
+
+echo
+echo [3] Downloading "$REPO" source from github... 
+if [ -d ~/"$REPO" ]; then
+	mv ~/"$REPO" ~/"$REPO"-"$(date -r ~/"$REPO" +"%Y%m%d_%H%M%S")"
+	echo Existing "$REPO" directory renamed.  
+fi
+cd
+if [ "$REPO" = "sm64ex" ]; then
+	git clone https://github.com/sm64pc/"$REPO".git -b "$Branch"
+else
+	git clone https://github.com/"$REPO"/"$REPO".git -b "$Branch"
+fi
+
+if [ ! -d ~/"$REPO" ]; then
+	echo "ERROR: Could not reach github.  "
+	echo "Script Ending Incomplete.  Contact #Help-Desk."
+	exit
+fi
+cd $LAUNCH_DIR
+cp "$1" ~/"$REPO"/baserom."$VERSION".z64 
+
+echo [4] Applying Community Enhancements...
+if (($InstallHD)); then 
+	dohd
+else
+	echo "Warning: InstallHD Disabled in Config File!"
+fi
+
+echo
+echo [5] Compiling...
+cd ~/"$REPO"
+domake
+if [ ! -f ~/"$REPO"/build/"$VERSION"_pc/sm64."$VERSION".f3dex2e ]; then
+	echo ERROR: You do not have the expected binary ~/"$REPO"/build/"$VERSION"_pc/sm64."$VERSION".f3dex2e
+	echo "Script Exiting incomplete.  Contact #help-desk"
+	exit
+fi
+
+echo [6] Echo Creating Desktop Shortcut and Menu Entry
+makedesktop
+
+echo [7] Build Succesful!  Testing Application Launch Via Shortcut...
+rungame
