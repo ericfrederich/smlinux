@@ -3,6 +3,7 @@
 <img src=https://github.com/enigma9o7/smlinux/raw/383b58f706e99d849294517a0bb9df73b8aa6f3e/screenshot2.jpg>
 
 # Super Mario Linux Build Install Update
+<a href="https://raw.githubusercontent.com/enigma9o7/smlinux/master/smlinux" download>Click to Download</a>
 
 # 
 1. Installs Required Packages (build tools & dependencies)
