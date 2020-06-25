@@ -97,11 +97,9 @@ You can also just edit the configuration file with a text editor.
 
 ## **Where are my configuration files and saved games stored?**
 
-~/.local/share/sm64pc (smlinux and sm64pc/sm64ex master)
-
-~/.local/share/sm64pex (sm64pc/sm64ex nightly)
-
-~/.local/share/sm64-fork (Official Repo)
+~/.local/share/sm64pc (smlinux and sm64pc/sm64ex master)  
+~/.local/share/sm6pex (sm64pc/sm64ex nightly)  
+~/.local/share/sm64-fork (sm64-port/sm64-port)  
 
 ## **Are there any cheats?**
 *only applies to sm64pc/sm64ex fork*
@@ -134,7 +132,7 @@ Put the patch file into ~/sm64pc/enhancements (or specify the path differently w
 Tested on Bodhi 5.1,32 & 64-bit, so should work as-is on recent Ubuntu/debian, others untested. 
 
 Change your Linux=line during first install to one that works with your distro such as the following:
-Or just install dependencies first then rerun script, ignoring any error regarding apt, or change set Linux=""
+(Or just install dependencies first then rerun script, ignoring any error regarding apt, or change set Linux="")
 
 Arch: 
     
