@@ -73,11 +73,11 @@ Note that precaching these textures will make the game use more memory and incre
     smlinux update <options>
 For example: 
  
-     smlinux update
-            or
-     smlinux update --hd
-         or
-     smlinux update --config
+	     smlinux update
+        	    or
+     	smlinux update --hd
+        	    or
+     	smlinux update --config
 Updates existing install to latest from github while retaining custom textures.
 
 You can also use this option to rebuild if you edit your source files or change source assets like actors manually.
