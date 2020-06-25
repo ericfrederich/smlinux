@@ -1,7 +1,7 @@
 #!/bin/bash
 # This should do everything required to build & install under Ubuntu and update itself.
 # Other distros edit config file when prompted to change command to get dependencies, or install them first.
-# 2020-0624-1913
+# 2020-0624-1928
 
 domake(){ 
 	if [ "$REPO" = "sm64-port" ]; then
@@ -13,6 +13,13 @@ domake(){
 		echo Known repos are sm64-port, sm64pc, and sm64ex.
 		echo Script exiting incomplete.
 		exit
+	fi
+	}
+
+doconfig(){
+	if(whiptail --title "Build Options" --yesno "$(cat ~/.local/share/sm64pc/smlinuxcfg.txt)" 24 75 --yes-button "Edit Options" --no-button "Proceed" --defaultno); then
+		whiptail --msgbox "The config file will open in your default xdg editor.  When you exit your editor, script will continue.  Do not close the terminal window the script is currently running in while editing your config file.  In the future you will not be automatically prompted to edit this unless smlinuxcfg.txt is missing, but you can always edit it manually in any editor before updating your build.  For most people, these options which include community enhancements are reccommended.  If you mess up the config file, delete and it will be recreated." 16 60
+		xdg-open ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinuxcfg.txt 
 	fi
 	}
 
@@ -214,10 +221,7 @@ UpdateHD=0
 REPO=sm64pc
 #REPO supports both sm64-port offical and sm64pc sm64ex unofficial early fork repos
 Linux="sudo apt install -y build-essential git python3 libaudiofile-dev libglew-dev libsdl2-dev binutils libusb-1.0-0-dev"'> ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinuxcfg.txt
-	if(whiptail --title "Build Options" --yesno "$(cat ~/.local/share/sm64pc/smlinuxcfg.txt)" 24 75 --yes-button "Edit Options" --no-button "Proceed" --defaultno); then
-		whiptail --msgbox "The config file will open in your default xdg editor.  When you exit your editor, script will continue.  Do not close the terminal window the script is currently running in while editing your config file.  In the future you will not be automatically prompted to edit this unless smlinuxcfg.txt is missing, but you can always edit it manually in any editor before updating your build.  For most people, these options which include community enhancements are reccommended.  If you mess up the config file, delete and it will be recreated." 16 60
-		xdg-open ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinuxcfg.txt 
-	fi
+	doconfig
 fi
 source ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinuxcfg.txt
 if [ ! "$REPO" = "sm64-port" ]; then
@@ -228,6 +232,11 @@ fi
 if [ ! -d ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO" ]; then 
 	mkdir ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"
 fi
+
+if [ "$3" = "config" ] ||  [ "$3" = "--config" ] || [ "$4" = "--config" ]; then
+	doconfig
+fi
+
 if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ]; then
 	if ((AutoUpdate)); then
 		scriptUpdate "$@"
@@ -319,18 +328,20 @@ else
 	echo "|                                                                             |"
 	echo "|      Super Mario 64 Install * Build * Update Script for Linux               |"
 	echo "|                                                                             |"
-	echo "| First Install: smlinux <romfile>                                            |"
+	echo "| First Install: smlinux <romfile> <options>                                  |"
 	echo "| Examples:                                                                   |"
 	echo "|         smlinux ~/roms/n64/sm64.z64                                         |"
 	echo "|                         or                                                  |"
-	echo "|         smlinux \"Super Mario 64 (U) [!].z64\"                                |"
+	echo "|         smlinux \"Super Mario 64 (U) [!].z64\"                              |"
 	echo "|                                                                             |"
-	echo "|Update: smlinux update <options>                                             |" 
-	echo "|Updates existing install to latest from github, preserving external textures.|"
-	echo "| option --hd to also update community sourced upscale add-ons                |"
+	echo "| Update: smlinux update <options>                                            |" 
+	echo "|  Updates existing install from github, preserving external textures.        |"
 	echo "|                                                                             |"
-	echo "|Purge:  smlinux purge                                                        |"                 
-	echo "|Removes all traces of installation previously created by this script.        |"
+	echo "| Purge:  smlinux purge                                                       |"                 
+	echo "|  Removes all traces of installation previously created by this script.      |"
+	echo "|                                                                             |"
+	echo "| options: --hd also update community sourced upscale add-ons                 |"
+	echo "|          --config show config file before build (default on first install). |"
 	echo "|                                                                             |"
 	echo "-------------------------------------------------------------------------------"
 	echo	
