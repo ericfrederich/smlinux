@@ -1,7 +1,7 @@
 #!/bin/bash
 # This should do everything required to build & install under Ubuntu and update itself.
 # Other distros edit config file when prompted to change Linux= to command to get dependencies.
-# 2020-0625-1743
+# 2020-0625-1754
 domake(){ 
 	if [ "$REPO" = "sm64-port" ]; then
 		make VERSION=$VERSION "$JOBS"	
@@ -175,7 +175,7 @@ echo Name=Super Mario 64 \("$REPO"\) >>${XDG_DATA_HOME:-$HOME/.local/share}/appl
 		echo Exec=~/"$REPO"/build/"$VERSION"_pc/sm64."$VERSION".f3dex2e --cheats>>${XDG_DATA_HOME:-$HOME/.local/share}/applications/"$REPO".desktop
 	else
 		echo Path=${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO" >>${XDG_DATA_HOME:-$HOME/.local/share}/applications/"$REPO".desktop
-		echo Exec=~/"$REPO"/build/"$VERSION"_pc/sm64."$VERSION".f3dex2e;echo>>${XDG_DATA_HOME:-$HOME/.local/share}/applications/"$REPO".desktop >>${XDG_DATA_HOME:-$HOME/.local/share}/applications/"$REPO".desktop
+		echo Exec=~/"$REPO"/build/"$VERSION"_pc/sm64."$VERSION".f3dex2e';echo ' >>${XDG_DATA_HOME:-$HOME/.local/share}/applications/"$REPO".desktop 
 	fi
 cp ${XDG_DATA_HOME:-$HOME/.local/share}/applications/"$REPO".desktop ${XDG_DESKTOP_DIR:-$HOME/Desktop}
 fi
