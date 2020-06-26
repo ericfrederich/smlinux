@@ -1,12 +1,12 @@
 #!/bin/bash
 # This should do everything required to build & install under Ubuntu and update itself.
 # Other distros edit config file when prompted to change Linux= to command to get dependencies.
-# 2020-0625-2054
+# 2020-0625-2058
 domake(){ 
 	if [ "$REPO" = "sm64-port" ]; then
-		make VERSION=$VERSION "$JOBS"	
+		time make VERSION=$VERSION "$JOBS"	
 	elif [ "$REPO" = "sm64pc" ] || [ "$REPO" = "sm64ex" ]; then
-		make BETTERCAMERA=$BETTERCAMERA NODRAWINGDISTANCE=$NODRAWINGDISTANCE TEXTURE_FIX=$TEXTURE_FIX EXTERNAL_DATA=$EXTERNAL_DATA DISCORDRPC=$DISCORDRPC VERSION=$VERSION RENDER_API=$RENDER_API "$JOBS"
+		time make BETTERCAMERA=$BETTERCAMERA NODRAWINGDISTANCE=$NODRAWINGDISTANCE TEXTURE_FIX=$TEXTURE_FIX EXTERNAL_DATA=$EXTERNAL_DATA DISCORDRPC=$DISCORDRPC VERSION=$VERSION RENDER_API=$RENDER_API "$JOBS"
 	else
 		echo "$REPO" is not a known repository.  Check your REPO setting and try again.
 		echo Known repos are sm64-port, sm64pc, and sm64ex.
