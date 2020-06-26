@@ -1,7 +1,7 @@
 #!/bin/bash
 # This should do everything required to build & install under Ubuntu and update itself.
 # Other distros edit config file when prompted to change Linux= to command to get dependencies.
-# 2020-0625-1704
+# 2020-0625-1723
 domake(){ 
 	if [ "$REPO" = "sm64-port" ]; then
 		make VERSION=$VERSION "$JOBS"	
@@ -26,7 +26,7 @@ loadconfig(){
 
 doconfig(){
 	if(whiptail --title "Build Options" --yesno "$(cat ~/.local/share/sm64pc/smlinuxcfg.txt)" 25 75 --yes-button "Edit Options" --no-button "Proceed" --defaultno); then
-		whiptail --msgbox "The config file will open in your default xdg editor.  When you exit your editor, script will continue.  Do not close the terminal window the script is currently running in while editing your config file.  In the future you will not be automatically prompted to edit this unless smlinuxcfg.txt is missing, but you can always edit it manually in any editor before updating your build.  For most people, these options which include community enhancements are reccommended.  If you mess up the config file, delete and it will be recreated." 16 60
+		whiptail --title "READ THIS NOW - IT WILL NOT REAPPEAR AUTOMATICALLY" --msgbox "The config file will open in your default xdg editor.\n\nWhen you exit your editor, installation will continue.\n\nFor most people, default options which include community enhancements are reccommended.\n\nIf you mess up the config file, delete\n${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinuxcfg.txt \nand it will be recreated." 16 60
 		xdg-open ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinuxcfg.txt 
 	fi
 	}
