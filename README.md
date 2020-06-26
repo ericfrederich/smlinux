@@ -40,11 +40,11 @@ Note the script installs itself as 'smlinux' to the first directory in your path
 # Frequently Asked Questions
 
 ## **What repository should I use?**
-The official repo, sm64-port/sm64-port, offers the cleanest code and duplication of N64, with currently very few if any add-ons available.  The unofficial fork, sm64pc/sm64ex, includes optional enhancements and support for many add-ons.
+The official repo, sm64-port/sm64-port, offers the cleanest code and duplication of N64, with currently very few add-ons available.  The unofficial fork, sm64pc/sm64ex, includes optional enhancements and support for many add-ons.
 
 ## **What branch should I use?**
 
-Both repos offer master as primary.  sm64pc also offers nightly which is currently working on implementing refresh 10 that sm64-port master started with.  If nightly works for you, I'd reccommend it as it is the most updated, but if a recent change causes prolbems or build failure, use master.  
+Both repos offer master as primary.  sm6ex also offers nightly which is under constant development.  If nightly works for you, I'd reccommend it as it is the most updated, but if a recent change causes prolbems or build failure, use master.  
 
 ## **When to use RENDER_API=GL_LEGACY?** 
 *only applies to sm64pc/sm64ex fork*
