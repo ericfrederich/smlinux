@@ -1,7 +1,7 @@
 #!/bin/bash
 # This should do everything required to build & install under Ubuntu and update itself.
-# Other distros edit config file when prompted to change command to get dependencies, or install them first.
-# 2020-0625-1341
+# Other distros edit config file when prompted to change Linux= to command to get dependencies.
+# 2020-0625-1700
 domake(){ 
 	if [ "$REPO" = "sm64-port" ]; then
 		make VERSION=$VERSION "$JOBS"	
@@ -25,7 +25,7 @@ loadconfig(){
 	}
 
 doconfig(){
-	if(whiptail --title "Build Options" --yesno "$(cat ~/.local/share/sm64pc/smlinuxcfg.txt)" 24 75 --yes-button "Edit Options" --no-button "Proceed" --defaultno); then
+	if(whiptail --title "Build Options" --yesno "$(cat ~/.local/share/sm64pc/smlinuxcfg.txt)" 25 75 --yes-button "Edit Options" --no-button "Proceed" --defaultno); then
 		whiptail --msgbox "The config file will open in your default xdg editor.  When you exit your editor, script will continue.  Do not close the terminal window the script is currently running in while editing your config file.  In the future you will not be automatically prompted to edit this unless smlinuxcfg.txt is missing, but you can always edit it manually in any editor before updating your build.  For most people, these options which include community enhancements are reccommended.  If you mess up the config file, delete and it will be recreated." 16 60
 		xdg-open ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinuxcfg.txt 
 	fi
@@ -213,7 +213,7 @@ mapfile -t -d: <<<"$PATH"
 	echo 'VERSION=us
 #VERSION must correspond to rom version- us jp eu
 JOBS=-j
-#[sm64pc/sm64ex] these settings only apply to unofficial fork repo.
+#[sm64pc/sm64ex] These make settings only apply to unofficial fork repo.
 BETTERCAMERA=1
 NODRAWINGDISTANCE=1
 TEXTURE_FIX=1
@@ -221,13 +221,13 @@ EXTERNAL_DATA=1
 DISCORDRPC=1
 RENDER_API=GL
 #RENDER_API=GL_LEGACY
-#[Script] 
+#[Script] These settings affect the scripts behavior.
 AutoUpdate=1
 Branch=master
 InstallHD=1
 UpdateHD=0
 REPO=sm64pc
-#REPO supports both sm64-port offical and sm64pc sm64ex unofficial early fork repos
+#REPO supports both sm64-port offical and sm64pc sm64ex unofficial
 Linux="sudo apt install -y build-essential git python3 libaudiofile-dev libglew-dev libsdl2-dev binutils libusb-1.0-0-dev"'> ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinuxcfg.txt
 	doconfig
 fi
