@@ -1,7 +1,7 @@
 #!/bin/bash
 # This should do everything required to build & install under Ubuntu and update itself.
 # Other distros edit config file when prompted to change Linux= to command to get dependencies.
-# 2020-0625-1700
+# 2020-0625-1704
 domake(){ 
 	if [ "$REPO" = "sm64-port" ]; then
 		make VERSION=$VERSION "$JOBS"	
@@ -213,7 +213,7 @@ mapfile -t -d: <<<"$PATH"
 	echo 'VERSION=us
 #VERSION must correspond to rom version- us jp eu
 JOBS=-j
-#[sm64pc/sm64ex] These make settings only apply to unofficial fork repo.
+#[sm64pc/sm64ex] These settings only apply to unofficial fork repo.
 BETTERCAMERA=1
 NODRAWINGDISTANCE=1
 TEXTURE_FIX=1
