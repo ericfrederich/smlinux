@@ -50,8 +50,8 @@ Both repos offer master as primary.  sm6ex also offers nightly which is under co
 *only applies to sm64pc/sm64ex fork*
 
 For video cards with old OpenGL version 1.2 or 1.3 (from year 200X). Check your OpenGL version with the following command: 
+ ```glxinfo | grep "OpenGL version"```
  
-    glxinfo | grep "OpenGL version"
 2.1 or higher, don't add this option.  
 2.0 Does this version even exist in the wild? If so, try normal, then legacy, report back!  
 1.2/1.3 This build option was made for you! Remove the # commenting that option in smlinuxcfg.txt.  
