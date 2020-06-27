@@ -19,13 +19,13 @@
 
 First Time Usage:      
                 
-```chmod +x smlinux
-	./smlinux <romfile>```
+	chmod +x smlinux
+	./smlinux <romfile>
 Examples: 
 
- ```./smlinux "Super Mario 64 (U) [!].z64"
+ 	./smlinux "Super Mario 64 (U) [!].z64"
 		      or 
-	./smlinux ~/roms/n64/sm64.z64```
+	./smlinux ~/roms/n64/sm64.z64
 
 That's Everything. That's all you have to do..
 You'll be asked sudo password to install build tools at the beginning, then it will update and intsall itself to the first directory in your path (or create ~/bin if nothing available), and prompt you to approve (or change) the reccommended options before your build starts, then will run as user unattended and before the time you finish reading the FAQ you will hear "It's me, Mario!".
@@ -50,7 +50,7 @@ Both repos offer master as primary.  sm6ex also offers nightly which is under co
 *only applies to sm64pc/sm64ex fork*
 
 For video cards with old OpenGL version 1.2 or 1.3 (from year 200X). Check your OpenGL version with the following command: 
- ```glxinfo | grep "OpenGL version"```
+	glxinfo | grep "OpenGL version"
  
 2.1 or higher, don't add this option.  
 2.0 Does this version even exist in the wild? If so, try normal, then legacy, report back!  
