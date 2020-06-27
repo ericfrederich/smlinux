@@ -44,7 +44,7 @@ The official repo, sm64-port/sm64-port, offers the cleanest code and duplication
 
 ## **What branch should I use?**
 
-Both repos offer master as primary.  sm6ex also offers nightly which is under constant development.  If nightly works for you, I'd reccommend it as it is the most updated, but if a recent change causes prolbems or build failure, use master.  
+Both repos offer master as primary.  sm6ex also offers nightly which is under constant development.  If nightly works for you, I'd reccommend it as it is the most updated, but if a recent change causes build failure or other problems, use the more stable master.  
 
 ## **When to use RENDER_API=GL_LEGACY?** 
 *only applies to sm64pc/sm64ex fork*
@@ -61,8 +61,8 @@ For video cards with old OpenGL version 1.2 or 1.3 (from year 200X). Check your 
 
 This will modify your source with some community provided high resolution actors and patches and add a texture pack to your build.
 From #modding-releases HD Bowser, HD Mario (Old School V2) and the 3D Coin Patch (V2)  
-From #upscaled-textures Cleaner Aesthetics Texture Pack  *only applies to sm64pc/sm64ex fork*
-From #user-submitted-content Mario Icon  *only applies to sm64pc/sm64ex fork*
+From #upscaled-textures Cleaner Aesthetics Texture Pack  *only applies to sm64pc/sm64ex fork*  
+From #user-submitted-content Mario Icon  *only applies to sm64pc/sm64ex fork*  
 This depends on those files remaining available in discord, so if the source goes away, this option will not work anymore.   
 I may periodically add or change what's included with this option as new mods are released.  
 Note that precaching these textures will make the game use more memory and increase initial startup time.
