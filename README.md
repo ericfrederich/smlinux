@@ -137,7 +137,7 @@ Arch:
 	sudo pacman -S base-devel python audiofile sdl2 glew
 Debian:  
 
-	sudo apt-get install build-essential git python3 libaudiofile-dev libglew-dev libsdl2-dev
+	sudo apt-get install build-essential git python3 libaudiofile-dev libglew-dev libsdl2-dev binutils libusb-1.0-0-dev
 Fedora: 
 
 	sudo dnf install make gcc python3 audiofile-devel glew-devel SDL2-devel
