@@ -144,6 +144,10 @@ Fedora:
 Void: 
 
 	sudo xbps-install -S base-devel python3 audiofile-devel SDL2-devel glew-devel
+	
+openSuSE:
+
+	sudo zypper in gcc make python3 libaudiofile1 glew-devel libSDL2-devel
 
 ## **How do I create my rom file?**
 
