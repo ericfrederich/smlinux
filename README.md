@@ -166,5 +166,5 @@ Backup your cartridge to z64 format with a cartridge dumper such as a Retrode2, 
 This erases everything created running smlinux including automatically created game saves and config files.
 This does not remove any packages installed as build tools or dependencies. Remove those with your package manager.
 (Development libraries can always safely be removed if you don't plan to build again, and binaries will still run.)
-This also does not restore or remove any prior sm64pc folders backed up if you ran the install script more that once;
+This also does not restore or remove any prior sm64 folders backed up if you ran full install more that once (versus update);
 delete those folders manually from any file manager.
