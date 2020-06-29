@@ -99,7 +99,7 @@ You can also just edit the configuration file with a text editor.
 
 ~/.local/share/sm64pc (smlinux and sm64pc/sm64ex master)  
 ~/.local/share/sm6pex (sm64pc/sm64ex nightly)  
-~/.local/share/sm64-fork (sm64-port/sm64-port)  
+~/.local/share/sm64-port (sm64-port/sm64-port) *only if launched with shortcut*  
 
 ## **Are there any cheats?**
 *only applies to sm64pc/sm64ex fork*
