@@ -60,7 +60,7 @@ For video cards with old OpenGL version 1.2 or 1.3 (from year 200X). Check your 
 
 ## **What does the InstallHD=1 Script option do?**
 
-This will modify your source with some community provided high resolution actors and patches and add a texture pack to your build.
+This will modify your source with some community provided high resolution actors and patches and add a texture pack to your build.  
 From #modding-releases HD Bowser, HD Mario (Old School V2) and the 3D Coin Patch (V2)  
 From #upscaled-textures Cleaner Aesthetics Texture Pack  *only applies to sm64pc/sm64ex fork*  
 From #user-submitted-content Mario Icon  *only applies to sm64pc/sm64ex fork*  
