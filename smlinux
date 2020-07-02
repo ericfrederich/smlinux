@@ -1,7 +1,8 @@
 #!/bin/bash
 # This should do everything required to build & install under Ubuntu and update itself.
 # Other distros edit config file when prompted to change Linux= to command to get dependencies.
-# 2020-0628-2059
+# 2020-0702-1227
+
 domake(){ 
 	if [ "$REPO" = "sm64-port" ]; then
 		time make VERSION=$VERSION "$JOBS"	
@@ -25,7 +26,7 @@ loadconfig(){
 	}
 
 doconfig(){
-	if(whiptail --title "Build Options" --yesno "$(cat ~/.local/share/sm64pc/smlinuxcfg.txt)" 25 75 --yes-button "Edit Options" --no-button "Proceed" --defaultno); then
+	if(whiptail --title "Build Options" --yesno "$(cat ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinuxcfg.txt)" 25 75 --yes-button "Edit Options" --no-button "Proceed" --defaultno); then
 		whiptail --title "READ THIS NOW - IT WILL NOT REAPPEAR AUTOMATICALLY" --msgbox "The config file will open in your default xdg editor.\n\nWhen you exit your editor, installation will continue.\n\nFor most people, default options which include community enhancements are reccommended.\n\nIf you mess up the config file, delete\n${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinuxcfg.txt \nand it will be recreated." 16 60
 		xdg-open ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinuxcfg.txt 
 	fi
@@ -81,7 +82,6 @@ if [ -f ~/.smlinuxUpdate ]; then
 	rm ~/.smlinuxUpdate
 	echo Script Update Complete.
 else
-	cd ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc
 	if [ ! -f "${MAPFILE[0]}"/smlinux ]; then
 		echo Installing Script... 		
 		if [ -d ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc ]; then
@@ -113,6 +113,7 @@ else
 		cd "$LAUNCH_DIR"
 		exec smlinux "$@"
 	else
+		cd ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc
 		git fetch
 		if [ "$(git diff HEAD origin/HEAD)" != "" ]; then
 			git merge
@@ -198,17 +199,17 @@ rungame(){
 #First make sure folders and installer config file exist, if not create them.
 LAUNCH_DIR=$(pwd)
 mapfile -t -d: <<<"$PATH"
-	if [ ! -d $HOME/.local ]; then mkdir $HOME/.local
-	fi
-	if [ ! -d ${XDG_DATA_HOME:-$HOME/.local/share} ]; then mkdir ${XDG_DATA_HOME:-$HOME/.local/share}
-	fi
-	if [ ! -d ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc ]; then mkdir ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc
-	fi
-	if [ ! -d ${XDG_DATA_HOME:-$HOME/.local/share}/icons ]; then mkdir ${XDG_DATA_HOME:-$HOME/.local/share}/icons
-	fi
-	if [ ! -d ${XDG_DATA_HOME:-$HOME/.local/share}/applications ]; then mkdir ${XDG_DATA_HOME:-$HOME/.local/share}/applications
-	fi
-	if [ ! -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinuxcfg.txt ]; then
+if [ ! -d $HOME/.local ]; then mkdir $HOME/.local
+fi
+if [ ! -d ${XDG_DATA_HOME:-$HOME/.local/share} ]; then mkdir ${XDG_DATA_HOME:-$HOME/.local/share}
+fi
+if [ ! -d ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc ]; then mkdir ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc
+fi
+if [ ! -d ${XDG_DATA_HOME:-$HOME/.local/share}/icons ]; then mkdir ${XDG_DATA_HOME:-$HOME/.local/share}/icons
+fi
+if [ ! -d ${XDG_DATA_HOME:-$HOME/.local/share}/applications ]; then mkdir ${XDG_DATA_HOME:-$HOME/.local/share}/applications
+fi
+if [ ! -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinuxcfg.txt ]; then
 	echo Creating ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinuxcfg.txt
 	echo 'VERSION=us
 #VERSION must correspond to rom version- us jp eu
@@ -223,24 +224,23 @@ RENDER_API=GL
 #RENDER_API=GL_LEGACY
 #[Script] These settings affect the scripts behavior.
 AutoUpdate=1
-Branch=master
+Branch=nightly
 InstallHD=1
 UpdateHD=0
-REPO=sm64pc
+REPO=sm64ex
 #REPO supports both sm64-port offical and sm64pc sm64ex unofficial
 Linux="sudo apt install -y build-essential git python3 libaudiofile-dev libglew-dev libsdl2-dev binutils libusb-1.0-0-dev"'> ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinuxcfg.txt
 	doconfig
 fi
+
+if [ "$2" = "config" ] || [ "$2" = "--config" ] || [ "$3" = "--config" ]; then
+	if [ ! -f ~/.smlinuxUpdate ]; then doconfig
+	fi
+fi
+
 loadconfig
 if [ ! -d ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO" ]; then 
 	mkdir ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"
-fi
-
-if [ "$2" = "config" ] || [ "$2" = "--config" ] || [ "$3" = "--config" ]; then
-	if [ ! -f ~/.smlinuxUpdate ]; then 
-	doconfig
-	loadconfig
-	fi
 fi
 
 if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ]; then
@@ -262,7 +262,7 @@ if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ]; then
 		fi
 		mv ~/"$REPO"/build/"$VERSION"_pc ~/"$REPO"/build/"$VERSION"_pc.old
 	fi
-	if [ "$2" = "--hd" ] || [ "$2" = "--HD" ] || (($UpdateHD)); then
+	if [ "$2" = "--hd" ] || [ "$2" = "--HD" ] || [ "$3" = "--hd" ] || [ "$3" = "--HD" ] ||(($UpdateHD)); then
 		dohd
 	fi	
 	echo Compiling...
