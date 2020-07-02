@@ -120,14 +120,14 @@ Put the patch file into ~/sm64pc/enhancements (or specify the path differently w
    
 	cd ~/sm64pc
 	git apply enhancements/filename.patch
-	~/Downloads/smlinux update
+	smlinux update
 
 ## **How to remove a patch?** 
 *change path from sm64pc to sm64-port or sm64ex for newer repos*
    
 	cd ~/sm64pc
 	git apply -R enhancements/filename.patch
-	~/Downloads/smlinux update
+	smlinux update
 
 
 ## **What about distros other than Ubuntu/Debian?**
