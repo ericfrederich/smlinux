@@ -1,7 +1,7 @@
 #!/bin/bash
 # This should do everything required to build & install under Ubuntu and update itself.
 # Other distros edit config file when prompted to change Linux= to command to get dependencies.
-# 2020-0702-2230
+# 2020-0702-2233
 
 domake(){ 
 	if [ "$REPO" = "sm64-port" ]; then
@@ -233,7 +233,7 @@ Linux="sudo apt install -y build-essential git python3 libaudiofile-dev libglew-
 	doconfig
 fi
 
-if [ "$2" = "config" ] || [ "$2" = "--config" ] || [ "$3" = "--config" ]; then
+if [ "$2" = "config" ] || [ "$2" = "--config" ] || [ "$3" = "--config" ] || [ "$3" = "config" ]; then
 	if [ ! -f ~/.smlinuxUpdate ]; then doconfig
 	fi
 fi
