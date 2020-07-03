@@ -1,7 +1,7 @@
 #!/bin/bash
 # This should do everything required to build & install under Ubuntu and update itself.
 # Other distros edit config file when prompted to change Linux= to command to get dependencies.
-# 2020-0702-1323
+# 2020-0702-2230
 
 domake(){ 
 	if [ "$REPO" = "sm64-port" ]; then
@@ -268,23 +268,20 @@ if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ]; then
 	echo Compiling...
 	domake
 	if [ ! -f ~/"$REPO"/build/"$VERSION"_pc/sm64."$VERSION".f3dex2e ]; then
-		if [ -d ~/"$REPO"/build/"$VERSION"_pc ]; then
-			mv ~/"$REPO"/build/"$VERSION"_pc ~/"$REPO"/build/"$VERSION"_pc.bad
-			if [ -d ~/"$REPO"/build/"$VERSION"_pc.old ]; then
-				cp -Rn ~/"$REPO"/build/"$VERSION"_pc.old ~/"$REPO"/build/"$VERSION"_pc
-				cp -Rn ~/"$REPO"/build/"$VERSION"_pc.bad/res/* ~/"$REPO"/build/"$VERSION"_pc/res/
-			fi
-			rm -rf ~/"$REPO"/build/"$VERSION"_pc.bad
-		elif [ -d ~/"$REPO"/build/"$VERSION"_pc.old ]; then
-			mv ~/"$REPO"/build/"$VERSION"_pc.old ~/"$REPO"/build/"$VERSION"_pc
-		fi
 		echo
 		echo ERROR: You do not have the expected binary ~/"$REPO"/build/"$VERSION"_pc/sm64."$VERSION".f3dex2e
+		if [ -d ~/"$REPO"/build/"$VERSION"_pc.old ]; then
+			echo Restoring previous build...
+			if [ -d ~/"$REPO"/build/"$VERSION"_pc ]; then 
+				rm -rf ~/"$REPO"/build/"$VERSION"_pc 
+			fi
+			mv ~/"$REPO"/build/"$VERSION"_pc.old ~/"$REPO"/build/"$VERSION"_pc
+		fi
 		echo "Script Exiting incomplete.  Contact #help-desk for support."
 		exit
 	fi
 	if [ -d ~/"$REPO"/build/"$VERSION"_pc.old/res ]; then
-		echo Restoring Textures.
+		echo Restoring External Resources...
 		cp -Rn ~/"$REPO"/build/"$VERSION"_pc.old/res/* ~/"$REPO"/build/"$VERSION"_pc/res
 	fi
 	echo Update Complete.  Testing Application...
