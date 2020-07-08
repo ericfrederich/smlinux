@@ -1,7 +1,7 @@
 #!/bin/bash
 # This should do everything required to build & install under Ubuntu and update itself.
 # Other distros edit config file when prompted to change Linux= to command to get dependencies.
-# 2020-0708-1424
+# 2020-0708-1521
 
 domake(){ 
 	if [ "$REPO" = "sm64-port" ]; then
@@ -252,7 +252,7 @@ if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ]; then
 		echo Checking for Script Updates from Github...
 		scriptUpdate "$@"
 	else
-		echo "Warning: AutoUpdate Disabled in Config File!"
+		echo "WARNING: AutoUpdate Disabled in Config File!"
 	fi
 	if [ ! -d ~/"$REPO" ]; then
 		echo ERROR: No ~/"$REPO" folder to update!  Specify romfile name for fresh build.
@@ -263,7 +263,7 @@ if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ]; then
 	git checkout "$Branch"
 	git fetch
 	git merge
-	if [ $? ]; then
+	if [ "$?" = "1" ]; then
 		if [ -f ~/"$REPO"/enhancements/3d_coin_v2_nightly.patch ]; then
 			git apply -R enhancements/3d_coin_v2_nightly.patch
 			if [ -f ~/"$REPO"/enhancements/60fps_ex.patch ]; then
@@ -273,7 +273,7 @@ if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ]; then
 			fi
 		fi
 		git merge
-		if [ $? ]; then
+		if [ "$?" = "1" ]; then
 			echo WARNING: Unable to merge source updates from github.
 		elif [ -f ~/"$REPO"/enhancements/3d_coin_v2_nightly.patch ]; then
 			git apply enhancements/3d_coin_v2_nightly.patch
