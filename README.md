@@ -55,7 +55,7 @@ For old video cards with OpenGL 1.2 or 1.3 but no 2.1 support (from year 200X). 
 	
 	glxinfo | grep "OpenGL version"
  
-2.1 or higher, don't add this option.  
+2.1 or higher, do not use this option.  
 2.0 Does this version even exist in the wild? If so, try normal, then legacy, report back!  
 1.2/1.3/1.4 This build option was made for you! Remove the # commenting that option in smlinuxcfg.txt.  
 1.0/1.1 Sorry.  
