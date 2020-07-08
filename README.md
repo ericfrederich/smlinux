@@ -4,7 +4,7 @@
 
 <img src=https://github.com/enigma9o7/smlinux/raw/0c34b4bdeb478002903f10c8b08a53c5cadd9d49/screenshot2.jpg>
 
-# Super Mario Linux Build Install Update
+# Super  Mario  Linux  Build  Install  Update
  &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; [Click to View](https://raw.githubusercontent.com/enigma9o7/smlinux/master/smlinux) &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; [Right Click - Save as to Download](https://raw.githubusercontent.com/enigma9o7/smlinux/master/smlinux) &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; [Telegram Support](https://t.me/sm64ports)
 
 # 
