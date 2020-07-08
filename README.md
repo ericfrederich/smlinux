@@ -51,7 +51,7 @@ Both repos offer master as primary.  sm6ex also offers nightly which is under co
 ## **When to use RENDER_API=GL_LEGACY?** 
 *only applies to sm64pc/sm64ex fork*
 
-For video cards with old OpenGL version 1.2 or 1.3 (from year 200X). Check your OpenGL version with the following command: 
+For video cards with old OpenGL 1.2 or 1.3 support but no 2.1 support (from year 200X).  Check your OpenGL version with the following command: 
 	
 	glxinfo | grep "OpenGL version"
  
