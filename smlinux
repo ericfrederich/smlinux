@@ -67,6 +67,7 @@ dohd(){
 		git apply enhancements/60fps_ex.patch
 	elif [ -f ~/"$REPO"/enhancements/60fps.patch]; then
 		git apply enhancements/60fps.patch
+	fi
 	}
 
 scriptUpdate(){
