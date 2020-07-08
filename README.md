@@ -57,8 +57,8 @@ For video cards with old OpenGL version 1.2 or 1.3 (from year 200X). Check your 
  
 2.1 or higher, don't add this option.  
 2.0 Does this version even exist in the wild? If so, try normal, then legacy, report back!  
-1.2/1.3 This build option was made for you! Remove the # commenting that option in smlinuxcfg.txt.  
-1.0/1.1 Really? Sorry. Can you even run glxgears?
+1.2/1.3/1.4 This build option was made for you! Remove the # commenting that option in smlinuxcfg.txt.  
+1.0/1.1 Sorry.  
 
 ## **What does the InstallHD=1 Script option do?**
 
