@@ -62,10 +62,11 @@ For video cards with old OpenGL version 1.2 or 1.3 (from year 200X). Check your 
 
 ## **What does the InstallHD=1 Script option do?**
 
-This will modify your source with some community provided high resolution actors and patches and add a texture pack to your build.  
+This will modify your source with 60fps patch (if included) and the following  community provided high resolution actors and patches, plus add a texture pack to your build.  
 From #modding-releases HD Bowser, HD Mario (Old School V2) and the 3D Coin Patch (V2)  
-From #upscaled-textures Cleaner Aesthetics Texture Pack  *only applies to sm64pc/sm64ex fork*  
-From #user-submitted-content Mario Icon  *only applies to sm64pc/sm64ex fork*  
+From #cleaner-asthetic Upscale Texture Pack *only applies to sm64pc/sm64ex fork*  
+From #user-submitted-content Mario Icon *only applies to sm64pc/sm64ex fork*
+
 This depends on those files remaining available in discord, so if the source goes away, this option will not work anymore.   
 I may periodically add or change what's included with this option as new mods are released.  
 Note that precaching these textures will make the game use more memory and increase initial startup time.
@@ -80,9 +81,10 @@ For example:
 	smlinux update --hd
 	       or
 	smlinux update --config
-Updates existing install to latest from github while retaining custom textures.
 
-You can also use this option to rebuild if you edit your source files or change source assets like actors manually.
+Updates existing install to latest from github while retaining custom textures.  If updated build fails, keeps previous build.
+
+You can also use this option to rebuild after you apply patches or edit your source or source assets like actors manually.
 Note --hd only needs to be applied once, not with every update (unless what's included with hd has changed in new version of script).
 
 If you want to save your existing build, rename it (anything) before running the update, for example: 
