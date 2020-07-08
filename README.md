@@ -64,7 +64,7 @@ For video cards with old OpenGL version 1.2 or 1.3 (from year 200X). Check your 
 
 This will modify your source with 60fps patch (if included) and the following  community provided high resolution actors and patches, plus add a texture pack to your build.  
 From #modding-releases HD Bowser, HD Mario (Old School V2) and the 3D Coin Patch (V2)  
-From #cleaner-asthetic Upscale Texture Pack *only applies to sm64pc/sm64ex fork*  
+From #cleaner-asthetic Upscaled Textures *only applies to sm64pc/sm64ex fork*  
 From #user-submitted-content Mario Icon *only applies to sm64pc/sm64ex fork*
 
 This depends on those files remaining available in discord, so if the source goes away, this option will not work anymore.   
