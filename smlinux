@@ -1,7 +1,7 @@
 #!/bin/bash
 # This should do everything required to build & install under Ubuntu and update itself.
 # Other distros edit config file when prompted to change Linux= to command to get dependencies.
-# 2020-0707-2055
+# 2020-0708-1412
 
 domake(){ 
 	if [ "$REPO" = "sm64-port" ]; then
@@ -51,7 +51,7 @@ dohd(){
 	wget https://cdn.discordapp.com/attachments/716459185230970880/718990046442684456/hd_bowser.rar	
 	if [ "$REPO" = "sm64pc" ]; then
 		wget https://cdn.discordapp.com/attachments/716459185230970880/718674249631662120/3d_coin_v2.patch
-	elif [ "$REPO" = "sm64ex" ] || [ $"REPO" = "sm64-port" ]; then	
+	elif [ "$REPO" = "sm64ex" ] || [ "$REPO" = "sm64-port" ]; then	
 		wget https://cdn.discordapp.com/attachments/721806706547490868/725041183700680807/3d_coin_v2_nightly.patch
 	fi
 	cd ..	
@@ -63,6 +63,10 @@ dohd(){
 	elif [ "$REPO" = "sm64ex" ] || [ "$REPO" = "sm64-port" ]; then
 		git apply enhancements/3d_coin_v2_nightly.patch --ignore-whitespace
 	fi
+	if [ -f ~/"$REPO"/enhancements/60fps_ex.patch]; then
+		git apply enhancements/60fps_ex.patch
+	elif [ -f ~/"$REPO"/enhancements/60fps.patch]; then
+		git apply enhancements/60fps.patch
 	}
 
 scriptUpdate(){
@@ -258,6 +262,28 @@ if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ]; then
 	git checkout "$Branch"
 	git fetch
 	git merge
+	if [ $? ]; then
+		if [ -f ~/"$REPO"/enhancements/3d_coin_v2_nightly.patch]; then
+			git apply -R enhancements/3d_coin_v2_nightly.patch
+			if [ -f ~/"$REPO"/enhancements/60fps_ex.patch]; then
+				git apply -R enhancements/60fps_ex.patch
+			elif [ -f ~/"$REPO"/enhancements/60fps.patch]; then
+				git apply -R enhancements/60fps.patch
+			fi
+		fi
+		git merge
+		if [ $? ]; then
+			echo WARNING: Unable to merge source updates from github.
+		elif [ -f ~/"$REPO"/enhancements/3d_coin_v2_nightly.patch]; then
+			git apply enhancements/3d_coin_v2_nightly.patch
+			if [ -f ~/"$REPO"/enhancements/60fps_ex.patch]; then
+				git apply enhancements/60fps_ex.patch
+			elif [ -f ~/"$REPO"/enhancements/60fps.patch]; then
+				git apply enhancements/60fps.patch
+			fi
+		fi
+	fi	
+
 	if [ -d ~/"$REPO"/build/"$VERSION"_pc ]; then
 		if [ -d ~/"$REPO"/build/"$VERSION"_pc.old ]; then
 			rm -rf ~/"$REPO"/build/"$VERSION"_pc.old
