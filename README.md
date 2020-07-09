@@ -1,5 +1,7 @@
  &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; [Click to View](https://raw.githubusercontent.com/enigma9o7/smlinux/master/smlinux) &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; [Right Click - Save as to Download](https://raw.githubusercontent.com/enigma9o7/smlinux/master/smlinux) &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; [Telegram Support](https://t.me/sm64ports)
 
+<img src=https://github.com/enigma9o7/smlinux/raw/screenshot/60fps-official.jpg>
+
 <img src=https://github.com/enigma9o7/smlinux/raw/e94a31c04fad830f9119797eaa969676d0cf5333/screenshot.jpg>
 
 <img src=https://github.com/enigma9o7/smlinux/raw/0c34b4bdeb478002903f10c8b08a53c5cadd9d49/screenshot2.jpg>
