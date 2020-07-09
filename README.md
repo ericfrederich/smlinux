@@ -9,9 +9,9 @@
 
 # 
 1. Installs Required Packages (build tools & dependencies)
-2. Installs latest version of itself to user path from Github
-3. Clones (downloads) sm64pc or sm64-port source repository from Github
-4. Optionally applies community sourced upscale modifications from Discord
+2. Installs latest version of itself to user path 
+3. Clones (downloads) sm64 source repository from Github
+4. Optionally applies community sourced upscale modifications 
 5. Makes (compiles and links) into binary
 6. Creates Menu Entry & Desktop Shortcut
 7. Launches Super Mario 64 on your Personal Computer!
