@@ -1,7 +1,7 @@
 #!/bin/bash
 # This should do everything required to build & install under Ubuntu and update itself.
 # Other distros edit config file when prompted to change Linux= to command to get dependencies.
-# 2020-0708-1521
+# 2020-0708-1800
 
 domake(){ 
 	if [ "$REPO" = "sm64-port" ]; then
@@ -117,7 +117,7 @@ if [ ! -f ~/.smlinuxUpdate ]; then
 	else
 		cd ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc
 		git fetch
-		if [ "$(git diff HEAD origin/HEAD)" != "" ]; then
+		if [ "$(git diff HEAD origin/HEAD -- smlinux)" != "" ]; then
 			git merge
 			if [ ! -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinux ]; then
 				echo "ERROR WTF!  Script Update Unsuccesful."
@@ -259,7 +259,7 @@ if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ]; then
 		exit
 	fi
 	cd ~/"$REPO"
-	echo Getting updates from Github...
+	echo Getting SM64 source updates from Github...
 	git checkout "$Branch"
 	git fetch
 	git merge
