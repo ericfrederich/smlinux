@@ -173,3 +173,4 @@ This also does not restore or remove any prior sm64 folders backed up if you ran
 delete those folders manually from any file manager.
 
  &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; [Click to View](https://raw.githubusercontent.com/enigma9o7/smlinux/master/smlinux) &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; [Right Click - Save as to Download](https://raw.githubusercontent.com/enigma9o7/smlinux/master/smlinux) &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; [Telegram Support](https://t.me/sm64ports)
+ <imgsrc=https://sm64pc.info/forum/download/file.php?id=95>
