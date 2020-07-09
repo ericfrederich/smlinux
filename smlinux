@@ -1,7 +1,7 @@
 #!/bin/bash
 # This should do everything required to build & install under Ubuntu and update itself.
 # Other distros edit config file when prompted to change Linux= to command to get dependencies.
-# 2020-0708-1800
+# 2020-0708-1809
 
 domake(){ 
 	if [ "$REPO" = "sm64-port" ]; then
@@ -259,10 +259,11 @@ if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ]; then
 		exit
 	fi
 	cd ~/"$REPO"
-	echo Getting SM64 source updates from Github...
+	echo Checking Github for SM64 repo updates...
 	git checkout "$Branch"
 	git fetch
-	git merge
+	if [ "$(git diff HEAD origin/HEAD)" != "" ]; then git merge
+	fi
 	if [ "$?" = "1" ]; then
 		if [ -f ~/"$REPO"/enhancements/3d_coin_v2_nightly.patch ]; then
 			git apply -R enhancements/3d_coin_v2_nightly.patch
