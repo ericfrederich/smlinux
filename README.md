@@ -33,11 +33,11 @@ That's Everything. That's all you have to do..
 You'll be asked sudo password to install build tools at the beginning, then it will update and intsall itself to the first directory in your path (or create ~/bin if nothing available), and prompt you to approve (or change) the reccommended options before your build starts, then will run as user unattended and before the time you finish reading the FAQ you will hear "It's me, Mario!".
 (Do not run script as root; you will be prompted for sudo password automatically if needed.)
 
-Be sure when you backup your N64 cartridge to use the Z64 format. You must provide your own legally backed up rom file. Currently only US & JP versions have sound. If you want German or French text, and sound at the same time, you'll have to wait until the pc-port adds multilingual support, then those languages plus Spanish and every language could be supported with community effort.
+You must provide your own legally backed up rom file in Z64 (Big Endian) format. 
 
 If for some reason the make pauses or hangs, perhaps on single core cpu or system with low memory, then change JOBS to -j1. This switch makes make run multiple jobs at once which speeds up the build process on PCs with multiple cores and plenty of memory, but occasionally causes issues on under-powered systems (that can run the game just fine).
 
-Note the script installs itself as 'smlinux' to the first directory in your path, usually something like ~/bin or ~/Applications/.bin. After first running what you download, you can delete it, and just type 'smlinux update' from anywhere when you're ready to rebuild.
+Note the script installs itself as 'smlinux' to the first directory in your path, usually something like ~/bin or ~/Applications/.bin. After first running what you download, you can delete it, and just type 'smlinux update' from anywhere when you're ready to rebuild or update.
 
 # Frequently Asked Questions
 
