@@ -1,7 +1,7 @@
 #!/bin/bash
 # This should do everything required to build & install under Ubuntu and update itself.
 # Other distros edit config file when prompted to change Linux= to command to get dependencies.
-# 2020-0708-1809
+# 2020-0709-1800
 
 domake(){ 
 	if [ "$REPO" = "sm64-port" ]; then
@@ -65,8 +65,10 @@ dohd(){
 	fi
 	if [ -f ~/"$REPO"/enhancements/60fps_ex.patch ]; then
 		git apply enhancements/60fps_ex.patch
+		sed -i 's/vsync false/vsync true/g' ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64config.txt
 	elif [ -f ~/"$REPO"/enhancements/60fps.patch ]; then
 		git apply enhancements/60fps.patch
+		sed -i 's/vsync false/vsync true/g' ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64config.txt
 	fi
 	}
 
@@ -267,7 +269,7 @@ if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ]; then
 	if [ "$?" = "1" ]; then
 		if [ -f ~/"$REPO"/enhancements/3d_coin_v2_nightly.patch ]; then
 			git apply -R enhancements/3d_coin_v2_nightly.patch
-			if [ -f ~/"$REPO"/enhancements/60fps_ex.patch ]; then
+			if [ -f ~/"$REPO"/enhancements/g_ex.patch ]; then
 				git apply -R enhancements/60fps_ex.patch
 			elif [ -f ~/"$REPO"/enhancements/60fps.patch ]; then
 				git apply -R enhancements/60fps.patch
