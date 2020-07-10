@@ -1,7 +1,7 @@
 #!/bin/bash
 # This should do everything required to build & install under Ubuntu and update itself.
 # Other distros edit config file when prompted to change Linux= to command to get dependencies.
-# 2020-0709-1828
+# 2020-0709-1925
 
 domake(){ 
 	if [ "$REPO" = "sm64-port" ]; then
@@ -248,7 +248,7 @@ if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ]; then
 		rm ~/.smlinuxUpdate
 		echo Script Update Complete.	
 	elif ((AutoUpdate)); then
-		echo Checking for Script Updates from Github...
+		echo Checking for Script Updates on Github...
 		scriptUpdate "$@"
 	else
 		echo "WARNING: AutoUpdate Disabled in Config File!"
@@ -258,7 +258,7 @@ if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ]; then
 		exit
 	fi
 	cd ~/"$REPO"
-	echo Checking Github for SM64 repo updates...
+	echo Checking for SM64 repo updates on Github...
 	git checkout "$Branch"
 	git fetch
 	if [ "$(git diff HEAD origin/HEAD)" != "" ]; then git merge
@@ -314,7 +314,7 @@ if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ]; then
 		cp -Rn ~/"$REPO"/build/"$VERSION"_pc.old/res/* ~/"$REPO"/build/"$VERSION"_pc/res
 	fi
 	if [ -d ~/"$REPO"/build/"$VERSION"_pc/res/.git ]; then
-		echo Updating Cleaner Asthetics Textures...
+		echo Checking for Cleaner Aesthetics Texture updates on Github...
 		cd ~/"$REPO"/build/"$VERSION"_pc/res
 		git pull
 	fi
