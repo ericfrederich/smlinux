@@ -1,7 +1,7 @@
 #!/bin/bash
 # This should do everything required to build & install under Ubuntu and update itself.
 # Other distros edit config file when prompted to change Linux= to command to get dependencies.
-# 2020-0709-1925
+# 2020-0709-1957
 
 domake(){ 
 	if [ "$REPO" = "sm64-port" ]; then
@@ -311,7 +311,7 @@ if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ]; then
 	fi
 	if [ -d ~/"$REPO"/build/"$VERSION"_pc.old/res ]; then
 		echo Restoring External Resources...
-		cp -Rn ~/"$REPO"/build/"$VERSION"_pc.old/res/* ~/"$REPO"/build/"$VERSION"_pc/res
+		cp -rpn ~/"$REPO"/build/"$VERSION"_pc.old/res/. ~/"$REPO"/build/"$VERSION"_pc/res
 	fi
 	if [ -d ~/"$REPO"/build/"$VERSION"_pc/res/.git ]; then
 		echo Checking for Cleaner Aesthetics Texture updates on Github...
