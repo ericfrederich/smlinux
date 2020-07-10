@@ -1,7 +1,7 @@
 #!/bin/bash
 # This should do everything required to build & install under Ubuntu and update itself.
 # Other distros edit config file when prompted to change Linux= to command to get dependencies.
-# 2020-0709-1957
+# 2020-0709-2153
 
 domake(){ 
 	if [ "$REPO" = "sm64-port" ]; then
@@ -44,22 +44,23 @@ dohd(){
 		mv sm64.png ${XDG_DATA_HOME:-$HOME/.local/share}/icons/"$REPO".png
 	fi
 	cd ~/"$REPO"/enhancements
-	wget https://cdn.discordapp.com/attachments/716459185230970880/719758031990030427/Old_School_HD_Mario_Model.zip 
-	wget https://cdn.discordapp.com/attachments/716459185230970880/718990046442684456/hd_bowser.rar	
-	if [ "$REPO" = "sm64pc" ]; then
-		wget https://cdn.discordapp.com/attachments/716459185230970880/718674249631662120/3d_coin_v2.patch
-	elif [ "$REPO" = "sm64ex" ] || [ "$REPO" = "sm64-port" ]; then	
-		wget https://cdn.discordapp.com/attachments/721806706547490868/725041183700680807/3d_coin_v2_nightly.patch
-	fi
-	cd ..	
-	cp -Rn actors actors.bak
-	unzip -o enhancements/Old_School_HD_Mario_Model 
-	unrar x -o+ enhancements/hd_bowser
- 	if [ "$REPO" = "sm64pc" ]; then
-		git apply enhancements/3d_coin_v2.patch --ignore-whitespace
-	elif [ "$REPO" = "sm64ex" ] || [ "$REPO" = "sm64-port" ]; then
-		git apply enhancements/3d_coin_v2_nightly.patch --ignore-whitespace
-	fi
+	if [ ! -f ~/"$REPO"/enhancements/hw_bowser.rar ]; then
+		wget https://cdn.discordapp.com/attachments/716459185230970880/719758031990030427/Old_School_HD_Mario_Model.zip 
+		wget https://cdn.discordapp.com/attachments/716459185230970880/718990046442684456/hd_bowser.rar	
+		if [ "$REPO" = "sm64pc" ]; then
+			wget https://cdn.discordapp.com/attachments/716459185230970880/718674249631662120/3d_coin_v2.patch
+		elif [ "$REPO" = "sm64ex" ] || [ "$REPO" = "sm64-port" ]; then	
+			wget https://cdn.discordapp.com/attachments/721806706547490868/725041183700680807/3d_coin_v2_nightly.patch
+		fi
+		cd ..	
+		cp -Rn actors actors.bak
+		unzip -o enhancements/Old_School_HD_Mario_Model 
+		unrar x -o+ enhancements/hd_bowser
+ 		if [ "$REPO" = "sm64pc" ]; then
+			git apply enhancements/3d_coin_v2.patch --ignore-whitespace
+		elif [ "$REPO" = "sm64ex" ] || [ "$REPO" = "sm64-port" ]; then
+			git apply enhancements/3d_coin_v2_nightly.patch --ignore-whitespace
+	fi	fi
 	if [ -f ~/"$REPO"/enhancements/60fps_ex.patch ]; then
 		git apply enhancements/60fps_ex.patch
 		sed -i 's/vsync false/vsync true/g' ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64config.txt
