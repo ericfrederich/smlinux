@@ -1,7 +1,7 @@
 #!/bin/bash
 # This should do everything required to build & install under Ubuntu and update itself.
 # Other distros edit config file when prompted to change Linux= to command to get dependencies.
-# 2020-0709-1800
+# 2020-0709-1828
 
 domake(){ 
 	if [ "$REPO" = "sm64-port" ]; then
@@ -39,10 +39,7 @@ dohd(){
 		fi
 		mkdir ~/"$REPO"/build/"$VERSION"_pc
 		mkdir ~/"$REPO"/build/"$VERSION"_pc/res	
-		cd ~/"$REPO"/build/"$VERSION"_pc/res
-		wget https://cdn.discordapp.com/attachments/711253314855108629/720369471105269831/upscaled-3.zip
-		wget https://cdn.discordapp.com/attachments/711253314855108629/720369940317863946/upscaled-2.zip
-		wget https://cdn.discordapp.com/attachments/711253314855108629/720370004171817080/upscaled-1.zip
+		git clone https://github.com/CrashCrod/Cleaner-Aesthetics.git ~/"$REPO"/build/"$VERSION"_pc/res
 		wget https://cdn.discordapp.com/attachments/711253314855108629/712146686834638890/sm64.png
 		mv sm64.png ${XDG_DATA_HOME:-$HOME/.local/share}/icons/"$REPO".png
 	fi
@@ -315,6 +312,11 @@ if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ]; then
 	if [ -d ~/"$REPO"/build/"$VERSION"_pc.old/res ]; then
 		echo Restoring External Resources...
 		cp -Rn ~/"$REPO"/build/"$VERSION"_pc.old/res/* ~/"$REPO"/build/"$VERSION"_pc/res
+	fi
+	if [ -d ~/"$REPO"/build/"$VERSION"_pc/res/.git ]; then
+		echo Updating Cleaner Asthetics Textures...
+		cd ~/"$REPO"/build/"$VERSION"_pc/res
+		git pull
 	fi
 	echo Update Complete.  Testing Application...
 	if [ ! -f ${XDG_DATA_HOME:-$HOME/.local/share}/applications/"$REPO".desktop ]; then
