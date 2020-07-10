@@ -1,7 +1,7 @@
 #!/bin/bash
 # This should do everything required to build & install under Ubuntu and update itself.
 # Other distros edit config file when prompted to change Linux= to command to get dependencies.
-# 2020-0710-1511
+# 2020-0710-1517
 
 domake(){ 
 	if [ "$REPO" = "sm64-port" ]; then
@@ -297,7 +297,7 @@ if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ]; then
 	fi	
 	echo Compiling...
 	if [ -f /usr/bin/mplayer ]; then
-		sh -c 'mplayer -nolirc -really-quiet ~/"$REPO"/sound/samples/sfx_mario/0C.aiff&'
+		sh -c 'mplayer -nolirc -really-quiet ~/'"$REPO"'/sound/samples/sfx_mario/0C.aiff&'
 	fi
 	domake
 	if [ ! -f ~/"$REPO"/build/"$VERSION"_pc/sm64."$VERSION".f3dex2e ]; then
