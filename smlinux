@@ -1,16 +1,16 @@
 #!/bin/bash
 # This should do everything required to build & install under Ubuntu and update itself.
 # Other distros edit config file when prompted to change Linux= to command to get dependencies.
-# 2020-0710-1651
+# 2020-0710-1821
 
 domake(){ 
-	if [ "$REPO" = "sm64-port" ]; then
+	if [ "$REPO" = "sm64-port" ] || [ "$REPO" = "sm64nx" ]; then
 		time make VERSION=$VERSION "$JOBS"	
 	elif [ "$REPO" = "sm64pc" ] || [ "$REPO" = "sm64ex" ]; then
 		time make BETTERCAMERA=$BETTERCAMERA NODRAWINGDISTANCE=$NODRAWINGDISTANCE TEXTURE_FIX=$TEXTURE_FIX EXTERNAL_DATA=$EXTERNAL_DATA DISCORDRPC=$DISCORDRPC VERSION=$VERSION RENDER_API=$RENDER_API "$JOBS"
 	else
 		echo "$REPO" is not a known repository.  Check your REPO setting and try again.
-		echo Known repos are sm64-port, sm64pc, and sm64ex.
+		echo Known repos are sm64-port, sm64nx, sm64pc, and sm64ex.
 		echo Script exiting incomplete.
 		exit
 	fi
@@ -18,10 +18,8 @@ domake(){
 
 loadconfig(){
 	source ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinuxcfg.txt
-	if [ ! "$REPO" = "sm64-port" ]; then
-		if [ "$Branch" = "master" ]; then REPO=sm64pc
-		elif [ "$Branch" = "nightly" ]; then REPO=sm64ex
-		fi
+	if [ "$REPO" = "sm64pc" ] && [ "$Branch" = "nightly" ]; then
+		REPO=sm64ex
 	fi
 	}
 
@@ -34,6 +32,8 @@ doconfig(){
 
 dohd(){ 
 	echo Getting HD Enhancements...
+	if [ ! "$REPO" = "sm64nx" ]; then return 
+	fi
 	if [ ! "$REPO" = "sm64-port" ]; then
 		if [ ! -d ~/"$REPO"/build ] ; then mkdir ~/"$REPO"/build
 		fi
@@ -156,7 +156,7 @@ makedesktop(){
 if [ ! -f ${XDG_DATA_HOME:-$HOME/.local/share}/icons/"$REPO".* ]; then
 	echo WARNING: Icon for desktop shortcut not found!
 	cp ~/"$REPO"/textures/segment2/segment2.05A00.rgba16.png ${XDG_DATA_HOME:-$HOME/.local/share}/icons/"$REPO".png
-	if [ "$REPO" = "sm64-port" ]; then  #need a different icon or get confused
+	if [ "$REPO" = "sm64-port" ] || [ "$REPO" = "sm64-port" ]; then 
 		wget https://cdn.discordapp.com/attachments/711253314855108629/719215654837682226/Super_Mario_64.png
 		mv Super_Mario_64.png ${XDG_DATA_HOME:-$HOME/.local/share}/icons/"$REPO".png
 	else
@@ -325,6 +325,11 @@ if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ]; then
 		cd ~/"$REPO"/build/"$VERSION"_pc/res
 		git pull
 	fi
+	if [ -d ~/"$REPO"/build/"$VERSION"_pc.old/romfs ]; then
+		echo Restoring ROM & ROM Filesystem (paks)
+		cp -rpn ~/"$REPO"/build/"$VERSION"_pc.old/baserom."$VERSION".z64 ~/"$REPO"/build/"$VERSION"_pc/
+		cp -rpn ~/"$REPO"/build/"$VERSION"_pc.old/romfs/. ~/"$REPO"/build/"$VERSION"_pc/romfs
+	fi
 	echo Update Complete.  Testing Application...
 	if [ ! -f ${XDG_DATA_HOME:-$HOME/.local/share}/applications/"$REPO".desktop ]; then
 		makedesktop
@@ -353,6 +358,11 @@ if [ "$1" = "--purge" ] || [ "$1" = "purge" ]; then
 	rm ${XDG_DATA_HOME:-$HOME/.local/share}/icons/sm64-port.*
 	rm ${XDG_DATA_HOME:-$HOME/.local/share}/applications/sm64-port.desktop
 	rm ${XDG_DESKTOP_DIR:-$HOME/Desktop}/sm64-port.desktop
+	rm -rf ~/sm64nx
+	rm -rf ${XDG_DATA_HOME:-$HOME/.local/share}/sm64nx
+	rm ${XDG_DATA_HOME:-$HOME/.local/share}/icons/sm64nx.*
+	rm ${XDG_DATA_HOME:-$HOME/.local/share}/applications/sm64nx.desktop
+	rm ${XDG_DESKTOP_DIR:-$HOME/Desktop}/sm64nx.desktop
         exit
 fi
 
@@ -411,7 +421,9 @@ if [ -d ~/"$REPO" ]; then
 	echo Existing "$REPO" directory renamed.  
 fi
 cd
-if [ "$REPO" = "sm64ex" ]; then
+if [ "$REPO" = "sm64nx" ]; then
+	git clone https://github.com/teamsalta/"$REPO".git -b "$Branch"
+elif [ "$REPO" = "sm64ex" ]; then
 	git clone https://github.com/sm64pc/"$REPO".git -b "$Branch"
 else
 	git clone https://github.com/"$REPO"/"$REPO".git -b "$Branch"
@@ -424,6 +436,21 @@ if [ ! -d ~/"$REPO" ]; then
 fi
 cd $LAUNCH_DIR
 cp "$1" ~/"$REPO"/baserom."$VERSION".z64 
+if [ "$REPO" = "sm64nx" ]; then
+	echo NX Repo Requires a lot of extras, including GCC 8 and Python stuff.  Password if you want to proceed.
+	sudo apt install -y libzstd-dev libglfw3-dev g++-8
+	sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-8 80 --slave /usr/bin/g++ g++ /usr/bin/g++-8 --slave /usr/bin/gcov gcov /usr/bin/gcov-8
+	pip3 install pillow zstandard tqdm xxhash
+	mkdir ~/"$REPO"/build
+	mkdir ~/"$REPO"/build/"$VERSION"_pc
+	mkdir ~/"$REPO"/build/"$VERSION"_pc/romfs
+	cp "$1" ~/$"REPO" ~/"$REPO"/build/"$VERSION"_pc/baserom."$VERSION".z64
+	cd ~/"$REPO$/tools
+	make "$JOBS"
+	cd ~/"$REPO$/import
+	python3 extract_assets.py
+	python3 ../scripts/pak.py --source . --output ~/"$REPO"/build/"$VERSION"_pc/romfs/'!!base.pak'
+fi
 
 echo [4] Applying Community Enhancements...
 if (($InstallHD)); then 
