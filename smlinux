@@ -450,9 +450,9 @@ if [ "$REPO" = "sm64nx" ]; then
 	mkdir ~/"$REPO"/build/"$VERSION"_pc
 	mkdir ~/"$REPO"/build/"$VERSION"_pc/romfs
 	cp "$1" ~/"$REPO"/build/"$VERSION"_pc/baserom."$VERSION".z64
-	cd ~/"$REPO$"/tools
+	cd ~/"$REPO"/tools
 	make "$JOBS"
-	cd ~/"$REPO$"/import
+	cd ~/"$REPO"/import
 	python3 extract_assets.py
 	python3 ../scripts/pak.py --source . --output ~/"$REPO"/build/"$VERSION"_pc/romfs/'!!base.pak'
 fi
