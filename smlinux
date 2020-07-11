@@ -1,7 +1,7 @@
 #!/bin/bash
 # This should do everything required to build & install under Ubuntu and update itself.
 # Other distros edit config file when prompted to change Linux= to command to get dependencies.
-# 2020-0710-1846
+# 2020-0710-1856
 
 domake(){ 
 	if [ "$REPO" = "sm64-port" ] || [ "$REPO" = "sm64nx" ]; then
@@ -32,7 +32,7 @@ doconfig(){
 
 dohd(){ 
 	echo Getting HD Enhancements...
-	if [ ! "$REPO" = "sm64nx" ]; then return 
+	if [ "$REPO" = "sm64nx" ]; then return 
 	fi
 	if [ ! "$REPO" = "sm64-port" ]; then
 		if [ ! -d ~/"$REPO"/build ] ; then mkdir ~/"$REPO"/build
