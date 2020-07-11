@@ -62,14 +62,14 @@ For old video cards with OpenGL 1.2 or 1.3 but no 2.1 support (from year 200X). 
 
 ## **What does the InstallHD=1 Script option do?**
 
-This will modify your source with 60fps patch (if included) and the following  community provided high resolution actors and patches, plus add a texture pack to your build.  
+This will modify your source with the repo-provided 60fps patch and the following community provided high resolution actors and patches:
 From #modding-releases HD Bowser, HD Mario (Old School V2) and the 3D Coin Patch (V2)  
-From #cleaner-asthetic Upscaled Textures *only applies to sm64pc/sm64ex fork*  
-From #user-submitted-content Mario Icon *only applies to sm64pc/sm64ex fork*
+From #user-submitted-content Mario Icon   
+Additionally, on the sm64pc/sm64ex fork upscaled textures will be added to your build from the Cleaner Aesthetics github repo.  
+*Note that precaching these textures will make the game use more memory and increase initial startup time, but may be necessary for some computers.*
 
-This depends on those files remaining available in discord, so if the source goes away, this option will not work anymore.   
-I may periodically add or change what's included with this option as new mods are released.  
-Note that precaching these textures will make the game use more memory and increase initial startup time.
+Some of these addons require files remaining available in discord or github, so not gauranteed to work.  I may periodically add or change what's included with this option as new mods are released.  
+
 
 ## **How to update, rebuild, or change build options later?**
     
