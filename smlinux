@@ -1,7 +1,7 @@
 #!/bin/bash
 # This should do everything required to build & install under Ubuntu and update itself.
 # Other distros edit config file when prompted to change Linux= to command to get dependencies.
-# 2020-0712-2314
+# 2020-0712-2329
 
 domake(){ 
 	if [ "$REPO" = "sm64-port" ] || [ "$REPO" = "sm64nx" ]; then
@@ -213,10 +213,10 @@ if [ ! -d ${XDG_DATA_HOME:-$HOME/.local/share}/applications ]; then mkdir ${XDG_
 fi
 if [ ! -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinuxcfg.txt ]; then
 	echo Creating ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinuxcfg.txt
-	echo 'VERSION=us
-#VERSION must correspond to rom version- us jp eu
+	echo '#VERSION must correspond to rom version- us jp eu
+VERSION=us
 JOBS=-j
-#[sm64pc/sm64ex] These settings only apply to unofficial fork repo.
+#[sm64pc/sm64ex] These settings only apply to sm64pc/sm64ex fork.
 BETTERCAMERA=1
 NODRAWINGDISTANCE=1
 TEXTURE_FIX=1
@@ -225,12 +225,12 @@ DISCORDRPC=1
 RENDER_API=GL
 #RENDER_API=GL_LEGACY
 #[Script] These settings affect the scripts behavior.
+#REPO supports sm64pc sm64-port sm64ex sm64nx 
+REPO=sm64ex
+Branch=master
 AutoUpdate=1
-Branch=nightly
 InstallHD=1
 UpdateHD=0
-REPO=sm64ex
-#REPO supports both sm64-port offical and sm64pc sm64ex unofficial
 Linux="sudo apt install -y build-essential git python3 libaudiofile-dev libglew-dev libsdl2-dev binutils libusb-1.0-0-dev libzstd-dev"'> ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinuxcfg.txt
 	doconfig
 fi
@@ -465,6 +465,8 @@ if [ "$REPO" = "sm64nx" ]; then
 	mkdir ~/"$REPO"/build/"$VERSION"_pc/romfs
 	cp "$1" ~/"$REPO"/build/"$VERSION"_pc/baserom."$VERSION".z64
 	cd ~/"$REPO"/tools
+	if [ "$JOBS" = "-j"]; then JOBS="-j5"  # fix cuz it breaks at full speed
+	fi
 	make "$JOBS"
 	cd ~/"$REPO"/import
 	python3 extract_assets.py
