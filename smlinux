@@ -1,7 +1,7 @@
 #!/bin/bash
 # This should do everything required to build & install under Ubuntu and update itself.
 # Other distros edit config file when prompted to change Linux= to command to get dependencies.
-# 2020-0712-2357
+# 2020-0713-0128
 
 domake(){ 
 	if [ "$REPO" = "sm64-port" ] || [ "$REPO" = "sm64nx" ]; then
@@ -21,9 +21,9 @@ loadconfig(){
 	if [ "$REPO" = "sm64pc" ] && [ "$Branch" = "nightly" ]; then
 		REPO=sm64ex
 	fi
-	if [ "$REPO" = "sm64nx" ] && [ "$JOBS" = "-j" ]; then
+	if [ "$REPO" = "sm64nx" ] && [ "$JOBS" = "-j" ] && [ ! -f ~/.smlinuxUpdate ]; then
 		echo WARNING: Jobs reduced cuz nx breaks linux easy. 
-		JOBS=-j4
+		JOBS=-j5
 	fi
 	}
 
@@ -47,6 +47,7 @@ dohd(){
 		wget https://cdn.discordapp.com/attachments/711253314855108629/712146686834638890/sm64.png
 		mv sm64.png ${XDG_DATA_HOME:-$HOME/.local/share}/icons/"$REPO".png
 	fi
+	
 	cd ~/"$REPO"/enhancements
 	if [ ! -f ~/"$REPO"/enhancements/hw_bowser.rar ]; then
 		wget https://cdn.discordapp.com/attachments/716459185230970880/719758031990030427/Old_School_HD_Mario_Model.zip 
@@ -160,7 +161,7 @@ makedesktop(){
 if [ ! -f ${XDG_DATA_HOME:-$HOME/.local/share}/icons/"$REPO".* ]; then
 	echo WARNING: Icon for desktop shortcut not found!
 	cp ~/"$REPO"/textures/segment2/segment2.05A00.rgba16.png ${XDG_DATA_HOME:-$HOME/.local/share}/icons/"$REPO".png
-	if [ "$REPO" = "sm64-port" ] || [ "$REPO" = "sm64-port" ]; then 
+	if [ "$REPO" = "sm64-port" ] || [ "$REPO" = "sm64nx" ]; then 
 		wget https://cdn.discordapp.com/attachments/711253314855108629/719215654837682226/Super_Mario_64.png
 		mv Super_Mario_64.png ${XDG_DATA_HOME:-$HOME/.local/share}/icons/"$REPO".png
 	else
@@ -179,10 +180,13 @@ echo Name=Super Mario 64 \("$REPO"\) >>${XDG_DATA_HOME:-$HOME/.local/share}/appl
 	if [ "$REPO" = "sm64pc" ] || [ "$REPO" = "sm64ex" ]; then
 		echo Path=~/"$REPO"/build/"$VERSION"_pc >>${XDG_DATA_HOME:-$HOME/.local/share}/applications/"$REPO".desktop
 		echo Exec=~/"$REPO"/build/"$VERSION"_pc/sm64."$VERSION".f3dex2e --cheats>>${XDG_DATA_HOME:-$HOME/.local/share}/applications/"$REPO".desktop
-	else
+	elif [ "$REPO" = "sm64-port" ]; then
 		echo Path=${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO" >>${XDG_DATA_HOME:-$HOME/.local/share}/applications/"$REPO".desktop
 		printf "Exec=sh -c \"" >>${XDG_DATA_HOME:-$HOME/.local/share}/applications/"$REPO".desktop
 		echo ~/"$REPO"/build/"$VERSION"_pc/sm64."$VERSION".f3dex2e';echo'\" >>${XDG_DATA_HOME:-$HOME/.local/share}/applications/"$REPO".desktop
+	else
+		echo Path=~/"$REPO"/build/"$VERSION"_pc >>${XDG_DATA_HOME:-$HOME/.local/share}/applications/"$REPO".desktop
+		echo Exec=~/"$REPO"/build/"$VERSION"_pc/sm64."$VERSION".f3dex2e>>${XDG_DATA_HOME:-$HOME/.local/share}/applications/"$REPO".desktop
 	fi
 cp ${XDG_DATA_HOME:-$HOME/.local/share}/applications/"$REPO".desktop ${XDG_DESKTOP_DIR:-$HOME/Desktop}
 fi
@@ -438,6 +442,7 @@ fi
 cd
 if [ "$REPO" = "sm64nx" ]; then
 	git clone https://github.com/teamsalta/"$REPO".git -b "$Branch"
+	sed -i 's/LDFLAGS := -lm -lGL `sdl2-config --libs` -no-pie -lpthread -lasound -lzstd -lX11 -lXrandr -lpulse/LDFLAGS := -lm -lGL -lSDL2 -no-pie -lpthread -lzstd -lstdc++fs/g' ~/"$REPO"/Makefile
 elif [ "$REPO" = "sm64ex" ]; then
 	git clone https://github.com/sm64pc/"$REPO".git -b "$Branch"
 else
@@ -473,8 +478,12 @@ elif [ "$REPO" = "sm64nx" ]; then
 	cd ~/"$REPO"/tools
 	make "$JOBS"
 	cd ~/"$REPO"/import
+	echo Extracting Assets from ROM...
 	python3 extract_assets.py
 	python3 ../scripts/pak.py --source . --output ~/"$REPO"/build/"$VERSION"_pc/romfs/'!!base.pak'
+else	cd ~/"$REPO"
+	echo Extracting Assets from ROM...
+	./extract_assets.py "$VERSION"
 fi
 
 echo [4] Applying Community Enhancements...
