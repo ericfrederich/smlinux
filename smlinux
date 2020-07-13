@@ -1,7 +1,7 @@
 #!/bin/bash
 # This should do everything required to build & install under Ubuntu and update itself.
 # Other distros edit config file when prompted to change Linux= to command to get dependencies.
-# 2020-0712-2353
+# 2020-0712-2357
 
 domake(){ 
 	if [ "$REPO" = "sm64-port" ] || [ "$REPO" = "sm64nx" ]; then
@@ -21,7 +21,7 @@ loadconfig(){
 	if [ "$REPO" = "sm64pc" ] && [ "$Branch" = "nightly" ]; then
 		REPO=sm64ex
 	fi
-	if [ "$REPO" = "sm64nx" ] && [ "$JOBS" = "-j"]; then
+	if [ "$REPO" = "sm64nx" ] && [ "$JOBS" = "-j" ]; then
 		echo WARNING: Jobs reduced cuz nx breaks linux easy. 
 		JOBS=-j4
 	fi
