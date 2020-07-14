@@ -139,10 +139,10 @@ Change your Linux=paramater during first install to one that works with your dis
 
 Arch: 
     
-	sudo pacman -S base-devel python audiofile sdl2 glew
+	sudo pacman -S base-devel python audiofile sdl2 glew python-zstandard python-pip 
 Debian:  
 
-	sudo apt-get install build-essential git python3 libaudiofile-dev libglew-dev libsdl2-dev binutils libusb-1.0-0-dev
+	sudo apt-get install build-essential git python3 libaudiofile-dev libglew-dev libsdl2-dev binutils libusb-1.0-0-dev libzstd-dev
 Fedora: 
 
 	sudo dnf install make gcc python3 audiofile-devel glew-devel SDL2-devel
