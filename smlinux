@@ -98,8 +98,8 @@ dohd(){
 				git apply enhancements/3d_coin_v2_nightly.patch --ignore-whitespace
 		fi	fi
 		if [ -f ~/"$REPO"/enhancements/60fps_ex.patch ]; then
-#			git apply enhancements/60fps_ex.patch
-#			sed -i 's/vsync false/vsync true/g' ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64config.txt
+			git apply enhancements/60fps_ex.patch
+			sed -i 's/vsync false/vsync true/g' ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64config.txt
 		elif [ -f ~/"$REPO"/enhancements/60fps.patch ]; then
 			git apply enhancements/60fps.patch
 			sed -i 's/vsync false/vsync true/g' ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64config.txt
