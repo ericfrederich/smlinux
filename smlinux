@@ -1,7 +1,7 @@
 #!/bin/bash
 # This should do everything required to build & install under Ubuntu and update itself.
 # Other distros edit config file when prompted to change Linux= to command to get dependencies.
-# 2020-0714-1149
+# 2020-0714-1324
 
 domake(){ 
 	if [ "$REPO" = "sm64-port" ] || [ "$REPO" = "sm64nx" ]; then
@@ -500,7 +500,7 @@ elif [ "$REPO" = "sm64nx" ]; then
 	mkdir ~/"$REPO"/build
 	mkdir ~/"$REPO"/build/"$VERSION"_pc
 	mkdir ~/"$REPO"/build/"$VERSION"_pc/romfs
-	cp "$1" ~/"$REPO"/build/"$VERSION"_pc/baserom."$VERSION".z64
+	cp ~/"$REPO"/baserom."$VERSION".z64 ~/"$REPO"/build/"$VERSION"_pc
 	cd ~/"$REPO"/tools
 	make "$JOBS"
 	cd ~/"$REPO"/import
