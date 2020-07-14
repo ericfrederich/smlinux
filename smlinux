@@ -1,7 +1,7 @@
 #!/bin/bash
 # This should do everything required to build & install under Ubuntu and update itself.
 # Other distros edit config file when prompted to change Linux= to command to get dependencies.
-# 2020-0713-1713
+# 2020-0713-1857
 
 domake(){ 
 	if [ "$REPO" = "sm64-port" ] || [ "$REPO" = "sm64nx" ]; then
@@ -59,7 +59,9 @@ doconfig(){
 
 dohd(){ 
 	echo Getting HD Enhancements...
-	if [ "$REPO" = "sm64nx" ]; then return 
+	if [ "$REPO" = "sm64nx" ]; then 
+		echo Coming soon to smlinux for sm64nx...
+		return 
 	fi
 	if [ ! "$REPO" = "sm64-port" ]; then
 		if [ ! -d ~/"$REPO"/build ] ; then mkdir ~/"$REPO"/build
@@ -231,7 +233,8 @@ rungame(){
 
 ####################################### The Beginning ########################################
 
-#First make sure folders and installer config file exist, if not create them.
+#Make sure folders and installer config file exist, if not create them.
+
 LAUNCH_DIR=$(pwd)
 mapfile -t -d: <<<"$PATH"
 if [ ! -d $HOME/.local ]; then mkdir $HOME/.local
@@ -248,10 +251,14 @@ if [ ! -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinuxcfg.txt ]; then
 	makeconfig
 	doconfig
 elif [ "$2" = "config" ] || [ "$2" = "--config" ] || [ "$3" = "--config" ] || [ "$3" = "config" ]; then
-	if [ ! -f ~/.smlinuxUpdate ]; then doconfig
+	if [ ! -f ~/.smlinuxUpdate ]; then 
+		doconfig
 	fi
 fi
 loadconfig
+
+#Script really begins here
+
 if [ -f /usr/bin/mplayer ] && [ -f ~/"$REPO"/sound/samples/sfx_mario_peach/0D.aiff ] && [ ! -f ~/.smlinuxUpdate ]; then
 	sh -c 'mplayer -nolirc -really-quiet ~/'"$REPO"'/sound/samples/sfx_mario_peach/0D.aiff&'
 fi
@@ -475,6 +482,9 @@ if [ "$REPO" = "sm64nx" ] && [ "$NOOLD" = "1" ]; then
 		sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-8 80 --slave /usr/bin/g++ g++ /usr/bin/g++-8 --slave /usr/bin/gcov gcov /usr/bin/gcov-8
 	fi
 	pip3 install pillow zstandard tqdm xxhash
+	mkdir ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"
+	ln -s ~/"$REPO"/build/"$VERSION"_pc/sm64.sav ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64.sav
+	ln -s ~/"$REPO"/build/"$VERSION"_pc/sm64.log ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64.log
 elif [ "$REPO" = "sm64nx" ]; then	
 	mkdir ~/"$REPO"/build
 	mkdir ~/"$REPO"/build/"$VERSION"_pc
