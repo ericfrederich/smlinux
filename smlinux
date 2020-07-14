@@ -1,7 +1,7 @@
 #!/bin/bash
 # This should do everything required to build & install under Ubuntu and update itself.
 # Other distros edit config file when prompted to change Linux= to command to get dependencies.
-# 2020-0713-1647
+# 2020-0713-1713
 
 domake(){ 
 	if [ "$REPO" = "sm64-port" ] || [ "$REPO" = "sm64nx" ]; then
@@ -14,6 +14,29 @@ domake(){
 		echo Script exiting incomplete.
 		exit
 	fi
+	}
+
+makeconfig(){
+echo Creating ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinuxcfg.txt
+echo '#VERSION must correspond to rom version- us jp eu
+VERSION=us
+JOBS=-j
+#[sm64pc/sm64ex] These settings only apply to sm64pc/sm64ex fork.
+BETTERCAMERA=1
+NODRAWINGDISTANCE=1
+TEXTURE_FIX=1
+EXTERNAL_DATA=1
+DISCORDRPC=1
+RENDER_API=GL
+#RENDER_API=GL_LEGACY
+#[Script] These settings affect the scripts behavior.
+#REPO supports sm64pc sm64-port sm64ex sm64nx 
+REPO=sm64ex
+Branch=master
+AutoUpdate=1
+InstallHD=1
+UpdateHD=0
+Linux="sudo apt install -y build-essential git python3 libaudiofile-dev libglew-dev libsdl2-dev binutils libusb-1.0-0-dev libzstd-dev"'> ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinuxcfg.txt
 	}
 
 loadconfig(){
@@ -206,6 +229,8 @@ rungame(){
 	echo
 }
 
+####################################### The Beginning ########################################
+
 #First make sure folders and installer config file exist, if not create them.
 LAUNCH_DIR=$(pwd)
 mapfile -t -d: <<<"$PATH"
@@ -220,30 +245,9 @@ fi
 if [ ! -d ${XDG_DATA_HOME:-$HOME/.local/share}/applications ]; then mkdir ${XDG_DATA_HOME:-$HOME/.local/share}/applications
 fi
 if [ ! -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinuxcfg.txt ]; then
-	echo Creating ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinuxcfg.txt
-	echo '#VERSION must correspond to rom version- us jp eu
-VERSION=us
-JOBS=-j
-#[sm64pc/sm64ex] These settings only apply to sm64pc/sm64ex fork.
-BETTERCAMERA=1
-NODRAWINGDISTANCE=1
-TEXTURE_FIX=1
-EXTERNAL_DATA=1
-DISCORDRPC=1
-RENDER_API=GL
-#RENDER_API=GL_LEGACY
-#[Script] These settings affect the scripts behavior.
-#REPO supports sm64pc sm64-port sm64ex sm64nx 
-REPO=sm64ex
-Branch=master
-AutoUpdate=1
-InstallHD=1
-UpdateHD=0
-Linux="sudo apt install -y build-essential git python3 libaudiofile-dev libglew-dev libsdl2-dev binutils libusb-1.0-0-dev libzstd-dev"'> ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinuxcfg.txt
+	makeconfig
 	doconfig
-fi
-
-if [ "$2" = "config" ] || [ "$2" = "--config" ] || [ "$3" = "--config" ] || [ "$3" = "config" ]; then
+elif [ "$2" = "config" ] || [ "$2" = "--config" ] || [ "$3" = "--config" ] || [ "$3" = "config" ]; then
 	if [ ! -f ~/.smlinuxUpdate ]; then doconfig
 	fi
 fi
