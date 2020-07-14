@@ -46,7 +46,7 @@ loadconfig(){
 	fi
 	if [ "$REPO" = "sm64nx" ] && [ "$JOBS" = "-j" ] && [ ! -f ~/.smlinuxUpdate ]; then
 		echo WARNING: Jobs reduced cuz nx breaks linux easy. 
-		JOBS=-j5
+		JOBS=-j3
 	fi
 	}
 
