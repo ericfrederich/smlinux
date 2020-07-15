@@ -1,14 +1,16 @@
 #!/bin/bash
 # This should do everything required to build & install under Ubuntu and update itself.
 # Other distros edit config file when prompted to change Linux= to command to get dependencies.
-# 2020-0714-2154
+# 2020-0715-1252
 
 domake(){ 
+	if ((TARGET_WEB)); then loademsdk
+	fi
 	cd ~/"$REPO"
 	if [ "$REPO" = "sm64-port" ] || [ "$REPO" = "sm64nx" ]; then
-		time make VERSION=$VERSION "$JOBS"	
+		time make VERSION=$VERSION TARGET_WEB=$TARGET_WEB "$JOBS"	
 	elif [ "$REPO" = "sm64pc" ] || [ "$REPO" = "sm64ex" ]; then
-		time make BETTERCAMERA=$BETTERCAMERA NODRAWINGDISTANCE=$NODRAWINGDISTANCE TEXTURE_FIX=$TEXTURE_FIX EXTERNAL_DATA=$EXTERNAL_DATA DISCORDRPC=$DISCORDRPC VERSION=$VERSION RENDER_API=$RENDER_API "$JOBS"
+		time make BETTERCAMERA=$BETTERCAMERA NODRAWINGDISTANCE=$NODRAWINGDISTANCE TEXTURE_FIX=$TEXTURE_FIX EXTERNAL_DATA=$EXTERNAL_DATA DISCORDRPC=$DISCORDRPC VERSION=$VERSION RENDER_API=$RENDER_API TARGET_WEB=$TARGET_WEB "$JOBS"
 	else
 		echo "$REPO" is not a known repository.  Check your REPO setting and try again.
 		echo Known repos are sm64-port, sm64nx, sm64pc, and sm64ex.
@@ -21,6 +23,7 @@ makeconfig(){
 echo Creating ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinuxcfg.txt
 echo '#VERSION must correspond to rom version- us jp eu
 VERSION=us
+TARGET_WEB=0
 JOBS=-j
 #[sm64pc/sm64ex] These settings only apply to sm64pc/sm64ex fork.
 BETTERCAMERA=1
@@ -28,8 +31,8 @@ NODRAWINGDISTANCE=1
 TEXTURE_FIX=1
 EXTERNAL_DATA=1
 DISCORDRPC=1
+#RENDER_API supports GL (2.1+) or GL_LEGACY (1.2-2.0)
 RENDER_API=GL
-#RENDER_API=GL_LEGACY
 #[Script] These settings affect the scripts behavior.
 #REPO supports sm64pc sm64-port sm64ex sm64nx 
 REPO=sm64ex
@@ -56,6 +59,17 @@ doconfig(){
 		whiptail --title "READ THIS NOW - IT WILL NOT REAPPEAR AUTOMATICALLY" --msgbox "The config file will open in your default xdg editor.\n\nWhen you exit your editor, installation will continue.\n\nFor most people, default options which include community enhancements are reccommended.\n\nIf you mess up the config file, delete\n${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinuxcfg.txt \nand it will be recreated." 16 60
 		xdg-open ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinuxcfg.txt 
 	fi
+	}
+
+loademsdk(){
+	if [ ! -d ~/emsdk ]; then
+		cd
+		git clone https://github.com/emscripten-core/emsdk.git
+		cd emsdk
+		./emsdk install latest
+		./emsdk activate latest
+	fi
+	source ~/emsdk/emsdk_env.sh
 	}
 
 dohd(){ 
@@ -536,7 +550,6 @@ fi
 
 echo
 echo [5] Compiling...
-cd ~/"$REPO"
 domake
 if [ ! -f ~/"$REPO"/build/"$VERSION"_pc/sm64."$VERSION".f3dex2e ]; then
 	echo ERROR: You do not have the expected binary ~/"$REPO"/build/"$VERSION"_pc/sm64."$VERSION".f3dex2e
