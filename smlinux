@@ -1,7 +1,7 @@
 #!/bin/bash
 # This should do everything required to build & install under Ubuntu and update itself.
 # Other distros edit config file when prompted to change Linux= to command to get dependencies.
-# 2020-0714-2000
+# 2020-0714-2009
 
 domake(){ 
 	cd ~/"$REPO"
@@ -79,10 +79,10 @@ dohd(){
 		mkdir ~/"$REPO"/build/"$VERSION"_pc/romfs/"~OWO Mod"
 		cd ~/"$REPO"/build/"$VERSION"_pc/romfs/"~OWO Mod"
 		wget https://cdn.discordapp.com/attachments/730416836780490752/730420038024036362/owo.pak
-		mkdir ~/"$REPO"/build/"$VERSION"_pc/romfs/~HD Luigi"
+		mkdir ~/"$REPO"/build/"$VERSION"_pc/romfs/"~HD Luigi"
 		cd ~/"$REPO"/build/"$VERSION"_pc/romfs/"~HD Luigi"
 		wget https://cdn.discordapp.com/attachments/730416836780490752/730425786452017222/luigi.pak
-		mkdir ~/"$REPO"/build/"$VERSION"_pc/romfs/~NES Retro"
+		mkdir ~/"$REPO"/build/"$VERSION"_pc/romfs/"~NES Retro"
 		cd ~/"$REPO"/build/"$VERSION"_pc/romfs/"~NES Retro"
 		wget https://cdn.discordapp.com/attachments/730416836780490752/730431589749620736/nes.pak
 	else
