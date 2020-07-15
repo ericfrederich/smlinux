@@ -42,11 +42,11 @@ Note the script installs itself as 'smlinux' to the first directory in your path
 # Frequently Asked Questions
 
 ## **What repository should I use?**
-The official repo, sm64-port/sm64-port, offers the cleanest code and duplication of N64, with currently very few add-ons available.  The unofficial fork, sm64pc/sm64ex, includes optional enhancements and support for many add-ons.
+The official repo, sm64-port/sm64-port, offers the cleanest code and duplication of N64, with currently very few add-ons available.  The unofficial forks, sm64ex and sm64nx, includes optional enhancements and support for many add-ons.  Currently nx does not seem to support keyboard in linux.
 
 ## **What branch should I use?**
 
-Both repos offer master as primary.  sm6ex also offers nightly which is under constant development.  If nightly works for you, I'd reccommend it as it is the most updated, but if a recent change causes build failure or other problems, use the more stable master.  
+All repos offer master as primary.  sm6ex also offers nightly which is under constant development.  If nightly works for you, I'd reccommend it as it is the most updated, but if a recent change causes build failure or other problems, use the more stable master.  
 
 ## **When to use RENDER_API=GL_LEGACY?** 
 *only applies to sm64pc/sm64ex fork*
@@ -68,6 +68,8 @@ From #user-submitted-content Mario Icon
 Additionally, on the sm64pc/sm64ex fork upscaled textures will be added to your build from the Cleaner Aesthetics github repo.  
 *Note that precaching these textures will make the game use more memory and increase initial startup time, but may be necessary for some computers.*
 
+On the sm64nx fork, 60fps is already default, and with this option enabled in addition to the models and textures mentioned above, a few other add-ons are obtained which can be enabled from the in-game menu if you prefer, including SGI models and HD Luigi.
+
 Some of these addons require files remaining available in discord or github, so not gauranteed to work.  I may periodically add or change what's included with this option as new mods are released.  
 
 
@@ -82,7 +84,7 @@ For example:
 	       or
 	smlinux update --config
 
-Updates existing install to latest from github while retaining custom textures.  If updated build fails, keeps previous build.
+Updates existing install to latest from github while retaining custom textures and addons.  If updated build fails, keeps previous build.
 
 You can also use this option to rebuild after you apply patches or edit your source or source assets like actors manually.
 Note --hd only needs to be applied once, not with every update (unless what's included with hd has changed in new version of script).
@@ -101,14 +103,15 @@ You can also just edit the configuration file with a text editor.
 
 ## **Where are my configuration files and saved games stored?**
 
-~/.local/share/sm64pc (smlinux and sm64pc/sm64ex master)  
-~/.local/share/sm6pex (sm64pc/sm64ex nightly)  
-~/.local/share/sm64-port (sm64-port/sm64-port) *only if launched with shortcut*  
+~/.local/share/sm64pc smlinux and sm64pc master
+~/.local/share/sm64ex  sm64ex  
+~/.local/share/sm64-port sm64-port *only if launched with shortcut*  
+~/.local/share/sm64nx sm64nx *script creates links to game dir*
 
 ## **Are there any cheats?**
-*only applies to sm64pc/sm64ex fork*
+*only applies to sm64pc/sm64ex and sm64nx forks*
 
-Cheats are built in and enabled automatically if launched from shortcut and available at the bottom of the options menu.
+Cheats are built in and enabled automatically if launched from shortcut and available in options menu.
 
 ## **How do I apply external textures?**
 *only applies to sm64pc/sm64ex fork*
