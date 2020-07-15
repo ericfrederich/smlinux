@@ -42,7 +42,7 @@ Note the script installs itself as 'smlinux' to the first directory in your path
 # Frequently Asked Questions
 
 ## **What repository should I use?**
-The official repo, sm64-port/sm64-port, offers the cleanest code and duplication of N64, with currently very few add-ons available.  The unofficial forks, sm64ex and sm64nx, includes optional enhancements and support for many add-ons.  Currently nx does not seem to support keyboard in linux.
+The official repo, sm64-port/sm64-port, offers the cleanest code and duplication of N64, with currently very few add-ons available.  The unofficial forks, sm64ex and sm64nx, include optional enhancements and support for many add-ons.  
 
 ## **What branch should I use?**
 
@@ -65,6 +65,7 @@ For old video cards with OpenGL 1.2 or 1.3 but no 2.1 support (from year 200X). 
 This will modify your source with the repo-provided 60fps patch and the following community provided high resolution actors and patches:
 From #modding-releases HD Bowser, HD Mario (Old School V2) and the 3D Coin Patch (V2)  
 From #user-submitted-content Mario Icon   
+
 Additionally, on the sm64pc/sm64ex fork upscaled textures will be added to your build from the Cleaner Aesthetics github repo.  
 *Note that precaching these textures will make the game use more memory and increase initial startup time, but may be necessary for some computers.*
 
