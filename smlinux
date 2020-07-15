@@ -1,7 +1,7 @@
 #!/bin/bash
 # This should do everything required to build & install under Ubuntu and update itself.
 # Other distros edit config file when prompted to change Linux= to command to get dependencies.
-# 2020-0714-2009
+# 2020-0714-2020
 
 domake(){ 
 	cd ~/"$REPO"
@@ -70,8 +70,8 @@ dohd(){
 		mkdir ~/"$REPO"/build/"$VERSION"_pc/romfs/"Cleaner Aesthetics"
 		cd ~/"$REPO"/build/"$VERSION"_pc/romfs/"Cleaner Aesthetics"
 		wget https://cdn.discordapp.com/attachments/730416836780490752/730430152957362191/cleaner.pak
-		mkdir ~/"$REPO"/build/"$VERSION"_pc/romfs/"HD Mario and Bowser"
-		cd ~/"$REPO"/build/"$VERSION"_pc/romfs/"HD Mario and Bowser"
+		mkdir ~/"$REPO"/build/"$VERSION"_pc/romfs/"HD Mario . Bowser"
+		cd ~/"$REPO"/build/"$VERSION"_pc/romfs/"HD Mario . Bowser"
 		wget https://cdn.discordapp.com/attachments/730416836780490752/730425308989227158/arredondo.pak
 		mkdir ~/"$REPO"/build/"$VERSION"_pc/romfs/"~SGI Models"
 		cd ~/"$REPO"/build/"$VERSION"_pc/romfs/"~SGI Models"
