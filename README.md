@@ -158,7 +158,7 @@ openSuSE:
 	sudo zypper in gcc make python3 libaudiofile1 glew-devel libSDL2-devel
 Ubuntu:
 	
-	sudo apt install -y build-essential git python3 libaudiofile-dev libglew-dev libsdl2-dev binutils libusb-1.0-0-dev
+	sudo apt install -y build-essential git python3 libaudiofile-dev libglew-dev libsdl2-dev binutils libusb-1.0-0-dev libzstd-dev
 Void: 
 
 	sudo xbps-install -S base-devel python3 audiofile-devel SDL2-devel glew-devel
