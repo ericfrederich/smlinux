@@ -30,8 +30,8 @@ Examples:
 	./smlinux ~/roms/n64/sm64.z64
 
 That's Everything. That's all you have to do..
-You'll be asked sudo password to install build tools at the beginning, then it will update and intsall itself to the first directory in your path (or create ~/bin if nothing available), and prompt you to approve (or change) the reccommended options before your build starts, then will run as user unattended and before the time you finish reading the FAQ you will hear "It's me, Mario!".
-(Do not run script as root; you will be prompted for sudo password automatically if needed.)
+You'll be asked sudo password to install build tools at the beginning, then it will update and intsall itself to the first directory in your path (or create ~/bin if nothing available), and prompt you to approve (or change) the reccommended options before your build starts, then will run as user unattended and before the time you finish reading the FAQ you will hear "It's me, Mario!".  
+(**Do not run script as root; you will be prompted for sudo password automatically if needed.**)
 
 You must provide your own legally backed up rom file in Z64 (Big Endian) format. 
 
