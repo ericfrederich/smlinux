@@ -1,10 +1,16 @@
 #!/bin/bash
 # This should do everything required to build & install under Ubuntu and update itself.
 # Other distros edit config file when prompted to change Linux= to command to get dependencies.
-# 2020-0715-1721
+# 2020-0715-1751
 
 domake(){ 
-	if ((TARGET_WEB)); then loademsdk
+	if ((TARGET_WEB)); then 
+		loademsdk
+		EXTERNAL_DATA=0
+		DISCORDRPC=0
+		if ((Install_HD)); then
+			sed -i 's/TOTAL_MEMORY=20MB/TOTAL_MEMORY=24MB/g' ~/"$REPO"/Makefile
+		fi
 	fi
 	cd ~/"$REPO"
 	if [ "$REPO" = "sm64-port" ] || [ "$REPO" = "sm64nx" ]; then
