@@ -9,7 +9,7 @@ domake(){
 		EXTERNAL_DATA=0
 		DISCORDRPC=0
 		if ((Install_HD)); then
-			sed -i 's/TOTAL_MEMORY=20MB/TOTAL_MEMORY=24MB/g' ~/"$REPO"/Makefile
+			sed -i 's/TOTAL_MEMORY=20MB/TOTAL_MEMORY=25MB/g' ~/"$REPO"/Makefile
 		fi
 	fi
 	cd ~/"$REPO"
