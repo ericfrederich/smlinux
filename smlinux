@@ -1,7 +1,7 @@
 #!/bin/bash
 # This should do everything required to build & install under Ubuntu and update itself.
 # Other distros edit config file when prompted to change Linux= to command to get dependencies.
-# 2020-0715-1719
+# 2020-0715-1721
 
 domake(){ 
 	if ((TARGET_WEB)); then loademsdk
@@ -31,7 +31,7 @@ DISCORDRPC=1
 RENDER_API=GL
 TEXTSAVES=0
 #[Script] These settings tell script what to do.
-#VERSION support us jp eu (must correspond to rom version)
+#VERSION supports us jp eu (must correspond to rom version)
 VERSION=us
 #REPO supports sm64pc sm64-port sm64ex sm64nx 
 REPO=sm64ex
