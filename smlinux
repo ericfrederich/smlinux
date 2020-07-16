@@ -1,7 +1,7 @@
 #!/bin/bash
 # This should do everything required to build & install under Ubuntu and update itself.
 # Other distros edit config file when prompted to change Linux= to command to get dependencies.
-# 2020-0715-1942
+# 2020-0715-1947
 
 domake(){ 
 	if ((TARGET_WEB)); then 
@@ -325,7 +325,7 @@ if [ ! -d ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO" ]; then
 	mkdir ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"
 fi
 
-if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ] || ((($TARGET_WEB)) && [ -d ~/$"REPO" ] && [ ! -d ~/"$REPO"/build/"$VERSION"_web ]); then
+if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ] || ((($TARGET_WEB)) && [ -d ~/"$REPO" ] && [ ! -d ~/"$REPO"/build/"$VERSION"_web ]); then
 	if [ -f ~/.smlinuxUpdate ]; then 
 		rm ~/.smlinuxUpdate
 		echo Script Update Complete.	
