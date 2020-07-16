@@ -1,7 +1,7 @@
 #!/bin/bash
 # This should do everything required to build & install under Ubuntu and update itself.
 # Other distros edit config file when prompted to change Linux= to command to get dependencies.
-# 2020-0715-1833
+# 2020-0715-1912
 
 domake(){ 
 	if ((TARGET_WEB)); then 
@@ -58,6 +58,9 @@ loadconfig(){
 	if [ "$REPO" = "sm64nx" ] && [ "$JOBS" = "-j" ] && [ ! -f ~/.smlinuxUpdate ]; then
 		echo WARNING: Jobs reduced cuz nx breaks linux easy. 
 		JOBS=-j1
+	elif ((TARGET_WEB)) && [ "$JOBS" = "-j" ] && [ ! -f ~/.smlinuxUpdate ]; then
+		echo WARNING: Jobs reduced cuz emsdk doesnt behave well. 
+		JOBS=-j2
 	fi
 	}
 
@@ -264,12 +267,14 @@ fi
 rungame(){
 	if ((TARGET_WEB)); then 
 		cd ~/"$REPO"/build/"$VERSION"_web
+		ln -s sm64.us.f3dex2e.html index.html
 		python3 -m http.server 8100 &
 		if [ -f /usr/bin/firefox ]; then
 			firefox --new-window http://localhost:8100&disown
 		else
 			xdg-open http://localhost:8100&disown
 		fi
+		echo To kill python3 webserver, enter killall python3.
 	else
 		gtk-launch "$REPO"&disown
 	fi
@@ -320,7 +325,7 @@ if [ ! -d ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO" ]; then
 	mkdir ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"
 fi
 
-if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ]; then
+if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ] || (((TARGET_WEB)) && [ -d ~/$"REPO" ] ); then
 	if [ -f ~/.smlinuxUpdate ]; then 
 		rm ~/.smlinuxUpdate
 		echo Script Update Complete.	
@@ -519,7 +524,7 @@ fi
 
 echo
 echo [3] Downloading "$REPO" source from github... 
-if [ -d ~/"$REPO" ]; then
+if [ -d ~/"$REPO" ] ; then
 	mv ~/"$REPO" ~/"$REPO"-"$(date -r ~/"$REPO" +"%Y%m%d_%H%M%S")"
 	echo Existing "$REPO" directory renamed.  
 else 	NOOLD=1
@@ -564,7 +569,7 @@ elif [ "$REPO" = "sm64nx" ]; then
 	mkdir ~/"$REPO"/build
 	mkdir ~/"$REPO"/build/"$VERSION"_pc
 	mkdir ~/"$REPO"/build/"$VERSION"_pc/romfs
-	cp ~/"$REPO"/baserom."$VERSION".z64 ~/"$REPO"/build/"$VERSION"_pc
+	ln -s ~/"$REPO"/baserom."$VERSION".z64 ~/"$REPO"/build/"$VERSION"_pc/baserom."$VERSION".z64
 	cd ~/"$REPO"/tools
 	make "$JOBS"
 	cd ~/"$REPO"/import
