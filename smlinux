@@ -1,7 +1,7 @@
 #!/bin/bash
 # This should do everything required to build & install under Ubuntu and update itself.
 # Other distros edit config file when prompted to change Linux= to command to get dependencies.
-# 2020-0715-1751
+# 2020-0715-1823
 
 domake(){ 
 	if ((TARGET_WEB)); then 
@@ -262,7 +262,16 @@ fi
 }
 
 rungame(){
-	gtk-launch "$REPO"&disown
+	if ((TARGET_WEB)); then 
+		cd ~/"$REPO"/build/"$VERSION"_web
+		python3 -m http.server 8100 &
+		if [ -f /usr/bin/firefox ]; then
+			firefox --new-window http://localhost:8100&disown
+		else
+			xdg-open http://localhost:8100&disown
+	else
+		gtk-launch "$REPO"&disown
+	fi
 	if [ -f ~/.smlinuxNopath ]; then
 		rm ~/.smlinuxNopath
 		zenity --info --text='You did not have a home folder in your path so ~/bin was created.\n\nReboot or type \n\n    PATH=~/bin:$PATH\n\nbefore running smlinux again.' --title="Your installation is complete." --width=450	
@@ -352,12 +361,18 @@ if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ]; then
 		fi
 	fi	
 
-	if [ -d ~/"$REPO"/build/"$VERSION"_pc ]; then
+	if [ -d ~/"$REPO"/build/"$VERSION"_pc ] && [ "$TARGET_WEB" = "0" ]; then
 		if [ -d ~/"$REPO"/build/"$VERSION"_pc.old ]; then
 			rm -rf ~/"$REPO"/build/"$VERSION"_pc.old
 		fi
 		mv ~/"$REPO"/build/"$VERSION"_pc ~/"$REPO"/build/"$VERSION"_pc.old
+	elif [ -d ~/"$REPO"/build/"$VERSION"_web ] && [ "$TARGET_WEB" = "1" ]; then
+		if [ -d ~/"$REPO"/build/"$VERSION"_web.old ]; then
+			rm -rf ~/"$REPO"/build/"$VERSION"_web.old
+		fi
+		mv ~/"$REPO"/build/"$VERSION"_pc ~/"$REPO"/build/"$VERSION"_web.old
 	fi
+	
 	if [ "$2" = "--hd" ] || [ "$2" = "--HD" ] || [ "$3" = "--hd" ] || [ "$3" = "--HD" ] ||(($UpdateHD)); then
 		dohd
 	fi	
@@ -366,7 +381,7 @@ if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ]; then
 		sh -c 'mplayer -nolirc -really-quiet ~/'"$REPO"'/sound/samples/sfx_mario/0C.aiff&'
 	fi
 	domake
-	if [ ! -f ~/"$REPO"/build/"$VERSION"_pc/sm64."$VERSION".f3dex2e ]; then
+	if [ ! -f ~/"$REPO"/build/"$VERSION"_pc/sm64."$VERSION".f3dex2e ] && [ "$TARGET_WEB" = "0" ] ; then
 		echo
 		echo ERROR: You do not have the expected binary ~/"$REPO"/build/"$VERSION"_pc/sm64."$VERSION".f3dex2e
 		if [ -d ~/"$REPO"/build/"$VERSION"_pc.old ]; then
@@ -378,12 +393,24 @@ if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ]; then
 		fi
 		echo "Script Exiting incomplete.  Contact #help-desk for support."
 		exit
+	elif [ ! -f ~/"$REPO"/build/"$VERSION"_web/sm64."$VERSION".f3dex2e.html ] && [ "$TARGET_WEB" = "1" ] ; then
+		echo
+		echo ERROR: You do not have the expected html ~/"$REPO"/build/"$VERSION"_web/sm64."$VERSION".f3dex2e.html
+		if [ -d ~/"$REPO"/build/"$VERSION"_web.old ]; then
+			echo Restoring previous build...
+			if [ -d ~/"$REPO"/build/"$VERSION"_web ]; then 
+				rm -rf ~/"$REPO"/build/"$VERSION"_web 
+			fi
+			mv ~/"$REPO"/build/"$VERSION"_pc.old ~/"$REPO"/build/"$VERSION"_pc
+		fi
+		echo "Script Exiting incomplete.  Contact #help-desk for support."
+		exit
 	fi
-	if [ -d ~/"$REPO"/build/"$VERSION"_pc.old/res ]; then
+	if [ -d ~/"$REPO"/build/"$VERSION"_pc.old/res ] && [ "$TARGET_WEB" = "0" ]; then
 		echo Restoring External Resources...
 		cp -rpn ~/"$REPO"/build/"$VERSION"_pc.old/res/. ~/"$REPO"/build/"$VERSION"_pc/res
 	fi
-	if [ -d ~/"$REPO"/build/"$VERSION"_pc/res/.git ]; then
+	if [ -d ~/"$REPO"/build/"$VERSION"_pc/res/.git ] ; then
 		echo Checking for Cleaner Aesthetics Texture updates on Github...
 		cd ~/"$REPO"/build/"$VERSION"_pc/res
 		git pull
