@@ -1,7 +1,7 @@
 #!/bin/bash
 # This should do everything required to build & install under Ubuntu and update itself.
 # Other distros edit config file when prompted to change Linux= to command to get dependencies.
-# 2020-0715-1912
+# 2020-0715-1919
 
 domake(){ 
 	if ((TARGET_WEB)); then 
@@ -376,7 +376,7 @@ if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ] || (((TARGET_
 		if [ -d ~/"$REPO"/build/"$VERSION"_web.old ]; then
 			rm -rf ~/"$REPO"/build/"$VERSION"_web.old
 		fi
-		mv ~/"$REPO"/build/"$VERSION"_pc ~/"$REPO"/build/"$VERSION"_web.old
+		mv ~/"$REPO"/build/"$VERSION"_web ~/"$REPO"/build/"$VERSION"_web.old
 	fi
 	
 	if [ "$2" = "--hd" ] || [ "$2" = "--HD" ] || [ "$3" = "--hd" ] || [ "$3" = "--HD" ] ||(($UpdateHD)); then
