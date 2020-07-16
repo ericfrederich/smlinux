@@ -1,7 +1,7 @@
 #!/bin/bash
 # This should do everything required to build & install under Ubuntu and update itself.
 # Other distros edit config file when prompted to change Linux= to command to get dependencies.
-# 2020-0715-1713
+# 2020-0715-1719
 
 domake(){ 
 	if ((TARGET_WEB)); then loademsdk
@@ -21,11 +21,7 @@ domake(){
 
 makeconfig(){
 echo Creating ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinuxcfg.txt
-echo '#VERSION support us jp eu (must correspond to rom version)
-VERSION=us
-TARGET_WEB=0
-JOBS=-j
-#[sm64pc/sm64ex] These settings only apply to sm64pc/sm64ex fork.
+echo '#[sm64pc/sm64ex] These settings only apply to sm64pc/sm64ex fork.
 BETTERCAMERA=1
 NODRAWINGDISTANCE=1
 TEXTURE_FIX=1
@@ -34,13 +30,17 @@ DISCORDRPC=1
 #RENDER_API supports GL (2.1+) or GL_LEGACY (1.2-2.0)
 RENDER_API=GL
 TEXTSAVES=0
-#[Script] These settings affect the scripts behavior.
+#[Script] These settings tell script what to do.
+#VERSION support us jp eu (must correspond to rom version)
+VERSION=us
 #REPO supports sm64pc sm64-port sm64ex sm64nx 
 REPO=sm64ex
 Branch=master
 AutoUpdate=1
 InstallHD=1
 UpdateHD=0
+TARGET_WEB=0
+JOBS=-j
 Linux="sudo apt install -y build-essential git python3 libaudiofile-dev libglew-dev libsdl2-dev binutils libusb-1.0-0-dev libzstd-dev"'> ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinuxcfg.txt
 	}
 
