@@ -1,7 +1,7 @@
 #!/bin/bash
 # This should do everything required to build & install under Ubuntu and update itself.
 # Other distros edit config file when prompted to change Linux= to command to get dependencies.
-# 2020-0715-2011
+# 2020-0715-2014
 
 domake(){ 
 	if ((TARGET_WEB)); then 
@@ -57,11 +57,11 @@ loadconfig(){
 	fi
 	if [ "$JOBS" = "-j" ] && [ ! -f ~/.smlinuxUpdate ]; then
 		if [ "$REPO" = "sm64nx" ]; then 
-			echo WARNING: Jobs reduced cuz nx breaks linux easy. 
-			JOBS=-j1
+			echo WARNING: Unlimited jobs removed cuz nx breaks linux easy. 
+			JOBS=""
 		elif [ "$TARGET_WEB" = "1" ]; then
-			echo WARNING: Jobs reduced cuz emsdk cache doesnt behave well. 
-			JOBS=-j1
+			echo WARNING: Unlimited jobs removed cuz emsdk cache doesnt behave well. 
+			JOBS=""
 		fi
 	fi
 	}
