@@ -1,7 +1,7 @@
 #!/bin/bash
 # This should do everything required to build & install under Ubuntu and update itself.
 # Other distros edit config file when prompted to change Linux= to command to get dependencies.
-# 2020-0716-1909
+# 2020-0716-1932
 
 domake(){ 
 	if ((TARGET_WEB)); then 
@@ -562,6 +562,9 @@ elif [ "$REPO" = "sm64nx" ]; then
 	mkdir ~/"$REPO"/build
 	mkdir ~/"$REPO"/build/"$VERSION"_pc
 	mkdir ~/"$REPO"/build/"$VERSION"_pc/romfs
+	ln -s ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64.sav ~/"$REPO"/build/"$VERSION"_pc/sm64.sav 
+	ln -s ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64.log ~/"$REPO"/build/"$VERSION"_pc/sm64.log 
+	ln -s ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/conf.bin ~/"$REPO"/build/"$VERSION"_pc/conf.bin 
 	ln -s ~/"$REPO"/baserom."$VERSION".z64 ~/"$REPO"/build/"$VERSION"_pc/baserom."$VERSION".z64
 	cd ~/"$REPO"/tools
 	make "$JOBS"
@@ -604,19 +607,9 @@ if [ -f ~/.smlinuxNopath ]; then
 else	
 	sleep 10
 fi
-if [ "$REPO" = "sm64nx" ] && [ ! -f ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64.sav ]; then
-	mv ~/"$REPO"/build/"$VERSION"_pc/sm64.sav ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"
-	mv ~/"$REPO"/build/"$VERSION"_pc/sm64.log ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"
-	mv ~/"$REPO"/build/"$VERSION"_pc/conf.bin ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"
-	ln -s ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64.sav ~/"$REPO"/build/"$VERSION"_pc/sm64.sav 
-	ln -s ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64.log ~/"$REPO"/build/"$VERSION"_pc/sm64.log 
-	ln -s ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/conf.bin ~/"$REPO"/build/"$VERSION"_pc/conf.bin 
-fi
 echo
 echo Script Done.  You may exit or close this terminal window.
 if ((TARGET_WEB)); then
 	echo Python Webserver will remain running until it is closed.
 fi
 echo
-	
-
