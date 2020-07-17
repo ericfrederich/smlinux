@@ -1,7 +1,7 @@
 #!/bin/bash
 # This should do everything required to build & install under Ubuntu and update itself.
 # Other distros edit config file when prompted to change Linux= to command to get dependencies.
-# 2020-0716-1718
+# 2020-0716-1909
 
 domake(){ 
 	if ((TARGET_WEB)); then 
@@ -283,19 +283,6 @@ rungame(){
 	else
 		gtk-launch "$REPO"&disown
 	fi
-	if [ -f ~/.smlinuxNopath ]; then
-		rm ~/.smlinuxNopath
-		zenity --info --text='You did not have a home folder in your path so ~/bin was created.\n\nReboot or type \n\n    PATH=~/bin:$PATH\n\nbefore running smlinux again.' --title="Your installation is complete." --width=450	
-		printf '\nYou did not have a home folder in your path so ~/bin was created.\n\nReboot or type \n\n      PATH=~/bin:$PATH\n\nbefore running smlinux again.\n\n'
-	else
-		sleep 10
-	fi
-	echo
-	echo Script Done.  You may exit or close this terminal window.
-	if ((TARGET_WEB)); then
-		echo Python Webserver will remain running until you do.
-	fi
-	echo
 }
 
 ####################################### The Beginning ########################################
@@ -570,10 +557,7 @@ if [ "$REPO" = "sm64nx" ] && [ "$NOOLD" = "1" ]; then
 		sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-8 80 --slave /usr/bin/g++ g++ /usr/bin/g++-8 --slave /usr/bin/gcov gcov /usr/bin/gcov-8
 	fi
 	pip3 install pillow zstandard tqdm xxhash
-	mkdir ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"
-	ln -s ~/"$REPO"/build/"$VERSION"_pc/sm64.sav ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64.sav
-	ln -s ~/"$REPO"/build/"$VERSION"_pc/sm64.log ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64.log
-	ln -s ~/"$REPO"/build/"$VERSION"_pc/conf.bin ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/conf.bin
+
 elif [ "$REPO" = "sm64nx" ]; then	
 	mkdir ~/"$REPO"/build
 	mkdir ~/"$REPO"/build/"$VERSION"_pc
@@ -596,7 +580,7 @@ echo
 if (($InstallHD)); then 
 	dohd
 else
-	echo "Warning: InstallHD Disabled in Config File!"
+	echo "WARNING: InstallHD Disabled in Config File."
 fi
 
 echo
@@ -613,3 +597,26 @@ makedesktop
 
 echo [7] Build Succesful!  Testing Application Launch Via Shortcut...
 rungame
+if [ -f ~/.smlinuxNopath ]; then
+	rm ~/.smlinuxNopath
+	zenity --info --text='You did not have a home folder in your path so ~/bin was created.\n\nReboot or type \n\n    PATH=~/bin:$PATH\n\nbefore running smlinux again.' --title="Your installation is complete." --width=450	
+	printf '\nYou did not have a home folder in your path so ~/bin was created.\n\nReboot or type \n\n      PATH=~/bin:$PATH\n\nbefore running smlinux again.\n\n'
+else	
+	sleep 10
+fi
+if [ "$REPO" = "sm64nx" ] && [ ! -f ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64.sav ]; then
+	mv ~/"$REPO"/build/"$VERSION"_pc/sm64.sav ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"
+	mv ~/"$REPO"/build/"$VERSION"_pc/sm64.log ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"
+	mv ~/"$REPO"/build/"$VERSION"_pc/conf.bin ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"
+	ln -s ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64.sav ~/"$REPO"/build/"$VERSION"_pc/sm64.sav 
+	ln -s ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64.log ~/"$REPO"/build/"$VERSION"_pc/sm64.log 
+	ln -s ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/conf.bin ~/"$REPO"/build/"$VERSION"_pc/conf.bin 
+fi
+echo
+echo Script Done.  You may exit or close this terminal window.
+if ((TARGET_WEB)); then
+	echo Python Webserver will remain running until it is closed.
+fi
+echo
+	
+
