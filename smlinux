@@ -1,7 +1,7 @@
 #!/bin/bash
 # This should do everything required to build & install under Ubuntu and update itself.
 # Other distros edit config file when prompted to change Linux= to command to get dependencies.
-# 2020-0716-1711
+# 2020-0716-1718
 
 domake(){ 
 	if ((TARGET_WEB)); then 
@@ -58,7 +58,7 @@ loadconfig(){
 	fi
 	if [ "$JOBS" = "-j" ]; then
 		if [ "$REPO" = "sm64nx" ]; then 
-			JOBS=-j1
+			JOBS=-j$((`nproc`/2))
 			if [ ! -f ~/.smlinuxUpdate ]; then
 				echo WARNING: Unlimited jobs removed cuz nx breaks linux easy. 
 			fi
@@ -90,7 +90,6 @@ loademsdk(){
 	}
 
 dohd(){ 
-	echo Getting HD Enhancements...
 	if [ "$REPO" = "sm64nx" ]; then 
 		if [ ! -d ~/"$REPO"/build ] ; then mkdir ~/"$REPO"/build
 		fi
@@ -389,6 +388,7 @@ if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ] || ((($TARGET
 	fi
 	
 	if [ "$2" = "--hd" ] || [ "$2" = "--HD" ] || [ "$3" = "--hd" ] || [ "$3" = "--HD" ] ||(($UpdateHD)); then
+		echo Adding Community Enhancements...
 		dohd
 	fi	
 	echo Compiling...
@@ -590,7 +590,9 @@ else	cd ~/"$REPO"
 	./extract_assets.py "$VERSION"
 fi
 
+echo
 echo [4] Applying Community Enhancements...
+echo
 if (($InstallHD)); then 
 	dohd
 else
