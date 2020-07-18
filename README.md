@@ -62,12 +62,12 @@ For old video cards with OpenGL 1.2 or 1.3 but no 2.1 support (from year 200X). 
 
 ## **What does the InstallHD=1 Script option do?**
 
-This will modify your source with the repo-provided 60fps patch and from #modding-releases HD Bowser, HD Mario (Old School V2).  On both sm64-port and sm6ex the 3D Coin Patch (V2) will also be applied.
+This will modify your source with the repo-provided 60fps patch and from #modding-releases HD Bowser, HD Mario (Old School V2 and on both sm64-port and sm64pc/sm6ex the 3D Coin Patch (V2) will also be applied.
   
 Additionally, on the sm64pc/sm64ex fork upscaled textures will be added to your build from the Cleaner Aesthetics github repo, and hq sounds from MapnAnon's github release.
 *Note that precaching these textures will make the game use more memory and increase initial startup time, but may be necessary for some computers.*
 
-On the sm64nx fork, 60fps is already default, and with this option enabled in addition to the models and textures mentioned above, a few other add-ons are obtained which can be enabled from the in-game menu if you prefer, including SGI models and HD Luigi.
+On the sm64nx fork only, 60fps is already default, and with InstallHD in addition to the models and textures mentioned above, a few other add-ons are obtained which can be enabled from the in-game menu if you prefer, including SGI models and HD Luigi.
 
 Some of these addons require files remaining available in discord or github, so not gauranteed to work.  I may periodically add or change what's included with this option as new mods are released.  
 
