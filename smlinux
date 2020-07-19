@@ -1,7 +1,7 @@
 #!/bin/bash
 # This should do everything required to build & install under Ubuntu and update itself.
 # Other distros edit config file when prompted to change Linux= to command to get dependencies.
-# 2020-0719-1418
+# 2020-0719-1517
 
 domake(){ 
 	if ((TARGET_WEB)); then 
@@ -522,7 +522,8 @@ fi
 echo
 echo [3] Downloading "$REPO" source from github... 
 if [ -d ~/"$REPO" ] ; then
-	mv ~/"$REPO" ~/"$REPO"-"$(date -r ~/"$REPO" +"%Y%m%d_%H%M%S")"
+	TIMESTAMP=(date -r ~/"$REPO" +"%Y%m%d_%H%M%S")
+	mv ~/"$REPO" ~/"$REPO"-"$TIMESTAMP"
 	echo Existing "$REPO" directory renamed.  
 else 	NOOLD=1
 fi
@@ -543,7 +544,12 @@ if [ ! -d ~/"$REPO" ]; then
 fi
 
 cd "$LAUNCH_DIR"
-cp "$1" ~/"$REPO"/baserom."$VERSION".z64 
+if [ -f "$1" ]; then
+	cp "$1" ~/"$REPO"/baserom."$VERSION".z64 
+else
+	cp ~/"$REPO"-"$TIMESTAMP"/baserom."$VERSION".z64 ~/"$REPO" 
+fi
+
 if [ "$REPO" = "sm64nx" ] && [ "$NOOLD" = "1" ]; then
 	if [ -f /usr/bin/mplayer ] && [ -f ~/sm64ex/sound/samples/sfx_mario_peach/0D.aiff ]; then
 		sh -c 'mplayer -nolirc -really-quiet ~/sm64ex/sound/samples/sfx_mario_peach/13.aiff&'
