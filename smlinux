@@ -1,7 +1,7 @@
 #!/bin/bash
 # This should do everything required to build & install under Ubuntu and update itself.
 # Other distros edit config file when prompted to change Linux= to command to get dependencies.
-# 2020-0718-1444
+# 2020-0719-1418
 
 domake(){ 
 	if ((TARGET_WEB)); then 
@@ -542,7 +542,7 @@ if [ ! -d ~/"$REPO" ]; then
 	exit
 fi
 
-cd $LAUNCH_DIR
+cd "$LAUNCH_DIR"
 cp "$1" ~/"$REPO"/baserom."$VERSION".z64 
 if [ "$REPO" = "sm64nx" ] && [ "$NOOLD" = "1" ]; then
 	if [ -f /usr/bin/mplayer ] && [ -f ~/sm64ex/sound/samples/sfx_mario_peach/0D.aiff ]; then
