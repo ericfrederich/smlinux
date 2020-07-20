@@ -1,7 +1,9 @@
 #!/bin/bash
 # This should do everything required to build & install under Ubuntu and update itself.
-# Other distros edit config file when prompted to change Linux= to command to get dependencies.
-# 2020-0719-1954
+# Other distros edit config file when prompted to change Linux= to command to get your dependencies.
+# Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
+# or if you have another distro to add.
+# 2020-0719-2020
 
 domake(){ 
 	if ((TARGET_WEB)); then 
@@ -231,6 +233,7 @@ if [ ! -f ~/.smlinuxUpdate ]; then
 			cd "$LAUNCH_DIR"
 			exec ~/.smlinuxUpdate "$@"
 			fi
+		else    echo Already up to date.
 		fi
 	fi
 fi
@@ -482,6 +485,7 @@ if [ -f "$1" ]||[ -f "$LAUNCH_DIR"/"$1" ]; then
 		else
 			echo [1] This is not first install, skipping dependencies...
 		fi
+		echo
 		echo [2] Checking for Script Updates from Github...
 		if ((AutoUpdate)); 
 			then scriptUpdate "$@"
