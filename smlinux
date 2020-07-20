@@ -1,7 +1,7 @@
 #!/bin/bash
 # This should do everything required to build & install under Ubuntu and update itself.
 # Other distros edit config file when prompted to change Linux= to command to get dependencies.
-# 2020-0719-1517
+# 2020-0719-1954
 
 domake(){ 
 	if ((TARGET_WEB)); then 
@@ -336,7 +336,7 @@ if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ] || ((($TARGET
 		exit
 	fi
 	cd ~/"$REPO"
-	echo Checking for SM64 repo updates on Github...
+	echo Checking for "$REPO" repo updates on Github...
 	git checkout "$Branch"
 	git fetch
 	if [ "$(git diff HEAD origin/HEAD)" != "" ]; then git merge
