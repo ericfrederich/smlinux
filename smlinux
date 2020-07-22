@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0719-2020
+# 2020-0721-1900
 
 domake(){ 
 	if ((TARGET_WEB)); then 
@@ -122,7 +122,7 @@ dohd(){
 			if [ ! -d ~/"$REPO"/build ] ; then mkdir ~/"$REPO"/build
 			fi
 			mkdir ~/"$REPO"/build/"$VERSION"_pc
-			git clone https://github.com/CrashCrod/Cleaner-Aesthetics.git ~/"$REPO"/build/"$VERSION"_pc/res
+			git clone --single-branch https://github.com/CrashCrod/Cleaner-Aesthetics.git ~/"$REPO"/build/"$VERSION"_pc/res
 			cd ~/"$REPO"/build/"$VERSION"_pc/res	
 			wget https://github.com/MapAnon/sm64-pc-hq-sounds/releases/download/5.1/hq_sounds_v5.1.zip
 			wget https://cdn.discordapp.com/attachments/711253314855108629/712146686834638890/sm64.png
@@ -178,7 +178,7 @@ if [ ! -f ~/.smlinuxUpdate ]; then
 			fi
 			mv -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc.baq
 		fi
-		git clone https://github.com/enigma9o7/smlinux.git ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc
+		git clone --single-branch https://github.com/enigma9o7/smlinux.git ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc
 		if [ -d ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc.baq ]; then
 			cp -Rn ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc.baq/* ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/
 			rm -rf ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc.baq
