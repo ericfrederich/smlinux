@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0721-1900
+# 2020-0723-1908
 
 domake(){ 
 	if ((TARGET_WEB)); then 
@@ -107,7 +107,7 @@ dohd(){
 		wget https://cdn.discordapp.com/attachments/730416836780490752/730425308989227158/arredondo.pak
 		mkdir ~/"$REPO"/build/"$VERSION"_pc/romfs/"~SGI Models"
 		cd ~/"$REPO"/build/"$VERSION"_pc/romfs/"~SGI Models"
-		wget https://cdn.discordapp.com/attachments/730551213376143431/733412649894674553/sgi13.pak
+		wget https://cdn.discordapp.com/attachments/730416836780490752/730645970693652591/sgi1.2.pak
 		mkdir ~/"$REPO"/build/"$VERSION"_pc/romfs/"~OWO Mod"
 		cd ~/"$REPO"/build/"$VERSION"_pc/romfs/"~OWO Mod"
 		wget https://cdn.discordapp.com/attachments/730416836780490752/730420038024036362/owo.pak
