@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0723-1908
+# 2020-0724-2341
 
 domake(){ 
 	if ((TARGET_WEB)); then 
@@ -387,7 +387,7 @@ if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ] || ((($TARGET
 		sh -c 'mplayer -nolirc -really-quiet ~/'"$REPO"'/sound/samples/sfx_mario/0C.aiff&'
 	fi
 	domake
-	if [ ! -f ~/"$REPO"/build/"$VERSION"_pc/sm64."$VERSION".f3dex2e ] && [ "$TARGET_WEB" = "0" ] ; then
+	if [ ! -f ~/"$REPO"/build/"$VERSION"_pc/sm64."$VERSION".f3dex2e ] && [ "$TARGET_WEB" = "0" ]; then
 		echo
 		echo ERROR: You do not have the expected binary ~/"$REPO"/build/"$VERSION"_pc/sm64."$VERSION".f3dex2e
 		if [ -d ~/"$REPO"/build/"$VERSION"_pc.old ]; then
@@ -399,7 +399,7 @@ if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ] || ((($TARGET
 		fi
 		echo "Script Exiting incomplete.  Contact #help-desk for support."
 		exit
-	elif [ ! -f ~/"$REPO"/build/"$VERSION"_web/sm64."$VERSION".f3dex2e.html ] && [ "$TARGET_WEB" = "1" ] ; then
+	elif [ ! -f ~/"$REPO"/build/"$VERSION"_web/sm64."$VERSION".f3dex2e.html ] && [ "$TARGET_WEB" = "1" ]; then
 		echo
 		echo ERROR: You do not have the expected html ~/"$REPO"/build/"$VERSION"_web/sm64."$VERSION".f3dex2e.html
 		if [ -d ~/"$REPO"/build/"$VERSION"_web.old ]; then
