@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0725-0224
+# 2020-0725-0950
 
 domake(){ 
 	if ((TARGET_WEB)); then 
@@ -54,6 +54,7 @@ Linux="sudo apt install -y build-essential git python3 libaudiofile-dev libglew-
 	}
 
 loadconfig(){
+	REPO=sm64pc
 	TARGET_WEB=0
 	TEXTSAVES=0
 	source ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinuxcfg.txt
@@ -72,6 +73,9 @@ loadconfig(){
 				echo WARNING: Unlimited jobs removed cuz emsdk cache doesnt behave well. 
 			fi
 		fi
+	fi
+	if [ ! `arch` = "x86_64" ]; then
+		DISCORDRPC=0
 	fi
 	}
 
@@ -148,10 +152,10 @@ dohd(){
 			elif [ "$REPO" = "sm64ex" ] || [ "$REPO" = "sm64-port" ]; then
 				git apply enhancements/3d_coin_v2_nightly.patch --ignore-whitespace
 		fi	fi
-		if [ -f ~/"$REPO"/enhancements/60fps_ex.patch ]; then
+		if [ -f ~/"$REPO"/enhancements/60fps_ex.patch ] && [ `arch` = "x86_64" ]; then
 			git apply enhancements/60fps_ex.patch
 			sed -i 's/vsync false/vsync true/g' ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64config.txt
-		elif [ -f ~/"$REPO"/enhancements/60fps.patch ]; then
+		elif [ -f ~/"$REPO"/enhancements/60fps.patch ] && [ `arch` = "x86_64" ]; then
 			git apply enhancements/60fps.patch
 			sed -i 's/vsync false/vsync true/g' ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64config.txt
 		fi
@@ -159,18 +163,6 @@ dohd(){
 	}
 
 scriptUpdate(){
-# do stuff if the config file is still pre official repo version
-if [ -z $REPO ]; then
-	REPO=sm64pc
-	rm ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinuxcfg.txt
-	mv ${XDG_DATA_HOME:-$HOME/.local/share}/icons/sm64.png ${XDG_DATA_HOME:-$HOME/.local/share}/icons/"$REPO".png
-	rm ${XDG_DATA_HOME:-$HOME/.local/share}/applications/sm64.desktop
-	rm ${XDG_DESKTOP_DIR:-$HOME/Desktop}/sm64.desktop
-	makedesktop
-	whiptail --msgbox "This is the first time you've updated since the Official Repo for the PC Port (sm64-port) was made open source.  Previously this script only supported the sm64pc repo which was forked from an earlier leaked version.  You now have the option to build from the official repo with this script by setting REPO in the smlinux configuration file to sm64-port.  Both builds can coexist and you can change your config file anytime to build or update either.  Note if you do change repo to sm64-port you should also set your branch to master.\n\nBecause of this change, your smlinux config file has been reset to default.  You will be prompted to confirm your build options." 17 75
-	cd "$LAUNCH_DIR"
-	exec smlinux "$@"
-fi
 if [ ! -f ~/.smlinuxUpdate ]; then 
 	if [ ! -f "${MAPFILE[0]}"/smlinux ]; then
 		echo Installing Script... 		
