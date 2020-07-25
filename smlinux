@@ -3,13 +3,11 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0725-0950
+# 2020-0725-1048
 
 domake(){ 
 	if ((TARGET_WEB)); then 
 		loademsdk
-		EXTERNAL_DATA=0
-		DISCORDRPC=0
 		if ((InstallHD)); then
 			sed -i 's/TOTAL_MEMORY=20MB/TOTAL_MEMORY=25MB/g' ~/"$REPO"/Makefile
 		fi
@@ -29,7 +27,6 @@ domake(){
 	}
 
 makeconfig(){
-echo Creating ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinuxcfg.txt
 echo '#[sm64pc/sm64ex] These settings only apply to sm64pc/sm64ex fork.
 BETTERCAMERA=1
 NODRAWINGDISTANCE=1
@@ -75,6 +72,10 @@ loadconfig(){
 		fi
 	fi
 	if [ ! `arch` = "x86_64" ]; then
+		DISCORDRPC=0
+	fi
+	if ((TARGET_WEB)); then 
+		EXTERNAL_DATA=0
 		DISCORDRPC=0
 	fi
 	}
@@ -300,6 +301,7 @@ fi
 if [ ! -d ${XDG_DATA_HOME:-$HOME/.local/share}/applications ]; then mkdir ${XDG_DATA_HOME:-$HOME/.local/share}/applications
 fi
 if [ ! -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinuxcfg.txt ]; then
+	echo Creating ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinuxcfg.txt
 	makeconfig
 	doconfig
 elif [ "$2" = "config" ] || [ "$2" = "--config" ] || [ "$3" = "--config" ] || [ "$3" = "config" ]; then
