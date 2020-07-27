@@ -3,10 +3,10 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0727-0153
+# 2020-0727-0158
 
 domake(){ 
-	if "$TARGET_WEB" = 1; then 
+	if [ "$TARGET_WEB" = 1 ]; then 
 		loademsdk
 		if "$InstallHD" = 1; then
 			sed -i 's/TOTAL_MEMORY=20MB/TOTAL_MEMORY=25MB/g' ~/"$REPO"/Makefile
@@ -396,7 +396,7 @@ if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ] || ( [ "$TARG
 		mv ~/"$REPO"/build/"$VERSION"_web ~/"$REPO"/build/"$VERSION"_web.old
 	fi
 	
-	if [ "$2" = "--hd" ] || [ "$2" = "--HD" ] || [ "$3" = "--hd" ] || [ "$3" = "--HD" ] || [ "$UpdateHD" = 1]; then
+	if [ "$2" = "--hd" ] || [ "$2" = "--HD" ] || [ "$3" = "--hd" ] || [ "$3" = "--HD" ] || [ "$UpdateHD" = 1 ]; then
 		echo Adding Community Enhancements...
 		dohd
 	fi	
@@ -456,7 +456,7 @@ if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ] || ( [ "$TARG
 	sleep 10
 	echo
 	echo Script Done.  You may exit or close this terminal window.
-	if [ "$TARGET_WEB" = 1]; then
+	if [ "$TARGET_WEB" = 1 ]; then
 		echo Python Webserver will remain running until it is closed.
 	fi
 	echo
