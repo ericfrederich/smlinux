@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0727-0002
+# 2020-0727-0042
 
 domake(){ 
 	if ((TARGET_WEB)); then 
@@ -102,6 +102,22 @@ loademsdk(){
 		./emsdk activate latest
 	fi
 	source ~/emsdk/emsdk_env.sh
+	}
+
+prepnx(){
+	mkdir ~/"$REPO"/build
+	mkdir ~/"$REPO"/build/"$VERSION"_pc
+	mkdir ~/"$REPO"/build/"$VERSION"_pc/romfs
+	ln -s ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64.sav ~/"$REPO"/build/"$VERSION"_pc/sm64.sav 
+	ln -s ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64.log ~/"$REPO"/build/"$VERSION"_pc/sm64.log 
+	ln -s ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/conf.bin ~/"$REPO"/build/"$VERSION"_pc/conf.bin 
+	ln -s ~/"$REPO"/baserom."$VERSION".z64 ~/"$REPO"/build/"$VERSION"_pc/baserom."$VERSION".z64
+	cd ~/"$REPO"/tools
+	make "$JOBS"
+	cd ~/"$REPO"/import
+	echo Extracting Assets from ROM...
+	python3 extract_assets.py
+	python3 ../scripts/pak.py --source . --output ~/"$REPO"/build/"$VERSION"_pc/romfs/'!!base.pak'
 	}
 
 dohd(){ 
@@ -429,12 +445,21 @@ if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ] || ((($TARGET
 		cp -rpn ~/"$REPO"/build/"$VERSION"_pc.old/romfs/. ~/"$REPO"/build/"$VERSION"_pc/romfs
 		cp ~/"$REPO"/build/"$VERSION"_pc.old/sm64.sav ~/"$REPO"/build/"$VERSION"_pc/
 		cp ~/"$REPO"/build/"$VERSION"_pc.old/conf.bin ~/"$REPO"/build/"$VERSION"_pc/
+	else
+		prepnx		
 	fi
 	echo Update Complete.  Testing Application...
 	if [ ! -f ${XDG_DATA_HOME:-$HOME/.local/share}/applications/"$REPO".desktop ]; then
 		makedesktop
 	fi
 	rungame
+	sleep 10
+	echo
+	echo Script Done.  You may exit or close this terminal window.
+	if ((TARGET_WEB)); then
+		echo Python Webserver will remain running until it is closed.
+	fi
+	echo
 	exit
 fi
 
@@ -570,20 +595,8 @@ if [ "$REPO" = "sm64nx" ] && [ "$NOOLD" = "1" ]; then
 	fi
 	pip3 install pillow zstandard tqdm xxhash
 
-elif [ "$REPO" = "sm64nx" ]; then	
-	mkdir ~/"$REPO"/build
-	mkdir ~/"$REPO"/build/"$VERSION"_pc
-	mkdir ~/"$REPO"/build/"$VERSION"_pc/romfs
-	ln -s ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64.sav ~/"$REPO"/build/"$VERSION"_pc/sm64.sav 
-	ln -s ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64.log ~/"$REPO"/build/"$VERSION"_pc/sm64.log 
-	ln -s ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/conf.bin ~/"$REPO"/build/"$VERSION"_pc/conf.bin 
-	ln -s ~/"$REPO"/baserom."$VERSION".z64 ~/"$REPO"/build/"$VERSION"_pc/baserom."$VERSION".z64
-	cd ~/"$REPO"/tools
-	make "$JOBS"
-	cd ~/"$REPO"/import
-	echo Extracting Assets from ROM...
-	python3 extract_assets.py
-	python3 ../scripts/pak.py --source . --output ~/"$REPO"/build/"$VERSION"_pc/romfs/'!!base.pak'
+elif [ "$REPO" = "sm64nx" ]; then
+	prepnx	
 else	cd ~/"$REPO"
 	echo Extracting Assets from ROM...
 	./extract_assets.py "$VERSION"
