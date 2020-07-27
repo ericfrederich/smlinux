@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0726-2326
+# 2020-0727-0002
 
 domake(){ 
 	if ((TARGET_WEB)); then 
@@ -12,7 +12,7 @@ domake(){
 			sed -i 's/TOTAL_MEMORY=20MB/TOTAL_MEMORY=25MB/g' ~/"$REPO"/Makefile
 		fi
 	fi
-	if [ "$REPO" = "sm6nx" ]; then
+	if [ "$REPO" = "sm64nx" ]; then
 		sed -i 's/-no-pie -lpthread -lzstd/-no-pie -lpthread -lzstd -lstdc++fs/g' ~/"$REPO"/Makefile
 	fi
 	cd ~/"$REPO"
