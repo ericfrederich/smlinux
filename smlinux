@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0727-1656
+# 2020-0727-1658
 
 domake(){ 
 	if [ "$TARGET_WEB" = 1 ]; then 
@@ -445,7 +445,7 @@ if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ] || ( [ "$TARG
 		cp -rpn ~/"$REPO"/build/"$VERSION"_pc.old/romfs/. ~/"$REPO"/build/"$VERSION"_pc/romfs
 		cp ~/"$REPO"/build/"$VERSION"_pc.old/sm64.sav ~/"$REPO"/build/"$VERSION"_pc/
 		cp ~/"$REPO"/build/"$VERSION"_pc.old/conf.bin ~/"$REPO"/build/"$VERSION"_pc/
-	elif [ "$REPO" = "sm64nx" ]
+	elif [ "$REPO" = "sm64nx" ]; then
 		prepnx
 		if [ "$InstallHD" = 1 ]; then
 			dohd
