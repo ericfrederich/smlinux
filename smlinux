@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0727-2337
+# 2020-0728-1402
 
 domake(){ 
 	if [ "$TARGET_WEB" = 1 ]; then 
@@ -434,6 +434,7 @@ if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ] || ( [ "$TARG
 			mv ~/"$REPO"/build/"$VERSION"_pc.old ~/"$REPO"/build/"$VERSION"_pc
 		fi
 		echo "Script Exiting incomplete.  Contact #help-desk for support."
+		xdg-open https://discord.gg/B7x4svT &disown
 		exit
 	elif [ ! -f ~/"$REPO"/build/"$VERSION"_web/sm64."$VERSION".f3dex2e.html ] && [ "$TARGET_WEB" = "1" ]; then
 		echo
@@ -446,6 +447,7 @@ if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ] || ( [ "$TARG
 			mv ~/"$REPO"/build/"$VERSION"_web.old ~/"$REPO"/build/"$VERSION"_web
 		fi
 		echo "Script Exiting incomplete.  Contact #help-desk for support."
+		xdg-open https://discord.gg/B7x4svT &disown
 		exit
 	fi
 	if [ -d ~/"$REPO"/build/"$VERSION"_pc.old/res ] && [ "$TARGET_WEB" = "0" ]; then
@@ -583,7 +585,8 @@ fi
 
 if [ ! -d ~/"$REPO" ]; then
 	echo "ERROR: Could not reach github.  "
-	echo "Script Ending Incomplete.  Contact #Help-Desk."
+	echo "Script Ending Incomplete.  Contact #help-desk for support."
+	xdg-open https://discord.gg/B7x4svT &disown
 	exit
 fi
 
@@ -626,7 +629,8 @@ echo [5] Compiling...
 domake
 if [ ! -f ~/"$REPO"/build/"$VERSION"_pc/sm64."$VERSION".f3dex2e ]; then
 	echo ERROR: You do not have the expected binary ~/"$REPO"/build/"$VERSION"_pc/sm64."$VERSION".f3dex2e
-	echo "Script Exiting incomplete.  Contact #help-desk"
+	echo "Script Exiting incomplete.  Contact #help-desk for support."
+	xdg-open https://discord.gg/B7x4svT &disown
 	exit
 fi
 
