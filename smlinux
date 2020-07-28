@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0727-1658
+# 2020-0727-1938
 
 domake(){ 
 	if [ "$TARGET_WEB" = 1 ]; then 
@@ -31,6 +31,24 @@ domake(){
 		git checkout Makefile
 	fi
 	}
+
+gcccheck(){
+	if gcc --version | awk '/gcc/ && ($3+0)>8'; then
+		echo gcc 8 confirmed
+	else
+		sudo apt install -y g++-8
+		sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-8 80 --slave /usr/bin/g++ g++ /usr/bin/g++-8 --slave /usr/bin/gcov gcov /usr/bin/gcov-8
+		if gcc --version | awk '/gcc/ && ($3+0)>8'; then
+			echo gcc 8 installed
+		else 
+			echo WARNING: Your C compiler is not new enough for sm64nx. 
+			echo gcc --version must report 8 or higher.  
+			echo Please install it then rerun smlinux, or use another repo.
+			echo
+			exit
+	fi	fi
+	}
+
 
 makeconfig(){
 echo '#[sm64pc/sm64ex] These settings only apply to sm64pc/sm64ex fork.
@@ -501,19 +519,12 @@ if [ -f "$1" ]||[ -f "$LAUNCH_DIR"/"$1" ]; then
 		echo Script Update Complete.
 	else	if [ ! -d ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/.git ]; then
 			echo [1] Installing required build tools...
-			$Linux
-			if gcc --version | awk '/gcc/ && ($3+0)>8'; then
- 				echo Dependencies Installed.
-			else
-				sudo apt install -y g++-8
-				if gcc --version | awk '/gcc/ && ($3+0)>8'; then
-					sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-8 80 --slave /usr/bin/g++ g++ /usr/bin/g++-8 --slave /usr/bin/gcov gcov /usr/bin/gcov-8
-					echo gcc updated by smlinux
-				else echo WARNING: Your C compiler is not new enough for sm64nx. Version 8 is required.
-				fi
-			fi	
+			$Linux			
 		else
 			echo [1] This is not first install, skipping dependencies...
+		fi
+		if [ "$REPO" = "sm64nx" ]; then
+			gcccheck
 		fi
 		echo
 		echo [2] Checking for Script Updates from Github...
@@ -588,19 +599,15 @@ if [ "$REPO" = "sm64nx" ] && [ "$NOOLD" = "1" ]; then
 		sh -c 'mplayer -nolirc -really-quiet ~/sm64ex/sound/samples/sfx_mario_peach/13.aiff&'
 	fi
 	echo		
-	echo NX Repo Requires a extras, including GCC 8+ and Python tools.  Only tested on Bodhi. 
+	echo sm64nx requires additional build tools, including GCC 8+, zstd dev libraries and some Python tools.  
 	echo Sudo password is required to proceed.
-	if gcc --version | awk '/gcc/ && ($3+0)>8'; then
- 		sudo apt install -y libzstd-dev
-	else
-		sudo apt install -y libzstd-dev g++-8
-		sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-8 80 --slave /usr/bin/g++ g++ /usr/bin/g++-8 --slave /usr/bin/gcov gcov /usr/bin/gcov-8
-	fi
+	sudo apt install -y libzstd-dev			# will error outside debian base
 	pip3 install pillow zstandard tqdm xxhash
-
+	gcccheck
+	prepnx
 elif [ "$REPO" = "sm64nx" ]; then
-	prepnx	
-else	cd ~/"$REPO"
+	prepnx
+else 	cd ~/"$REPO"
 	echo Extracting Assets from ROM...
 	./extract_assets.py "$VERSION"
 fi
