@@ -147,7 +147,7 @@ Arch:
 	sudo pacman -S base-devel python audiofile sdl2 glew python-zstandard python-pip 
 Debian / Ubuntu:  
 
-	sudo apt install -y build-essential git python3 libaudiofile-dev libglew-dev libsdl2-dev binutils libusb-1.0-0-dev libzstd-dev
+	sudo apt install -y build-essential git python3 libaudiofile-dev libglew-dev libsdl2-dev binutils libusb-1.0-0-dev libzstd-dev python3-pip
 Fedora  / Red Hat:
 
 	sudo dnf install make gcc python3 audiofile-devel glew-devel SDL2-devel
