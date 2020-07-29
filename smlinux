@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0728-1402
+# 2020-0728-2149
 
 domake(){ 
 	if [ "$TARGET_WEB" = 1 ]; then 
@@ -128,7 +128,9 @@ prepnx(){
 	mkdir ~/"$REPO"/build/"$VERSION"_pc/romfs
 	ln -s ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64.sav ~/"$REPO"/build/"$VERSION"_pc/sm64.sav 
 	ln -s ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64.log ~/"$REPO"/build/"$VERSION"_pc/sm64.log 
-	ln -s ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/conf.bin ~/"$REPO"/build/"$VERSION"_pc/conf.bin 
+	ln -s ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/conf.bin ~/"$REPO"/build/"$VERSION"_pc/conf.bin
+ 	ln -s ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/gamepad1.bindings.json ~/"$REPO"/build/"$VERSION"_pc/gamepad1.bindings.json
+	ln -s ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/keyboard1.bindings.json ~/"$REPO"/build/"$VERSION"_pc/keyboard1.bindings.json
 	ln -s ~/"$REPO"/baserom."$VERSION".z64 ~/"$REPO"/build/"$VERSION"_pc/baserom."$VERSION".z64
 	cd ~/"$REPO"/tools
 	make "$JOBS"
@@ -423,7 +425,7 @@ if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ] || ( [ "$TARG
 		sh -c 'mplayer -nolirc -really-quiet ~/'"$REPO"'/sound/samples/sfx_mario/0C.aiff&'
 	fi
 	domake
-	if [ ! -f ~/"$REPO"/build/"$VERSION"_pc/sm64."$VERSION".f3dex2e ] && [ "$TARGET_WEB" = "0" ]; then
+	if [ ! -f ~/"$REPO"/build/"$VERSION"_pc/sm64."$VERSION".f3dex2e ] && [ "$TARGET_WEB" = 0 ]; then
 		echo
 		echo ERROR: You do not have the expected binary ~/"$REPO"/build/"$VERSION"_pc/sm64."$VERSION".f3dex2e
 		if [ -d ~/"$REPO"/build/"$VERSION"_pc.old ]; then
@@ -436,7 +438,7 @@ if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ] || ( [ "$TARG
 		echo "Script Exiting incomplete.  Contact #help-desk for support."
 		xdg-open https://discord.gg/B7x4svT &disown
 		exit
-	elif [ ! -f ~/"$REPO"/build/"$VERSION"_web/sm64."$VERSION".f3dex2e.html ] && [ "$TARGET_WEB" = "1" ]; then
+	elif [ ! -f ~/"$REPO"/build/"$VERSION"_web/sm64."$VERSION".f3dex2e.html ] && [ "$TARGET_WEB" = 1 ]; then
 		echo
 		echo ERROR: You do not have the expected html ~/"$REPO"/build/"$VERSION"_web/sm64."$VERSION".f3dex2e.html
 		if [ -d ~/"$REPO"/build/"$VERSION"_web.old ]; then
@@ -450,7 +452,7 @@ if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ] || ( [ "$TARG
 		xdg-open https://discord.gg/B7x4svT &disown
 		exit
 	fi
-	if [ -d ~/"$REPO"/build/"$VERSION"_pc.old/res ] && [ "$TARGET_WEB" = "0" ]; then
+	if [ -d ~/"$REPO"/build/"$VERSION"_pc.old/res ] && [ "$TARGET_WEB" = 0 ]; then
 		echo Restoring External Resources...
 		cp -rpn ~/"$REPO"/build/"$VERSION"_pc.old/res/. ~/"$REPO"/build/"$VERSION"_pc/res
 	fi
@@ -461,10 +463,13 @@ if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ] || ( [ "$TARG
 	fi
 	if [ -d ~/"$REPO"/build/"$VERSION"_pc.old/romfs ]; then
 		echo "Restoring Savefile, ROM and ROM Filesystem (paks)"
-		cp ~/"$REPO"/build/"$VERSION"_pc.old/baserom."$VERSION".z64 ~/"$REPO"/build/"$VERSION"_pc/
 		cp -rpn ~/"$REPO"/build/"$VERSION"_pc.old/romfs/. ~/"$REPO"/build/"$VERSION"_pc/romfs
-		cp ~/"$REPO"/build/"$VERSION"_pc.old/sm64.sav ~/"$REPO"/build/"$VERSION"_pc/
-		cp ~/"$REPO"/build/"$VERSION"_pc.old/conf.bin ~/"$REPO"/build/"$VERSION"_pc/
+		ln -s ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64.sav ~/"$REPO"/build/"$VERSION"_pc/sm64.sav 
+		ln -s ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64.log ~/"$REPO"/build/"$VERSION"_pc/sm64.log 
+		ln -s ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/conf.bin ~/"$REPO"/build/"$VERSION"_pc/conf.bin
+	 	ln -s ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/gamepad1.bindings.json ~/"$REPO"/build/"$VERSION"_pc/gamepad1.bindings.json
+		ln -s ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/keyboard1.bindings.json ~/"$REPO"/build/"$VERSION"_pc/keyboard1.bindings.json
+		ln -s ~/"$REPO"/baserom."$VERSION".z64 ~/"$REPO"/build/"$VERSION"_pc/baserom."$VERSION".z64
 	elif [ "$REPO" = "sm64nx" ]; then
 		prepnx
 		if [ "$InstallHD" = 1 ]; then
