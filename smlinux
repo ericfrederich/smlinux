@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0728-2319
+# 2020-0728-2326
 
 domake(){ 
 	if [ "$TARGET_WEB" = 1 ]; then 
@@ -71,7 +71,7 @@ InstallHD=1
 UpdateHD=0
 TARGET_WEB=0
 JOBS=-j
-Linux="sudo apt install -y build-essential git python3 libaudiofile-dev libglew-dev libsdl2-dev binutils libusb-1.0-0-dev libzstd-dev"'> ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinuxcfg.txt
+Linux="sudo apt install -y build-essential git python3 libaudiofile-dev libglew-dev libsdl2-dev binutils libusb-1.0-0-dev libzstd-dev python3-pip"'> ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinuxcfg.txt
 	}
 
 loadconfig(){
@@ -615,9 +615,9 @@ if [ "$REPO" = "sm64nx" ] && [ "$NOOLD" = "1" ]; then
 		sh -c 'mplayer -nolirc -really-quiet ~/sm64ex/sound/samples/sfx_mario_peach/13.aiff&'
 	fi
 	echo		
-	echo sm64nx requires additional build tools, including GCC 8+, zstd dev libraries and some Python tools.  
+	echo sm64nx requires additional build tools, including GCC 8+, zstd dev libraries and python3-pip tools.  
 	echo Sudo password is required to proceed.
-	sudo apt install -y libzstd-dev			# will error outside debian base
+	sudo apt install -y libzstd-dev python3-pip			# will error outside debian base
 	pip3 install pillow zstandard tqdm xxhash
 	gcccheck
 	prepnx
