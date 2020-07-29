@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0728-2149
+# 2020-0728-2248
 
 domake(){ 
 	if [ "$TARGET_WEB" = 1 ]; then 
@@ -33,12 +33,12 @@ domake(){
 	}
 
 gcccheck(){
-	if gcc --version | awk '/gcc/ && ($3+0)>8'; then
-		echo gcc 8 confirmed
+	if [ `gcc -dumpversion` \> 7.99 ]; then
+		echo gcc 8 or higher confirmed
 	else
 		sudo apt install -y g++-8
 		sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-8 80 --slave /usr/bin/g++ g++ /usr/bin/g++-8 --slave /usr/bin/gcov gcov /usr/bin/gcov-8
-		if gcc --version | awk '/gcc/ && ($3+0)>8'; then
+		if [ `gcc -dumpversion` \> 7.99 ]; then
 			echo gcc 8 installed
 		else 
 			echo WARNING: Your C compiler is not new enough for sm64nx. 
