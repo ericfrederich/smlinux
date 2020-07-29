@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0728-2248
+# 2020-0728-2319
 
 domake(){ 
 	if [ "$TARGET_WEB" = 1 ]; then 
@@ -138,6 +138,13 @@ prepnx(){
 	echo Extracting Assets from ROM...
 	python3 extract_assets.py
 	python3 ../scripts/pak.py --source . --output ~/"$REPO"/build/"$VERSION"_pc/romfs/'!!base.pak'
+	if [ ! -f ~/"$REPO"/build/"$VERSION"_pc/romfs/'!!base.pak' ]; then
+		echo 
+		echo Unable to extract and pak ROM.
+		echo "Script Exiting incomplete.  Contact #help-desk for support."
+		xdg-open https://discord.gg/B7x4svT &disown
+		exit
+	fi
 	}
 
 dohd(){ 
@@ -279,7 +286,9 @@ fi
 makedesktop(){
 if [ ! -f ${XDG_DATA_HOME:-$HOME/.local/share}/icons/"$REPO".* ]; then
 	echo WARNING: Icon for desktop shortcut not found!
-	cp ~/"$REPO"/textures/segment2/segment2.05A00.rgba16.png ${XDG_DATA_HOME:-$HOME/.local/share}/icons/"$REPO".png
+		if [ -f ~/"$REPO"/textures/segment2/segment2.05A00.rgba16.png ]; then
+			cp ~/"$REPO"/textures/segment2/segment2.05A00.rgba16.png ${XDG_DATA_HOME:-$HOME/.local/share}/icons/"$REPO".png
+		fi
 	if [ "$REPO" = "sm64-port" ] || [ "$REPO" = "sm64nx" ]; then 
 		wget https://cdn.discordapp.com/attachments/711253314855108629/719215654837682226/Super_Mario_64.png
 		mv Super_Mario_64.png ${XDG_DATA_HOME:-$HOME/.local/share}/icons/"$REPO".png
@@ -288,7 +297,6 @@ if [ ! -f ${XDG_DATA_HOME:-$HOME/.local/share}/icons/"$REPO".* ]; then
 	fi	
 fi
 if [ ! -f ${XDG_DATA_HOME:-$HOME/.local/share}/applications/"$REPO".desktop ]; then
-	echo Creating Menu Entry and Desktop Shortcut...
 	echo '[Desktop Entry]
 Encoding=UTF-8
 Type=Application
@@ -639,9 +647,11 @@ if [ ! -f ~/"$REPO"/build/"$VERSION"_pc/sm64."$VERSION".f3dex2e ]; then
 	exit
 fi
 
-echo [6] Echo Creating Desktop Shortcut and Menu Entry
+echo
+echo [6] Echo Creating Desktop Shortcut and Menu Entry...
 makedesktop
 
+echo
 echo [7] Build Succesful!  Testing Application Launch Via Shortcut...
 rungame
 if [ -f ~/.smlinuxNopath ]; then
