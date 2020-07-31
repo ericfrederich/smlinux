@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0731-1341
+# 2020-0731-1556
 
 domake(){ 
 	if [ "$TARGET_WEB" = 1 ]; then 
@@ -35,7 +35,8 @@ domake(){
 gcccheck(){
 	if [ `gcc -dumpversion` \> 7.99 ]; then
 		echo gcc 8 or higher confirmed
-	else
+	else # 
+		echo Attempting to install gcc 8 - this will most likely only work for Ubuntu based distros.
 		sudo apt install -y g++-8
 		sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-8 80 --slave /usr/bin/g++ g++ /usr/bin/g++-8 --slave /usr/bin/gcov gcov /usr/bin/gcov-8
 		if [ `gcc -dumpversion` \> 7.99 ]; then
@@ -152,7 +153,7 @@ prepnx(){
 	ln -s ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/conf.bin ~/"$REPO"/build/"$VERSION"_pc/conf.bin
  	ln -s ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/gamepad1.bindings.json ~/"$REPO"/build/"$VERSION"_pc/gamepad1.bindings.json
 	ln -s ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/keyboard1.bindings.json ~/"$REPO"/build/"$VERSION"_pc/keyboard1.bindings.json
-	ln -s ~/"$REPO"/baserom."$VERSION".z64 ~/"$REPO"/build/"$VERSION"_pc/baserom."$VERSION".z64
+	ln -s ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/baserom."$VERSION".z64 ~/"$REPO"/build/"$VERSION"_pc/baserom."$VERSION".z64
 	cd ~/"$REPO"/tools
 	make "$JOBS"
 	cd ~/"$REPO"/import
@@ -375,7 +376,7 @@ if [ ! -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinuxcfg.txt ]; then
 	echo Creating ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinuxcfg.txt
 	makeconfig
 	doconfig
-elif [ "$2" = "config" ] || [ "$2" = "--config" ] || [ "$3" = "--config" ] || [ "$3" = "config" ]; then
+elif [ "$1" = "config" ] || [ "$2" = "config" ] || [ "$2" = "--config" ] || [ "$3" = "--config" ] || [ "$3" = "config" ]; then
 	if [ ! -f ~/.smlinuxUpdate ]; then 
 		doconfig
 	fi
@@ -498,7 +499,7 @@ if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ] || ( [ "$TARG
 		ln -s ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/conf.bin ~/"$REPO"/build/"$VERSION"_pc/conf.bin
 	 	ln -s ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/gamepad1.bindings.json ~/"$REPO"/build/"$VERSION"_pc/gamepad1.bindings.json
 		ln -s ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/keyboard1.bindings.json ~/"$REPO"/build/"$VERSION"_pc/keyboard1.bindings.json
-		ln -s ~/"$REPO"/baserom."$VERSION".z64 ~/"$REPO"/build/"$VERSION"_pc/baserom."$VERSION".z64
+		ln -s ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/baserom."$VERSION".z64 ~/"$REPO"/build/"$VERSION"_pc/baserom."$VERSION".z64
 	elif [ "$REPO" = "sm64nx" ]; then
 		prepnx
 		if [ "$InstallHD" = 1 ]; then
@@ -522,52 +523,57 @@ fi
 
 if [ "$1" = "--purge" ] || [ "$1" = "purge" ]; then
 	
-	echo Note this does not remove any packages installed as build tools or dependencies.
-	echo Remove those with your package manager.  Devel libraries can always safely be removed.
-	echo This also does not remove or restore any prior sm64pc folders backed up if you 
-	echo installed more that once.  Just delete those folders manually from any file manager.
-	echo And of course you must delete this script itself from "${MAPFILE[0]}"
+	echo Wiping...
 	rm -rf ~/sm64pc
+	rm -rf ~/sm64ex
+	rm -rf ~/sm64-port
+	rm -rf ~/sm64nx
 	rm -rf ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc
-	rm ${XDG_DATA_HOME:-$HOME/.local/share}/icons/sm64pc.*
-	rm ${XDG_DATA_HOME:-$HOME/.local/share}/applications/sm64pc.desktop
-	rm ${XDG_DESKTOP_DIR:-$HOME/Desktop}/sm64pc.desktop
+	rm -rf ${XDG_DATA_HOME:-$HOME/.local/share}/sm64ex	
+	rm -rf ${XDG_DATA_HOME:-$HOME/.local/share}/sm64-port
+	rm -rf ${XDG_DATA_HOME:-$HOME/.local/share}/sm64nx
+	rm ${XDG_DATA_HOME:-$HOME/.local/share}/icons/sm64*
+	rm ${XDG_DATA_HOME:-$HOME/.local/share}/applications/sm64*
+	rm ${XDG_DESKTOP_DIR:-$HOME/Desktop}/sm64*
 	rm ${XDG_DATA_HOME:-$HOME/.local/share}/icons/sm64.*
 	rm ${XDG_DATA_HOME:-$HOME/.local/share}/applications/sm64.desktop
 	rm ${XDG_DESKTOP_DIR:-$HOME/Desktop}/sm64.desktop
-	rm -rf ~/sm64-port
-	rm -rf ${XDG_DATA_HOME:-$HOME/.local/share}/sm64-port
-	rm ${XDG_DATA_HOME:-$HOME/.local/share}/icons/sm64-port.*
-	rm ${XDG_DATA_HOME:-$HOME/.local/share}/applications/sm64-port.desktop
-	rm ${XDG_DESKTOP_DIR:-$HOME/Desktop}/sm64-port.desktop
-	rm -rf ~/sm64nx
-	rm -rf ${XDG_DATA_HOME:-$HOME/.local/share}/sm64nx
-	rm ${XDG_DATA_HOME:-$HOME/.local/share}/icons/sm64nx.*
-	rm ${XDG_DATA_HOME:-$HOME/.local/share}/applications/sm64nx.desktop
-	rm ${XDG_DESKTOP_DIR:-$HOME/Desktop}/sm64nx.desktop
+	echo Note this did not remove any packages installed as build tools or dependencies.
+	echo Remove those with your package manager.  Devel libraries can always safely be removed.
+	echo This also did not remove any sm64p folders automatically backed up if you fresh
+	echo installed more that once.  Just delete those folders manually from any file manager.
+	echo And of course you must delete this script itself from "${MAPFILE[0]}"
         exit
 fi
 
-if [ -f "$1" ]||[ -f "$LAUNCH_DIR"/"$1" ]; then
+if [ -f "$1" ]||[ -f "$LAUNCH_DIR"/"$1" ]||([ -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/baserom."$VERSION".z64] && [ "$1" = "build" ]); then
 	echo
 	if [ -f ~/.smlinuxUpdate ]; then 
 		rm ~/.smlinuxUpdate
 		echo Script Update Complete.
-	else	if [ ! -d ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/.git ]; then
+	else	# Fresh Build
+		if [ ! -d ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/.git ] || [ "$2" = "--depends" ] || [ "$3" = "--depends" ]; then
 			echo [1] Installing required build tools...
-			$Linux			
+			$Linux
+			if [ "$REPO" = "sm64nx" ] ; then
+				pip3 install pillow zstandard tqdm xxhash
+				gcccheck
+			fi			
+		elif [ "$REPO" = "sm64nx" ] && [ ! ~/"$REPO" ]; then
+			echo [1] Installing required build tools for nx...
+			pip3 install pillow zstandard tqdm xxhash
+			gcccheck
 		else
 			echo [1] This is not first install, skipping dependencies...
+			fi
 		fi
-		if [ "$REPO" = "sm64nx" ]; then
-			gcccheck
-		fi
+		
 		echo
 		echo [2] Checking for Script Updates from Github...
 		if [ "$AutoUpdate" = 1 ]; 
 			then scriptUpdate "$@"
 		else
-			echo "Warning: AutoUpdate Disabled in Config File!"
+			echo "WARNING: AutoUpdate Disabled in Config File! You are using an old version!"
 		fi
 	fi
 else
@@ -575,20 +581,23 @@ else
 	echo "|                                                                             |"
 	echo "|      Super Mario 64 Install * Build * Update Script for Linux               |"
 	echo "|                                                                             |"
-	echo "| First Install: smlinux <romfile> <options>                                  |"
+	echo "| Very First Install: smlinux <romfile>                                       |"
 	echo "|  Examples:                                                                  |"
 	echo "|         smlinux ~/roms/n64/sm64.z64                                         |"
 	echo "|                         or                                                  |"
 	echo "|         smlinux \"Super Mario 64 (U) [!].z64\"                                |"
 	echo "|                                                                             |"
 	echo "| Update: smlinux update <options>                                            |" 
-	echo "|  Updates existing install from github, preserving external textures.        |"
+	echo "|  Updates source from github & rebuilds, preserving external resources.      |"
+	echo "|                                                                             |"
+	echo "| Fresh Build: smlinux build <options>                                        |"
+	echo "|  Gets new source from github and builds.                                    |"
 	echo "|                                                                             |"
 	echo "| Purge:  smlinux purge                                                       |"                 
 	echo "|  Removes all traces of installation previously created by this script.      |"
 	echo "|                                                                             |"
-	echo "| options: --hd also update community sourced upscale add-ons                 |"
-	echo "|          --config show config file before build (default on first install). |"
+	echo "| options: --config show config file before build (default on first install). |"
+	echo "|          --depends install depdendencies (default on first install)         |"
 	echo "|                                                                             |"
 	echo "-------------------------------------------------------------------------------"
 	echo	
@@ -602,11 +611,10 @@ fi
 
 echo
 echo [3] Downloading "$REPO" source from github... 
-if [ -d ~/"$REPO" ] ; then
+if [ -d ~/"$REPO" ]; then
 	TIMESTAMP=(date -r ~/"$REPO" +"%Y%m%d_%H%M%S")
 	mv ~/"$REPO" ~/"$REPO"-"$TIMESTAMP"
-	echo Existing "$REPO" directory renamed.  
-else 	NOOLD=1
+	echo WARNING: "$REPO" directory already exists!  Renamed to "$REPO"-"$TIMESTAMP". 
 fi
 cd
 if [ "$REPO" = "sm64nx" ]; then
@@ -626,26 +634,17 @@ fi
 
 cd "$LAUNCH_DIR"
 if [ -f "$1" ]; then
-	cp "$1" ~/"$REPO"/baserom."$VERSION".z64 
+	cp "$1" ~/"$REPO"/baserom."$VERSION".z64 ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/baserom."$VERSION".z64
 else
-	cp ~/"$REPO"-"$TIMESTAMP"/baserom."$VERSION".z64 ~/"$REPO" 
+	cp ~/"$REPO"-"$TIMESTAMP"/baserom."$VERSION".z64 ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc
 fi
+ln -s ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/baserom."$VERSION".z64 ~/"$REPO"/baserom."$VERSION".z64
 
-if [ "$REPO" = "sm64nx" ] && [ "$NOOLD" = "1" ]; then
-	if [ -f /usr/bin/mplayer ] && [ -f ~/sm64ex/sound/samples/sfx_mario_peach/0D.aiff ]; then
-		sh -c 'mplayer -nolirc -really-quiet ~/sm64ex/sound/samples/sfx_mario_peach/13.aiff&'
-	fi
-	echo		
-	echo sm64nx requires additional build tools, including GCC 8+, zstd dev libraries and python3-pip tools.  
-	echo Sudo password is required to proceed.
-	sudo apt install -y libzstd-dev python3-pip			# will error outside debian base
-	pip3 install pillow zstandard tqdm xxhash
-	gcccheck
+echo Extracting Assets from ROM...
+if [ "$REPO" = "sm64nx" ]; then
 	prepnx
-elif [ "$REPO" = "sm64nx" ]; then
-	prepnx
-else 	cd ~/"$REPO"
-	echo Extracting Assets from ROM...
+else 	
+	cd ~/"$REPO"
 	./extract_assets.py "$VERSION"
 fi
 
