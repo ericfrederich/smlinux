@@ -42,7 +42,7 @@ Note the script installs itself as 'smlinux' to the first directory in your path
 # Frequently Asked Questions
 
 ## **What repository should I use?**
-The official repo, sm64-port/sm64-port, offers the cleanest code and duplication of N64, with currently very few add-ons available.  The unofficial forks, sm64ex and sm64nx, include optional enhancements and support for many add-ons.  
+The official repo, sm64-port/sm64-port, offers the cleanest code and duplication of N64, with currently very few add-ons available.  The unofficial forks, sm64ex and sm64nx, include enhancements and support for many add-ons (which are optional on sm64ex).  
 
 ## **What branch should I use?**
 
