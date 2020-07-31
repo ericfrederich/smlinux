@@ -546,7 +546,7 @@ if [ "$1" = "--purge" ] || [ "$1" = "purge" ]; then
         exit
 fi
 
-if [ -f "$1" ]||[ -f "$LAUNCH_DIR"/"$1" ]||([ -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/baserom."$VERSION".z64] && [ "$1" = "build" ]); then
+if [ -f "$1" ] || [ -f "$LAUNCH_DIR"/"$1" ] || ( [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/baserom."$VERSION".z64 ] && [ "$1" = "build" ] ); then
 	echo
 	if [ -f ~/.smlinuxUpdate ]; then 
 		rm ~/.smlinuxUpdate
