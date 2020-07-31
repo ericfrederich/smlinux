@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0731-1556
+# 2020-0731-1604
 
 domake(){ 
 	if [ "$TARGET_WEB" = 1 ]; then 
@@ -565,13 +565,11 @@ if [ -f "$1" ] || [ -f "$LAUNCH_DIR"/"$1" ] || ( [ -f ${XDG_DATA_HOME:-$HOME/.lo
 			gcccheck
 		else
 			echo [1] This is not first install, skipping dependencies...
-			fi
 		fi
-		
 		echo
 		echo [2] Checking for Script Updates from Github...
-		if [ "$AutoUpdate" = 1 ]; 
-			then scriptUpdate "$@"
+		if [ "$AutoUpdate" = 1 ]; then
+			scriptUpdate "$@"
 		else
 			echo "WARNING: AutoUpdate Disabled in Config File! You are using an old version!"
 		fi
