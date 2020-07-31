@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0731-1637
+# 2020-0731-1641
 
 domake(){ 
 	if [ "$TARGET_WEB" = 1 ]; then 
@@ -609,10 +609,8 @@ else
 	echo "|                                                                             |"
 	echo "-------------------------------------------------------------------------------"
 	echo	
-	if [ -d [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/baserom."$VERSION".z64 ] && [ ! "$1" = "config" ]; then
-		echo "ERROR: You must specify update, build, config or purge"
-	elif [ -d [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/baserom."$VERSION".z64 ] && [ "$1" = "config" ]; then
-		echo "Note: You must specify update or build to compile, i.e. smlinux build for a new repo."
+	if [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/baserom."$VERSION".z64 ]; then
+		echo "ERROR: You must specify update, build, config or purge."
 	else 
 		echo "ERROR: No romfile specified."	
 	fi
