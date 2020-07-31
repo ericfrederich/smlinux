@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0729-0327
+# 2020-0731-1341
 
 domake(){ 
 	if [ "$TARGET_WEB" = 1 ]; then 
@@ -107,7 +107,6 @@ loadconfig(){
 doconfig(){
 	if(whiptail --title "Build Options" --yesno "$(cat ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinuxcfg.txt)" 28 75 --yes-button "Edit Options" --no-button "Proceed" --defaultno); then
 		whiptail --title "READ THIS NOW - IT WILL NOT REAPPEAR AUTOMATICALLY" --msgbox "The config file will open in a text editor.\n\nWhen you exit your editor, installation will continue.\n\nFor most people, default options which include community enhancements are reccommended.\n\nIf you mess up the config file, delete\n${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinuxcfg.txt \nand it will be recreated." 16 60
-		xdg-open ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinuxcfg.txt 
 		EDITORS=leafpad:epad:gedit:notepadqq:bluefish:geany:lime:kate:medit:nano:pico:micro:jed:emacs:vim:vi
 		local url=${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinuxcfg.txt 
     		local oldifs="$IFS"
