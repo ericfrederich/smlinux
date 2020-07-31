@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0731-1604
+# 2020-0731-1637
 
 domake(){ 
 	if [ "$TARGET_WEB" = 1 ]; then 
@@ -108,29 +108,33 @@ loadconfig(){
 doconfig(){
 	if(whiptail --title "Build Options" --yesno "$(cat ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinuxcfg.txt)" 28 75 --yes-button "Edit Options" --no-button "Proceed" --defaultno); then
 		whiptail --title "READ THIS NOW - IT WILL NOT REAPPEAR AUTOMATICALLY" --msgbox "The config file will open in a text editor.\n\nWhen you exit your editor, installation will continue.\n\nFor most people, default options which include community enhancements are reccommended.\n\nIf you mess up the config file, delete\n${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinuxcfg.txt \nand it will be recreated." 16 60
-		EDITORS=leafpad:epad:gedit:notepadqq:bluefish:geany:lime:kate:medit:nano:pico:micro:jed:emacs:vim:vi
-		local url=${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinuxcfg.txt 
-    		local oldifs="$IFS"
-		IFS=":"
-    		for editor in $EDITORS; do
-        		IFS="$oldifs"
-			if [ -z "$editor" ]; then
-            			continue
-        		fi
-			if echo "$editor" | grep -q %s; then
-            			shift $#
-            			for arg in $browser; do
-                			set -- "$@" "$(printf -- "$arg" "$url")"
-            			done
-            			"$@"
-        		else
-            			$editor "$url"
-        		fi
-			if [ $? -eq 0 ]; then
-            			exit
-        		fi
-	    	done
+	editconfig	
 	fi
+	}
+
+editconfig(){
+	EDITORS=leafpad:epad:gedit:notepadqq:bluefish:geany:lime:kate:medit:nano:pico:micro:jed:emacs:vim:vi
+	local url=${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinuxcfg.txt 
+	local oldifs="$IFS"
+	IFS=":"
+	for editor in $EDITORS; do
+       		IFS="$oldifs"
+		if [ -z "$editor" ]; then
+       			continue
+       		fi
+		if echo "$editor" | grep -q %s; then
+       			shift $#
+       			for arg in $browser; do
+               			set -- "$@" "$(printf -- "$arg" "$url")"
+       			done
+       			"$@"
+       		else
+       			$editor "$url"
+       		fi
+		if [ $? -eq 0 ]; then
+       			exit
+       		fi
+    	done
 	}
 
 loademsdk(){
@@ -376,9 +380,14 @@ if [ ! -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinuxcfg.txt ]; then
 	echo Creating ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinuxcfg.txt
 	makeconfig
 	doconfig
-elif [ "$1" = "config" ] || [ "$2" = "config" ] || [ "$2" = "--config" ] || [ "$3" = "--config" ] || [ "$3" = "config" ]; then
+elif [ "$2" = "config" ] || [ "$2" = "--config" ] || [ "$3" = "--config" ] || [ "$3" = "config" ]; then
 	if [ ! -f ~/.smlinuxUpdate ]; then 
 		doconfig
+	fi
+elif [ "$1" = "config" ]; then
+	if [ ! -f ~/.smlinuxUpdate ]; then 
+		editconfig
+		exit
 	fi
 fi
 loadconfig
@@ -580,28 +589,32 @@ else
 	echo "|      Super Mario 64 Install * Build * Update Script for Linux               |"
 	echo "|                                                                             |"
 	echo "| Very First Install: smlinux <romfile>                                       |"
-	echo "|  Examples:                                                                  |"
-	echo "|         smlinux ~/roms/n64/sm64.z64                                         |"
-	echo "|                         or                                                  |"
-	echo "|         smlinux \"Super Mario 64 (U) [!].z64\"                                |"
+	echo "|  for example:                                                               |"
+	echo "|   smlinux ~/roms/n64/sm64.z64  or  smlinux \"Super Mario 64 (U) [!].z64\"     |"
 	echo "|                                                                             |"
 	echo "| Update: smlinux update <options>                                            |" 
 	echo "|  Updates source from github & rebuilds, preserving external resources.      |"
 	echo "|                                                                             |"
 	echo "| Fresh Build: smlinux build <options>                                        |"
-	echo "|  Gets new source from github and builds.                                    |"
+	echo "|  Gets new source from github and builds. (Renames existing folder).         |"
+	echo "|                                                                             |"
+	echo "| Config: smlinux config                                                      |"
+	echo "|   Opens smlinuxcfg.txt in text editor                                       |"
 	echo "|                                                                             |"
 	echo "| Purge:  smlinux purge                                                       |"                 
 	echo "|  Removes all traces of installation previously created by this script.      |"
 	echo "|                                                                             |"
 	echo "| options: --config show config file before build (default on first install). |"
-	echo "|          --depends install depdendencies (default on first install)         |"
+	echo "|          --depends install depdendencies (default on first install).        |"
 	echo "|                                                                             |"
 	echo "-------------------------------------------------------------------------------"
 	echo	
-	if [ -d "$REPO" ]; then
-		echo "ERROR: You must specify update or purge"
-	else echo "ERROR: No romfile specified."	
+	if [ -d [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/baserom."$VERSION".z64 ] && [ ! "$1" = "config" ]; then
+		echo "ERROR: You must specify update, build, config or purge"
+	elif [ -d [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/baserom."$VERSION".z64 ] && [ "$1" = "config" ]; then
+		echo "Note: You must specify update or build to compile, i.e. smlinux build for a new repo."
+	else 
+		echo "ERROR: No romfile specified."	
 	fi
 	echo
 	exit
