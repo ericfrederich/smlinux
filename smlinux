@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0731-2121
+# 2020-0731-2137
 
 domake(){ 
 	if [ "$TARGET_WEB" = 1 ]; then 
@@ -418,7 +418,7 @@ fi
 if [ ! -d ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO" ]; then 
 	mkdir ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"
 fi
-#Look for ROM and save a copy.
+echo Verifying ROM...
 if [ ! -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/baserom."$VERSION".z64 ]; then
 	cd "$LAUNCH_DIR"
 	if [ -f "$1" ]; then 
@@ -433,7 +433,9 @@ if [ ! -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/baserom."$VERSION".z64 ]; 
 		elif [ -f ~/sm64-port/baserom."$VERSION".z64 ]; then
 			cp ~/sm64-port/baserom."$VERSION".z64 ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc
 		fi
-		vettrom
+		if [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/baserom."$VERSION".z64 ]; then
+			vettrom
+		fi
 	fi
 	if [ ! -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/baserom."$VERSION".z64 ]; then
 		if [ "$1" = "update" ] || [ "$1" = "build" ]; then
@@ -445,6 +447,8 @@ if [ ! -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/baserom."$VERSION".z64 ]; 
 			zenity --info --text='ERROR: Your ROM is not valid.\nAn original Super Mario 64 ROM in Z64 Big Endian Format is required to build.\nIf your rom is backed up in v64 or n64 format, try this online converter then run smlinux again.' --title="Your installation is incomplete." --width=450	
 			echo
 			exit
+		else
+			echo "WARNING: An original Super Mario 64 ROM image in z64 (big endian) format is required to build."
 		fi
 	fi
 fi
