@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0731-2115
+# 2020-0731-2121
 
 domake(){ 
 	if [ "$TARGET_WEB" = 1 ]; then 
@@ -446,6 +446,7 @@ if [ ! -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/baserom."$VERSION".z64 ]; 
 			echo
 			exit
 		fi
+	fi
 fi
 
 if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ] || ( [ "$TARGET_WEB" = 1 ] && [ -d ~/"$REPO" ] && [ ! -d ~/"$REPO"/build/"$VERSION"_web ]); then
