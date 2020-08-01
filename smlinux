@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0731-1840
+# 2020-0731-1844
 
 domake(){ 
 	if [ "$TARGET_WEB" = 1 ]; then 
@@ -134,10 +134,7 @@ editconfig(){
        		else
        			$editor "$url"
        		fi
-		if [ $? -eq 0 ]; then
-       			exit
-       		fi
-    	done
+		done
 	}
 
 loademsdk(){
