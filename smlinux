@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0731-2310
+# 2020-0731-2312
 
 domake(){ 
 	if [ "$TARGET_WEB" = 1 ]; then 
@@ -459,7 +459,7 @@ else
 		echo smlinux exiting incomplete.
 		echo
 		exit
-	else	echo WARNING: No ROM Found.
+	else	echo WARNING: No ROM file found.
 	fi
 fi
 
@@ -669,7 +669,6 @@ else
 	echo "-------------------------------------------------------------------------------"
 	if [ "$1" = "--help" ] || [ "$1" = "-help" ] || [ "$1" = "help" ] || [ "$1" = "-h" ]; then
 		echo
-		exit
 	elif [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/baserom."$VERSION".z64 ]; then
 		echo "ERROR: You must specify update, build, config or purge."
 	else 
