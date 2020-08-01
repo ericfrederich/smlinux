@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0731-2152
+# 2020-0731-2157
 
 domake(){ 
 	if [ "$TARGET_WEB" = 1 ]; then 
@@ -23,7 +23,7 @@ domake(){
 	else
 		echo "$REPO" is not a known repository.  Check your REPO setting and try again.
 		echo Known repos are sm64-port, sm64nx, sm64pc, and sm64ex.
-		echo Script exiting incomplete.
+		echo smlinux exiting incomplete.
 		exit
 	fi
 	if [ "$REPO" = "sm64nx" ] || ( [ "$TARGET_WEB" = 1 ] && [ "$InstallHD" = 1 ] ); then
@@ -183,7 +183,7 @@ prepnx(){
 	if [ ! -f ~/"$REPO"/build/"$VERSION"_pc/romfs/'!!base.pak' ]; then
 		echo 
 		echo Unable to extract and pak ROM.
-		echo "Script Exiting incomplete.  Contact #help-desk for support."
+		echo "smlinux exiting incomplete.  Contact #help-desk for support."
 		xdg-open https://discord.gg/B7x4svT &disown
 		exit
 	fi
@@ -441,14 +441,14 @@ if [ ! -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/baserom."$VERSION".z64 ]; 
 		if [ "$1" = "update" ] || [ "$1" = "build" ] || [ -f "$1" ]; then
 			xdg-open https://hack64.net/tools/swapper.php &disown
 			sleep 1
-			zenity --error --text='ERROR: Your ROM is not valid.\n\nAn original Super Mario 64 ROM in Z64 Big Endian Format is required to build.\nIf your rom is backed up in v64 or n64 format, try this online converter then run smlinux again.' --title="Your installation is incomplete." --width=640 &disown	
+			zenity --error --text='ERROR: Your ROM is not valid.\n\nAn original Super Mario 64 ROM in z64 (big endian) format is required to build.\nIf your rom is backed up in v64 or n64 format, try this online converter then run smlinux again.' --title="Your installation is incomplete." --width=640 &disown	
 			sleep 1			
 			echo
 			echo "ERROR: Your ROM is not valid.  Not even considering transient parents!"
-			echo "An original Super Mario 64 ROM image in z64 (big endian) format is required to build."
+			echo "Original Super Mario 64 ROM image in z64 big endian format is required to build."
 			echo If ROM is in v64/n64 format, try this online converter then run smlinux again.
 			echo
-			echo Script exiting incomplete.
+			echo smlinux exiting incomplete.
 			echo
 			exit
 		else
@@ -530,7 +530,7 @@ if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ] || ( [ "$TARG
 			fi
 			mv ~/"$REPO"/build/"$VERSION"_pc.old ~/"$REPO"/build/"$VERSION"_pc
 		fi
-		echo "Script Exiting incomplete.  Contact #help-desk for support."
+		echo "smlinux exiting incomplete.  Contact #help-desk for support."
 		xdg-open https://discord.gg/B7x4svT &disown
 		exit
 	elif [ ! -f ~/"$REPO"/build/"$VERSION"_web/sm64."$VERSION".f3dex2e.html ] && [ "$TARGET_WEB" = 1 ]; then
@@ -543,7 +543,7 @@ if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ] || ( [ "$TARG
 			fi
 			mv ~/"$REPO"/build/"$VERSION"_web.old ~/"$REPO"/build/"$VERSION"_web
 		fi
-		echo "Script Exiting incomplete.  Contact #help-desk for support."
+		echo "smlinux exiting incomplete.  Contact #help-desk for support."
 		xdg-open https://discord.gg/B7x4svT &disown
 		exit
 	fi
@@ -718,7 +718,7 @@ echo [5] Compiling...
 domake
 if [ ! -f ~/"$REPO"/build/"$VERSION"_pc/sm64."$VERSION".f3dex2e ]; then
 	echo ERROR: You do not have the expected binary ~/"$REPO"/build/"$VERSION"_pc/sm64."$VERSION".f3dex2e
-	echo "Script Exiting incomplete.  Contact #help-desk for support."
+	echo "smlinux exiting incomplete.  Contact #help-desk for support."
 	xdg-open https://discord.gg/B7x4svT &disown
 	exit
 fi
