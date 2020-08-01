@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0731-2157
+# 2020-0731-2220
 
 domake(){ 
 	if [ "$TARGET_WEB" = 1 ]; then 
@@ -696,7 +696,9 @@ fi
 
 ln -s ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/baserom."$VERSION".z64 ~/"$REPO"/baserom."$VERSION".z64
 
-echo Extracting Assets from ROM...
+echo
+echo [4] Extracting Assets from ROM...
+echo
 if [ "$REPO" = "sm64nx" ]; then
 	prepnx
 else 	
@@ -705,7 +707,7 @@ else
 fi
 
 echo
-echo [4] Applying Community Enhancements...
+echo [5] Applying Community Enhancements...
 echo
 if [ "$InstallHD" = 1 ]; then 
 	dohd
@@ -714,21 +716,32 @@ else
 fi
 
 echo
-echo [5] Compiling...
+echo [6] Compiling...
 domake
-if [ ! -f ~/"$REPO"/build/"$VERSION"_pc/sm64."$VERSION".f3dex2e ]; then
+if [ ! -f ~/"$REPO"/build/"$VERSION"_pc/sm64."$VERSION".f3dex2e ] && [ "$TARGET_WEB" = 0 ]; then
+	echo
 	echo ERROR: You do not have the expected binary ~/"$REPO"/build/"$VERSION"_pc/sm64."$VERSION".f3dex2e
+	echo "smlinux exiting incomplete.  Contact #help-desk for support."
+	xdg-open https://discord.gg/B7x4svT &disown
+	exit
+elif [ ! -f ~/"$REPO"/build/"$VERSION"_web/sm64."$VERSION".f3dex2e.html ] && [ "$TARGET_WEB" = 1 ]; then
+	echo
+	echo ERROR: You do not have the expected html ~/"$REPO"/build/"$VERSION"_web/sm64."$VERSION".f3dex2e.html
 	echo "smlinux exiting incomplete.  Contact #help-desk for support."
 	xdg-open https://discord.gg/B7x4svT &disown
 	exit
 fi
 
 echo
-echo [6] Echo Creating Desktop Shortcut and Menu Entry...
-makedesktop
+echo [7] Echo Creating Desktop Shortcut and Menu Entry...
+if [ "$TARGET_WEB" = 1]; then
+	echo Skipping for web target...
+else
+	makedesktop
+fi
 
 echo
-echo [7] Build Succesful!  Testing Application Launch Via Shortcut...
+echo [8] Build Succesful!  Testing Application Launch...
 rungame
 if [ -f ~/.smlinuxNopath ]; then
 	rm ~/.smlinuxNopath
