@@ -134,6 +134,9 @@ editconfig(){
        		else
        			$editor "$url"
        		fi
+		if [ $? -eq 0 ]; then
+			return
+       		fi
 		done
 	}
 
