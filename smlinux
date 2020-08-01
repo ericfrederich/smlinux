@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0731-1713
+# 2020-0731-1724
 
 domake(){ 
 	if [ "$TARGET_WEB" = 1 ]; then 
@@ -390,10 +390,8 @@ elif [ "$1" = "config" ]; then
 		exit
 	fi
 fi
+echo Loading configuration from ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinuxcfg.txt...
 loadconfig
-
-#Script really begins here
-
 if [ -f /usr/bin/mplayer ] && [ -f ~/"$REPO"/sound/samples/sfx_mario_peach/0D.aiff ] && [ ! -f ~/.smlinuxUpdate ]; then
 	sh -c 'mplayer -nolirc -really-quiet ~/'"$REPO"'/sound/samples/sfx_mario_peach/0D.aiff&'
 fi
@@ -604,7 +602,7 @@ else
 	echo "|          --depends install depdendencies.                                   |"
 	echo "|                                                                             |"
 	echo "-------------------------------------------------------------------------------"
-	if [ "$1" = "--help" ] || [ "$1" = "-help" ] || [ "$1" = "--h" ] || [ "$1" = "-h" ]; then
+	if [ "$1" = "--help" ] || [ "$1" = "-help" ] || [ "$1" = "help" ] || [ "$1" = "-h" ]; then
 		exit
 	elif [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/baserom."$VERSION".z64 ] || [ -d ~/"$REPO" ]; then
 		echo "ERROR: You must specify update, build, config or purge."
