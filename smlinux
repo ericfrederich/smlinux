@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0731-2220
+# 2020-0731-2233
 
 domake(){ 
 	if [ "$TARGET_WEB" = 1 ]; then 
@@ -408,7 +408,9 @@ elif [ "$1" = "config" ]; then
 		exit
 	fi
 fi
-echo Loading configuration from ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinuxcfg.txt...
+echo
+echo [0] Loading configuration from ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinuxcfg.txt...
+echo
 loadconfig
 #Play a sound clip for no reason.
 if [ -f /usr/bin/mplayer ] && [ -f ~/"$REPO"/sound/samples/sfx_mario_peach/0D.aiff ] && [ ! -f ~/.smlinuxUpdate ]; then
@@ -451,8 +453,6 @@ if [ ! -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/baserom."$VERSION".z64 ]; 
 			echo smlinux exiting incomplete.
 			echo
 			exit
-		else
-			echo "WARNING: An original Super Mario 64 ROM image in z64 (big endian) format is required to build."
 		fi
 	fi
 fi
@@ -511,7 +511,7 @@ if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ] || ( [ "$TARG
 		mv ~/"$REPO"/build/"$VERSION"_web ~/"$REPO"/build/"$VERSION"_web.old
 	fi
 	
-	if [ "$2" = "--hd" ] || [ "$2" = "--HD" ] || [ "$3" = "--hd" ] || [ "$3" = "--HD" ] || [ "$UpdateHD" = 1 ]; then
+	if [ "$2" = "--updatehd" ] || [ "$2" = "--HD" ] || [ "$3" = "--hd" ] || [ "$UpdateHD" = 1 ]; then
 		echo Adding Community Enhancements...
 		dohd
 	fi	
@@ -656,8 +656,9 @@ else
 	echo "|  config: Opens smlinuxcfg.txt in text editor without building.              |"
 	echo "|  purge:  Removes all files created by this script, including sm64.          |"
 	echo "|                                                                             |"
-	echo "| options: --config prompt to edit config file before build.                  |"
-	echo "|          --depends install depdendencies.                                   |"
+	echo "| Options: --config   prompt to edit config file before build                 |"
+	echo "|          --depends  install depdendencies.                                  |"
+	echo "|          --updatehd aquire community upscale enhancements                   |"
 	echo "|                                                                             |"
 	echo "-------------------------------------------------------------------------------"
 	if [ "$1" = "--help" ] || [ "$1" = "-help" ] || [ "$1" = "help" ] || [ "$1" = "-h" ]; then
