@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0731-2336
+# 2020-0731-2352
 
 domake(){ 
 	if [ "$TARGET_WEB" = 1 ]; then 
@@ -604,6 +604,10 @@ if [ "$1" = "--purge" ] || [ "$1" = "purge" ]; then
 	rm -rf ~/sm64ex
 	rm -rf ~/sm64-port
 	rm -rf ~/sm64nx
+	rm -rf ~/sm64pc.old
+	rm -rf ~/sm64ex.old
+	rm -rf ~/sm64-port.old
+	rm -rf ~/sm64nx.old
 	rm -rf ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc
 	rm -rf ${XDG_DATA_HOME:-$HOME/.local/share}/sm64ex	
 	rm -rf ${XDG_DATA_HOME:-$HOME/.local/share}/sm64-port
@@ -611,14 +615,10 @@ if [ "$1" = "--purge" ] || [ "$1" = "purge" ]; then
 	rm ${XDG_DATA_HOME:-$HOME/.local/share}/icons/sm64*
 	rm ${XDG_DATA_HOME:-$HOME/.local/share}/applications/sm64*
 	rm ${XDG_DESKTOP_DIR:-$HOME/Desktop}/sm64*
-	rm ${XDG_DATA_HOME:-$HOME/.local/share}/icons/sm64.*
-	rm ${XDG_DATA_HOME:-$HOME/.local/share}/applications/sm64.desktop
-	rm ${XDG_DESKTOP_DIR:-$HOME/Desktop}/sm64.desktop
+	rm ~/Downloads/smlinux.*
 	echo Note this did not remove any packages installed as build tools or dependencies.
 	echo Remove those with your package manager.  Devel libraries can always safely be removed.
-	echo This also did not remove any sm64p folders automatically backed up if you fresh
-	echo installed more that once.  Just delete those folders manually from any file manager.
-	echo And of course you must delete this script itself from "${MAPFILE[0]}"
+	echo And of course you must delete smlinux itself from "${MAPFILE[0]}"
         exit
 fi
 
@@ -686,9 +686,11 @@ fi
 echo
 echo [3] Downloading "$REPO" source from github... 
 if [ -d ~/"$REPO" ]; then
-	TIMESTAMP=(date -r ~/"$REPO" +"%Y%m%d_%H%M%S")
-	mv ~/"$REPO" ~/"$REPO"-"$TIMESTAMP"
-	echo WARNING: "$REPO" directory already exists!  Renamed to "$REPO"-"$TIMESTAMP". 
+	echo WARNING: "$REPO" directory already exists!  Renaming to "$REPO".old...
+	if [ -f ~/"$REPO".old" ]; then
+		rm -rf ~/"$REPO".old"
+	fi
+	mv ~/"$REPO" ~/"$REPO".old"
 fi
 cd
 if [ "$REPO" = "sm64nx" ]; then
