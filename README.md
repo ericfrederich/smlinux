@@ -10,10 +10,11 @@
 1. Installs Required Packages (build tools & dependencies)
 2. Installs latest version of itself to user path 
 3. Clones (downloads) sm64 source repository from Github
-4. Optionally applies community sourced upscale modifications 
-5. Makes (compiles and links) into binary
-6. Creates Menu Entry & Desktop Shortcut
-7. Launches Super Mario 64 on your Personal Computer!
+4. Extract Assets from ROM and prepares for use
+5. Optionally applies community sourced upscale modifications 
+6. Makes (compiles and links) into binary
+7. Creates Menu Entry & Desktop Shortcut
+8. Launches Super Mario 64 on your Personal Computer!
 
 ...and! you can use it again later to quickly rebuild and sync to the latest updates from github.
  
