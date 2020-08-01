@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0731-1750
+# 2020-0731-1829
 
 domake(){ 
 	if [ "$TARGET_WEB" = 1 ]; then 
@@ -300,6 +300,8 @@ if [ ! -f ~/.smlinuxUpdate ]; then
 			if [ -f ~/Downloads/smlinux ]; then mv -f ~/Downloads/smlinux ~/Downloads/smlinux.old.backup
 			fi
 			if [ -f ~/Downloads/smlinux.sh ]; then mv -f ~/Downloads/smlinux.sh ~/Downloads/smlinux.old.backup
+			fi
+			if [ -f ~/Downloads/smlinux.txt ]; then mv -f ~/Downloads/smlinux.sh ~/Downloads/smlinux.old.backup
 			fi	
 			exec smlinux "$@"' > ~/.smlinuxUpdate
 			chmod +x ~/.smlinuxUpdate
@@ -395,11 +397,23 @@ elif [ "$1" = "config" ]; then
 fi
 echo Loading configuration from ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinuxcfg.txt...
 loadconfig
+#Play a sound clip for no reason.
 if [ -f /usr/bin/mplayer ] && [ -f ~/"$REPO"/sound/samples/sfx_mario_peach/0D.aiff ] && [ ! -f ~/.smlinuxUpdate ]; then
 	sh -c 'mplayer -nolirc -really-quiet ~/'"$REPO"'/sound/samples/sfx_mario_peach/0D.aiff&'
 fi
+#Make Safevile Dir
 if [ ! -d ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO" ]; then 
 	mkdir ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"
+fi
+#Look for ROM and save a copy.
+if [ -f "$1" ] && [ ! ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/baserom."$VERSION".z64 ]; then
+	cp "$1" ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/baserom."$VERSION".z64
+elif [ -f ~/sm64pc/baserom."$VERSION".z64 ] && [ ! ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/baserom."$VERSION".z64 ]; then
+	cp ~/sm64pc/baserom."$VERSION".z64 ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc
+elif [ -f ~/sm64ex/baserom."$VERSION".z64 ] && [ ! ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/baserom."$VERSION".z64 ]; then
+	cp ~/sm64ex/baserom."$VERSION".z64 ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc
+elif [ -f ~/sm64-port/baserom."$VERSION".z64 ] && [ ! ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/baserom."$VERSION".z64 ]; then
+	cp ~/sm64-port/baserom."$VERSION".z64 ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc
 fi
 
 if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ] || ( [ "$TARGET_WEB" = 1 ] && [ -d ~/"$REPO" ] && [ ! -d ~/"$REPO"/build/"$VERSION"_web ]); then
@@ -639,12 +653,6 @@ if [ ! -d ~/"$REPO" ]; then
 	exit
 fi
 
-cd "$LAUNCH_DIR"
-if [ -f "$1" ]; then
-	cp "$1" ~/"$REPO"/baserom."$VERSION".z64 ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/baserom."$VERSION".z64
-else
-	cp ~/"$REPO"-"$TIMESTAMP"/baserom."$VERSION".z64 ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc
-fi
 ln -s ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/baserom."$VERSION".z64 ~/"$REPO"/baserom."$VERSION".z64
 
 echo Extracting Assets from ROM...
