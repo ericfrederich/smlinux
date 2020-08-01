@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0731-1829
+# 2020-0731-1840
 
 domake(){ 
 	if [ "$TARGET_WEB" = 1 ]; then 
@@ -406,13 +406,13 @@ if [ ! -d ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO" ]; then
 	mkdir ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"
 fi
 #Look for ROM and save a copy.
-if [ -f "$1" ] && [ ! ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/baserom."$VERSION".z64 ]; then
+if [ -f "$1" ] && [ ! -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/baserom."$VERSION".z64 ]; then
 	cp "$1" ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/baserom."$VERSION".z64
-elif [ -f ~/sm64pc/baserom."$VERSION".z64 ] && [ ! ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/baserom."$VERSION".z64 ]; then
+elif [ -f ~/sm64pc/baserom."$VERSION".z64 ] && [ ! -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/baserom."$VERSION".z64 ]; then
 	cp ~/sm64pc/baserom."$VERSION".z64 ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc
-elif [ -f ~/sm64ex/baserom."$VERSION".z64 ] && [ ! ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/baserom."$VERSION".z64 ]; then
+elif [ -f ~/sm64ex/baserom."$VERSION".z64 ] && [ ! -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/baserom."$VERSION".z64 ]; then
 	cp ~/sm64ex/baserom."$VERSION".z64 ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc
-elif [ -f ~/sm64-port/baserom."$VERSION".z64 ] && [ ! ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/baserom."$VERSION".z64 ]; then
+elif [ -f ~/sm64-port/baserom."$VERSION".z64 ] && [ ! -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/baserom."$VERSION".z64 ]; then
 	cp ~/sm64-port/baserom."$VERSION".z64 ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc
 fi
 
@@ -427,7 +427,7 @@ if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ] || ( [ "$TARG
 		echo "WARNING: AutoUpdate Disabled in Config File!"
 	fi
 	if [ ! -d ~/"$REPO" ]; then
-		echo ERROR: No ~/"$REPO" folder to update!  Specify romfile name for fresh build.
+		echo ERROR: No ~/"$REPO" folder to update!  Specify build for a fresh build.
 		exit
 	fi
 	cd ~/"$REPO"
