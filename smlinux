@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0731-2312
+# 2020-0731-2336
 
 domake(){ 
 	if [ "$TARGET_WEB" = 1 ]; then 
@@ -447,19 +447,24 @@ else
 	if [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/baserom."$VERSION".z64 ]; then
 		echo ROM Found and Verified.
 	elif [ "$1" = "update" ] || [ "$1" = "build" ] || [ -f "$1" ]; then
-		xdg-open https://hack64.net/tools/swapper.php &disown
-		sleep 1
-		zenity --error --text='ERROR: Your ROM is not valid.\n\nAn original Super Mario 64 ROM in z64 (big endian) format is required to build.\nIf your rom is backed up in v64 or n64 format, try this online converter then run smlinux again.' --title="Your installation is incomplete." --width=640 &disown	
-		sleep 1			
-		echo
-		echo "ERROR: Your ROM is not valid.  Not even considering transient parents!"
-		echo "Original Super Mario 64 ROM image in z64 big endian format is required to build."
-		echo If ROM is in v64/n64 format, try this online converter then run smlinux again.
+		if [ -f "$1" ]; then
+			xdg-open https://hack64.net/tools/swapper.php &disown
+			sleep 1
+			zenity --error --text='ERROR: Your ROM is not valid.\n\nAn original Super Mario 64 ROM in z64 (big endian) format is required to build.\nIf your rom is backed up in v64 or n64 format, try this online converter then run smlinux again.' --title="Your installation is incomplete." --width=640 &disown	
+			sleep 1			
+			echo
+			echo "ERROR: Your ROM is not valid.  Not even considering transient parents!"
+			echo "Original Super Mario 64 ROM image in z64 big endian format is required to build."
+			echo If ROM is in v64/n64 format, try this online converter then run smlinux again.
+		else
+			echo ERROR: ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/baserom."$VERSION".z64 not found.
+		fi
 		echo
 		echo smlinux exiting incomplete.
 		echo
 		exit
-	else	echo WARNING: No ROM file found.
+	else	
+		echo WARNING: No ROM file found.
 	fi
 fi
 
