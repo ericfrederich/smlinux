@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0731-2244
+# 2020-0731-2258
 
 domake(){ 
 	if [ "$TARGET_WEB" = 1 ]; then 
@@ -410,7 +410,6 @@ elif [ "$1" = "config" ]; then
 fi
 echo
 echo [0] Loading configuration from ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinuxcfg.txt...
-echo
 loadconfig
 #Play a sound clip for no reason.
 if [ -f /usr/bin/mplayer ] && [ -f ~/"$REPO"/sound/samples/sfx_mario_peach/0D.aiff ] && [ ! -f ~/.smlinuxUpdate ]; then
@@ -421,26 +420,32 @@ if [ ! -d ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO" ]; then
 	mkdir ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"
 fi
 echo Verifying ROM...
-if [ ! -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/baserom."$VERSION".z64 ]; then
+if [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/baserom."$VERSION".z64 ]; then
+	echo ROM Available.
+else
 	cd "$LAUNCH_DIR"
 	if [ -f "$1" ]; then 
 		cp "$1" ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/baserom."$VERSION".z64
 		vettrom
 	fi
-	if [ ! -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/baserom."$VERSION".z64 ]; then
+	if [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/baserom."$VERSION".z64 ]; then
+		echo ROM Verified.
+	else
 		if [ -f ~/sm64pc/baserom."$VERSION".z64 ]; then
 			cp ~/sm64pc/baserom."$VERSION".z64 ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc
-		elif [ -f ~/sm64ex/baserom."$VERSION".z64 ]; then
-			cp ~/sm64ex/baserom."$VERSION".z64 ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc
-		elif [ -f ~/sm64-port/baserom."$VERSION".z64 ]; then
-			cp ~/sm64-port/baserom."$VERSION".z64 ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc
+			vettrom
 		fi
-		if [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/baserom."$VERSION".z64 ]; then
+		if [ -f ~/sm64ex/baserom."$VERSION".z64 ] && [ ! -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/baserom."$VERSION".z64 ]; then
+			cp ~/sm64ex/baserom."$VERSION".z64 ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc
+			vettrom
+		fi
+		if [ -f ~/sm64-port/baserom."$VERSION".z64 ] && [ ! -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/baserom."$VERSION".z64 ]; then
+			cp ~/sm64-port/baserom."$VERSION".z64 ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc
 			vettrom
 		fi
 	fi
 	if [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/baserom."$VERSION".z64 ]; then
-		echo ROM Available.
+		echo ROM Found and Verified.
 	elif [ "$1" = "update" ] || [ "$1" = "build" ] || [ -f "$1" ]; then
 		xdg-open https://hack64.net/tools/swapper.php &disown
 		sleep 1
