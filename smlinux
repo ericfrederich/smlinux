@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0804-1908
+# 2020-0804-1921
 
 domake(){ 
 	if [ "$TARGET_WEB" = 1 ]; then 
@@ -216,15 +216,13 @@ dohd(){
 		cd ~/"$REPO"/build/"$VERSION"_pc/romfs/"~NES Retro"
 		wget https://cdn.discordapp.com/attachments/730416836780490752/730431589749620736/nes.pak
 	else
-		if [ "$REPO" = "sm64pc" ] || [ "$REPO" = "sm64ex" ]; then
+		if [ "EXTERNAL_DATA" = 1 ; then
 			if [ ! -d ~/"$REPO"/build ] ; then mkdir ~/"$REPO"/build
 			fi
 			mkdir ~/"$REPO"/build/"$VERSION"_pc
 			git clone --single-branch https://github.com/CrashCrod/Cleaner-Aesthetics.git ~/"$REPO"/build/"$VERSION"_pc/res
 			cd ~/"$REPO"/build/"$VERSION"_pc/res	
 			wget https://github.com/MapAnon/sm64-pc-hq-sounds/releases/download/5.1/hq_sounds_v5.1.zip
-			wget https://cdn.discordapp.com/attachments/711253314855108629/712146686834638890/sm64.png
-			mv sm64.png ${XDG_DATA_HOME:-$HOME/.local/share}/icons/"$REPO".png
 		fi
 		cd ~/"$REPO"/enhancements
 		if [ ! -f ~/"$REPO"/enhancements/hw_bowser.rar ]; then
@@ -329,14 +327,15 @@ fi
 
 makedesktop(){
 if [ ! -f ${XDG_DATA_HOME:-$HOME/.local/share}/icons/"$REPO".* ]; then
-	echo WARNING: Icon for desktop shortcut not found!
-		if [ -f ~/"$REPO"/textures/segment2/segment2.05A00.rgba16.png ]; then
-			cp ~/"$REPO"/textures/segment2/segment2.05A00.rgba16.png ${XDG_DATA_HOME:-$HOME/.local/share}/icons/"$REPO".png
-		fi
-	if [ "$REPO" = "sm64-port" ] || [ "$REPO" = "sm64nx" ]; then 
+	echo Getting Icon...
+	if [ "$REPO" = "sm64ex" ]; then
+		wget https://cdn.discordapp.com/attachments/711253314855108629/712146686834638890/sm64.png
+		mv sm64.png ${XDG_DATA_HOME:-$HOME/.local/share}/icons/"$REPO".png
+	elif [ "$REPO" = "sm64nx" ]; then 
 		wget https://cdn.discordapp.com/attachments/711253314855108629/719215654837682226/Super_Mario_64.png
 		mv Super_Mario_64.png ${XDG_DATA_HOME:-$HOME/.local/share}/icons/"$REPO".png
-	else
+	elif [ -f ~/"$REPO"/textures/segment2/segment2.05A00.rgba16.png ]; then
+		cp ~/"$REPO"/textures/segment2/segment2.05A00.rgba16.png ${XDG_DATA_HOME:-$HOME/.local/share}/icons/"$REPO".png
 		echo 16x16 image from ROM used.  Reccommend replacing ${XDG_DATA_HOME:-$HOME/.local/share}/icons/"$REPO".png
 	fi	
 fi
