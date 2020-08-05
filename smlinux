@@ -7,7 +7,7 @@
 
 domake(){ 
 	if [ "$TARGET_WEB" = 1 ]; then 
-		if "$InstallHD" = 1; then
+		if [ "$InstallHD" = 1 ]; then
 			sed -i 's/TOTAL_MEMORY=20MB/TOTAL_MEMORY=28MB/g' ~/"$REPO"/Makefile
 		fi
 		loademsdk
