@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0804-2329
+# 2020-0804-2331
 
 domake(){ 
 	if [ "$TARGET_WEB" = 1 ]; then 
@@ -679,7 +679,6 @@ else
 	else 
 		echo "ERROR: Must provide valid path/filename to Z64 formatted romfile."	
 	fi
-	echo
 	exit
 fi
 
