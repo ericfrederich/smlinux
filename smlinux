@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0804-2331
+# 2020-0805-1032
 
 domake(){ 
 	if [ "$TARGET_WEB" = 1 ]; then 
@@ -691,7 +691,7 @@ if [ -d ~/"$REPO"/build/"$VERSION"_"$TARGET" ]; then
 	fi
 	mv ~/"$REPO" ~/"$REPO".old
 fi
-if [ -d ~/"$REPO" ]; then
+if [ ! -d ~/"$REPO" ]; then
 	cd
 	if [ "$REPO" = "sm64nx" ]; then
 		git clone https://github.com/teamsalta/"$REPO" -b "$Branch"
