@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0804-2019
+# 2020-0804-2318
 
 domake(){ 
 	if [ "$TARGET_WEB" = 1 ]; then 
@@ -116,8 +116,11 @@ loadconfig(){
 		DISCORDRPC=0
 	fi
 	if [ "$TARGET_WEB" = 1 ]; then 
+		TARGET=web
 		EXTERNAL_DATA=0
 		DISCORDRPC=0
+	else
+		TARGET=pc
 	fi
 	}
 
@@ -166,21 +169,21 @@ loademsdk(){
 
 prepnx(){
 	mkdir ~/"$REPO"/build
-	mkdir ~/"$REPO"/build/"$VERSION"_pc
-	mkdir ~/"$REPO"/build/"$VERSION"_pc/romfs
-	ln -s ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64.sav ~/"$REPO"/build/"$VERSION"_pc/sm64.sav 
-	ln -s ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64.log ~/"$REPO"/build/"$VERSION"_pc/sm64.log 
-	ln -s ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/conf.bin ~/"$REPO"/build/"$VERSION"_pc/conf.bin
- 	ln -s ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/gamepad1.bindings.json ~/"$REPO"/build/"$VERSION"_pc/gamepad1.bindings.json
-	ln -s ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/keyboard1.bindings.json ~/"$REPO"/build/"$VERSION"_pc/keyboard1.bindings.json
-	ln -s ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/baserom."$VERSION".z64 ~/"$REPO"/build/"$VERSION"_pc/baserom."$VERSION".z64
+	mkdir ~/"$REPO"/build/"$VERSION"_"$TARGET"
+	mkdir ~/"$REPO"/build/"$VERSION"_"$TARGET"/romfs
+	ln -s ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64.sav ~/"$REPO"/build/"$VERSION"_"$TARGET"/sm64.sav 
+	ln -s ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64.log ~/"$REPO"/build/"$VERSION"_"$TARGET"/sm64.log 
+	ln -s ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/conf.bin ~/"$REPO"/build/"$VERSION"_"$TARGET"/conf.bin
+ 	ln -s ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/gamepad1.bindings.json ~/"$REPO"/build/"$VERSION"_"$TARGET"/gamepad1.bindings.json
+	ln -s ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/keyboard1.bindings.json ~/"$REPO"/build/"$VERSION"_"$TARGET"/keyboard1.bindings.json
+	ln -s ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/baserom."$VERSION".z64 ~/"$REPO"/build/"$VERSION"_"$TARGET"/baserom."$VERSION".z64
 	cd ~/"$REPO"/tools
 	make "$JOBS"
 	cd ~/"$REPO"/import
 	echo Extracting Assets from ROM...
 	python3 extract_assets.py
-	python3 ../scripts/pak.py --source . --output ~/"$REPO"/build/"$VERSION"_pc/romfs/'!!base.pak'
-	if [ ! -f ~/"$REPO"/build/"$VERSION"_pc/romfs/'!!base.pak' ]; then
+	python3 ../scripts/pak.py --source . --output ~/"$REPO"/build/"$VERSION"_"$TARGET"/romfs/'!!base.pak'
+	if [ ! -f ~/"$REPO"/build/"$VERSION"_"$TARGET"/romfs/'!!base.pak' ]; then
 		echo 
 		echo Unable to extract and pak ROM.
 		echo "smlinux exiting incomplete.  Contact #help-desk for support."
@@ -193,35 +196,35 @@ dohd(){
 	if [ "$REPO" = "sm64nx" ]; then 
 		if [ ! -d ~/"$REPO"/build ] ; then mkdir ~/"$REPO"/build
 		fi
-		if [ ! -d ~/"$REPO"/build/"$VERSION"_pc ] ; then mkdir ~/"$REPO"/build/"$VERSION"_pc
+		if [ ! -d ~/"$REPO"/build/"$VERSION"_"$TARGET" ] ; then mkdir ~/"$REPO"/build/"$VERSION"_"$TARGET"
 		fi
-		if [ ! -d ~/"$REPO"/build/"$VERSION"_pc/romfs ] ; then mkdir ~/"$REPO"/build/"$VERSION"_pc/romfs
+		if [ ! -d ~/"$REPO"/build/"$VERSION"_"$TARGET"/romfs ] ; then mkdir ~/"$REPO"/build/"$VERSION"_"$TARGET"/romfs
 		fi
-		mkdir ~/"$REPO"/build/"$VERSION"_pc/romfs/"Cleaner Aesthetics"
-		cd ~/"$REPO"/build/"$VERSION"_pc/romfs/"Cleaner Aesthetics"
+		mkdir ~/"$REPO"/build/"$VERSION"_"$TARGET"/romfs/"Cleaner Aesthetics"
+		cd ~/"$REPO"/build/"$VERSION"_"$TARGET"/romfs/"Cleaner Aesthetics"
 		wget https://cdn.discordapp.com/attachments/730416836780490752/730430152957362191/cleaner.pak
-		mkdir ~/"$REPO"/build/"$VERSION"_pc/romfs/"HD Mario . Bowser"
-		cd ~/"$REPO"/build/"$VERSION"_pc/romfs/"HD Mario . Bowser"
+		mkdir ~/"$REPO"/build/"$VERSION"_"$TARGET"/romfs/"HD Mario . Bowser"
+		cd ~/"$REPO"/build/"$VERSION"_"$TARGET"/romfs/"HD Mario . Bowser"
 		wget https://cdn.discordapp.com/attachments/730416836780490752/730425308989227158/arredondo.pak
-		mkdir ~/"$REPO"/build/"$VERSION"_pc/romfs/"~SGI Models"
-		cd ~/"$REPO"/build/"$VERSION"_pc/romfs/"~SGI Models"
+		mkdir ~/"$REPO"/build/"$VERSION"_"$TARGET"/romfs/"~SGI Models"
+		cd ~/"$REPO"/build/"$VERSION"_"$TARGET"/romfs/"~SGI Models"
 		wget https://cdn.discordapp.com/attachments/730416836780490752/730645970693652591/sgi1.2.pak
-		mkdir ~/"$REPO"/build/"$VERSION"_pc/romfs/"~OWO Mod"
-		cd ~/"$REPO"/build/"$VERSION"_pc/romfs/"~OWO Mod"
+		mkdir ~/"$REPO"/build/"$VERSION"_"$TARGET"/romfs/"~OWO Mod"
+		cd ~/"$REPO"/build/"$VERSION"_"$TARGET"/romfs/"~OWO Mod"
 		wget https://cdn.discordapp.com/attachments/730416836780490752/730420038024036362/owo.pak
-		mkdir ~/"$REPO"/build/"$VERSION"_pc/romfs/"~HD Luigi"
-		cd ~/"$REPO"/build/"$VERSION"_pc/romfs/"~HD Luigi"
+		mkdir ~/"$REPO"/build/"$VERSION"_"$TARGET"/romfs/"~HD Luigi"
+		cd ~/"$REPO"/build/"$VERSION"_"$TARGET"/romfs/"~HD Luigi"
 		wget https://cdn.discordapp.com/attachments/730416836780490752/730425786452017222/luigi.pak
-		mkdir ~/"$REPO"/build/"$VERSION"_pc/romfs/"~NES Retro"
-		cd ~/"$REPO"/build/"$VERSION"_pc/romfs/"~NES Retro"
+		mkdir ~/"$REPO"/build/"$VERSION"_"$TARGET"/romfs/"~NES Retro"
+		cd ~/"$REPO"/build/"$VERSION"_"$TARGET"/romfs/"~NES Retro"
 		wget https://cdn.discordapp.com/attachments/730416836780490752/730431589749620736/nes.pak
 	else
 		if [ "EXTERNAL_DATA" = 1 ; then
 			if [ ! -d ~/"$REPO"/build ] ; then mkdir ~/"$REPO"/build
 			fi
-			mkdir ~/"$REPO"/build/"$VERSION"_pc
-			git clone --single-branch https://github.com/CrashCrod/Cleaner-Aesthetics.git ~/"$REPO"/build/"$VERSION"_pc/res
-			cd ~/"$REPO"/build/"$VERSION"_pc/res	
+			mkdir ~/"$REPO"/build/"$VERSION"_"$TARGET"
+			git clone --single-branch https://github.com/CrashCrod/Cleaner-Aesthetics.git ~/"$REPO"/build/"$VERSION"_"$TARGET"/res
+			cd ~/"$REPO"/build/"$VERSION"_"$TARGET"/res	
 			wget https://github.com/MapAnon/sm64-pc-hq-sounds/releases/download/5.1/hq_sounds_v5.1.zip
 		fi
 		cd ~/"$REPO"/enhancements
@@ -348,15 +351,15 @@ Categories=Game;'>${XDG_DATA_HOME:-$HOME/.local/share}/applications/"$REPO".desk
 echo Icon=${XDG_DATA_HOME:-$HOME/.local/share}/icons/"$REPO".png >>${XDG_DATA_HOME:-$HOME/.local/share}/applications/"$REPO".desktop
 echo Name=Super Mario 64 \("$REPO"\) >>${XDG_DATA_HOME:-$HOME/.local/share}/applications/"$REPO".desktop
 	if [ "$REPO" = "sm64pc" ] || [ "$REPO" = "sm64ex" ]; then
-		echo Path=~/"$REPO"/build/"$VERSION"_pc >>${XDG_DATA_HOME:-$HOME/.local/share}/applications/"$REPO".desktop
-		echo Exec=~/"$REPO"/build/"$VERSION"_pc/sm64."$VERSION".f3dex2e --cheats>>${XDG_DATA_HOME:-$HOME/.local/share}/applications/"$REPO".desktop
+		echo Path=~/"$REPO"/build/"$VERSION"_"$TARGET" >>${XDG_DATA_HOME:-$HOME/.local/share}/applications/"$REPO".desktop
+		echo Exec=~/"$REPO"/build/"$VERSION"_"$TARGET"/sm64."$VERSION".f3dex2e --cheats>>${XDG_DATA_HOME:-$HOME/.local/share}/applications/"$REPO".desktop
 	elif [ "$REPO" = "sm64-port" ]; then
 		echo Path=${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO" >>${XDG_DATA_HOME:-$HOME/.local/share}/applications/"$REPO".desktop
 		printf "Exec=sh -c \"" >>${XDG_DATA_HOME:-$HOME/.local/share}/applications/"$REPO".desktop
-		echo ~/"$REPO"/build/"$VERSION"_pc/sm64."$VERSION".f3dex2e';echo'\" >>${XDG_DATA_HOME:-$HOME/.local/share}/applications/"$REPO".desktop
+		echo ~/"$REPO"/build/"$VERSION"_"$TARGET"/sm64."$VERSION".f3dex2e';echo'\" >>${XDG_DATA_HOME:-$HOME/.local/share}/applications/"$REPO".desktop
 	else
-		echo Path=~/"$REPO"/build/"$VERSION"_pc >>${XDG_DATA_HOME:-$HOME/.local/share}/applications/"$REPO".desktop
-		echo Exec=~/"$REPO"/build/"$VERSION"_pc/sm64."$VERSION".f3dex2e>>${XDG_DATA_HOME:-$HOME/.local/share}/applications/"$REPO".desktop
+		echo Path=~/"$REPO"/build/"$VERSION"_"$TARGET" >>${XDG_DATA_HOME:-$HOME/.local/share}/applications/"$REPO".desktop
+		echo Exec=~/"$REPO"/build/"$VERSION"_"$TARGET"/sm64."$VERSION".f3dex2e>>${XDG_DATA_HOME:-$HOME/.local/share}/applications/"$REPO".desktop
 	fi
 cp ${XDG_DATA_HOME:-$HOME/.local/share}/applications/"$REPO".desktop ${XDG_DESKTOP_DIR:-$HOME/Desktop}
 fi
@@ -364,7 +367,7 @@ fi
 
 rungame(){
 	if [ "$TARGET_WEB"  = 1 ]; then 
-		cd ~/"$REPO"/build/"$VERSION"_web
+		cd ~/"$REPO"/build/"$VERSION"_"$TARGET"
 		ln -s sm64.us.f3dex2e.html index.html
 		python3 -m http.server 8100 &
 		if [ -f /usr/bin/firefox ]; then
@@ -430,9 +433,7 @@ if [ ! -f ~/.smlinuxUpdate ]; then
 			cp "$1" ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/baserom."$VERSION".z64
 			vettrom
 		fi
-		if [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/baserom."$VERSION".z64 ]; then
-			echo ROM Verified.
-		else
+		if [ ! -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/baserom."$VERSION".z64 ]; then
 			if [ -f ~/sm64pc/baserom."$VERSION".z64 ]; then
 				cp ~/sm64pc/baserom."$VERSION".z64 ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc
 				vettrom
@@ -448,30 +449,28 @@ if [ ! -f ~/.smlinuxUpdate ]; then
 		fi
 		if [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/baserom."$VERSION".z64 ]; then
 			echo ROM Found and Verified.
-		elif [ "$1" = "update" ] || [ "$1" = "build" ] || [ -f "$1" ]; then
-			if [ -f "$1" ]; then
-				xdg-open https://hack64.net/tools/swapper.php &disown
-				sleep 1
-				zenity --error --text='ERROR: Your ROM is not valid.\n\nAn original Super Mario 64 ROM in z64 (big endian) format is required to build.\nIf your rom is backed up in v64 or n64 format, try this online converter then run smlinux again.' --title="Your installation is incomplete." --width=640 &disown	
-				sleep 1			
-				echo
-				echo "ERROR: Your ROM is not valid.  Not even considering transient parents!"
-				echo "Original Super Mario 64 ROM image in z64 big endian format is required to build."
-				echo If ROM is in v64/n64 format, try this online converter then run smlinux again.
-			else
-				echo ERROR: ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/baserom."$VERSION".z64 not found.
-			fi
+		elif [ -f "$1" ]; then
+			xdg-open https://hack64.net/tools/swapper.php &disown
+			sleep 1
+			zenity --error --text='ERROR: Your ROM is not valid.\n\nAn original Super Mario 64 ROM in z64 (big endian) format is required to build.\nIf your rom is backed up in v64 or n64 format, try this online converter then run smlinux again.' --title="Your installation is incomplete." --width=640 &disown	
+			sleep 1			
+			echo
+			echo "ERROR: Your ROM is not valid.  Not even considering transient parents!"
+			echo "Original Super Mario 64 ROM image in z64 big endian format is required to build."
+			echo If ROM is in v64/n64 format, try this online converter then run smlinux again.
+		elif [ "$1" = "update" ] || [ "$1" = "build" ]; then
+			echo ERROR: ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/baserom."$VERSION".z64 not found.
 			echo
 			echo smlinux exiting incomplete.
 			echo
 			exit
 		else	
-			echo WARNING: No ROM file found.
+			echo WARNING: No ROM file found.  Please specify a romfile when you are ready to build.
 		fi
 	fi
 fi
 
-if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ] || ( [ "$TARGET_WEB" = 1 ] && [ -d ~/"$REPO" ] && [ ! -d ~/"$REPO"/build/"$VERSION"_web ]); then
+if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ]; then
 	if [ -f ~/.smlinuxUpdate ]; then 
 		rm ~/.smlinuxUpdate
 		echo Script Update Complete.	
@@ -513,23 +512,18 @@ if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ] || ( [ "$TARG
 		fi
 	fi	
 
-	if [ -d ~/"$REPO"/build/"$VERSION"_pc ] && [ "$TARGET_WEB" = "0" ]; then
-		if [ -d ~/"$REPO"/build/"$VERSION"_pc.old ]; then
-			rm -rf ~/"$REPO"/build/"$VERSION"_pc.old
+	if [ -d ~/"$REPO"/build/"$VERSION"_"$TARGET" ]; then
+		if [ -d ~/"$REPO"/build/"$VERSION"_"$TARGET".old ]; then
+			rm -rf ~/"$REPO"/build/"$VERSION"_"$TARGET".old
 		fi
-		mv ~/"$REPO"/build/"$VERSION"_pc ~/"$REPO"/build/"$VERSION"_pc.old
-	elif [ -d ~/"$REPO"/build/"$VERSION"_web ] && [ "$TARGET_WEB" = "1" ]; then
-		if [ -d ~/"$REPO"/build/"$VERSION"_web.old ]; then
-			rm -rf ~/"$REPO"/build/"$VERSION"_web.old
-		fi
-		mv ~/"$REPO"/build/"$VERSION"_web ~/"$REPO"/build/"$VERSION"_web.old
+		mv ~/"$REPO"/build/"$VERSION"_"$TARGET" ~/"$REPO"/build/"$VERSION"_"$TARGET".old
 	fi
 	
 	if [ "$2" = "--updatehd" ] || [ "$2" = "--HD" ] || [ "$3" = "--hd" ] || [ "$UpdateHD" = 1 ]; then
 		echo Adding Community Enhancements...
 		dohd
 	fi
-	if [ "$InstallHD" = 1 ] && [ "TARGET_WEB" = 1 ] && [ -d ~/"$REPO"/build/"$VERSION"_pc ]; then
+	if [ "$InstallHD" = 1 ] && [ "TARGET_WEB" = 1 ] && [ -d ~/"$REPO"/build/"$VERSION"_"$TARGET" ]; then
 		if [ -f ~/"$REPO"/enhancements/60fps_ex.patch ]; then
 			git apply -R enhancements/60fps_ex.patch
 		elif [ -f ~/"$REPO"/enhancements/60fps.patch ]; then
@@ -542,58 +536,45 @@ if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ] || ( [ "$TARG
 		sh -c 'mplayer -nolirc -really-quiet ~/'"$REPO"'/sound/samples/sfx_mario/0C.aiff&'
 	fi
 	domake
-	if [ "$InstallHD" = 1 ] && [ "TARGET_WEB" = 1 ] && [ -d ~/"$REPO"/build/"$VERSION"_pc ]; then
+	if [ "$InstallHD" = 1 ] && [ "TARGET_WEB" = 1 ] && [ -d ~/"$REPO"/build/"$VERSION"_"$TARGET" ]; then
 		if [ -f ~/"$REPO"/enhancements/60fps_ex.patch ]; then
 			git apply enhancements/60fps_ex.patch
 		elif [ -f ~/"$REPO"/enhancements/60fps.patch ]; then
 			git apply enhancements/60fps.patch
 		fi
 	fi
-	if [ ! -f ~/"$REPO"/build/"$VERSION"_pc/sm64."$VERSION".f3dex2e ] && [ "$TARGET_WEB" = 0 ]; then
+	if [ ! -f ~/"$REPO"/build/"$VERSION"_"$TARGET"/sm64."$VERSION".f3dex2* ]; then
 		echo
-		echo ERROR: You do not have the expected binary ~/"$REPO"/build/"$VERSION"_pc/sm64."$VERSION".f3dex2e
-		if [ -d ~/"$REPO"/build/"$VERSION"_pc.old ]; then
+		echo ERROR: Build Failure - output file not found.  
+		if [ -d ~/"$REPO"/build/"$VERSION"_"$TARGET".old ]; then
 			echo Restoring previous build...
-			if [ -d ~/"$REPO"/build/"$VERSION"_pc ]; then 
-				rm -rf ~/"$REPO"/build/"$VERSION"_pc 
+			if [ -d ~/"$REPO"/build/"$VERSION"_"$TARGET" ]; then 
+				rm -rf ~/"$REPO"/build/"$VERSION"_"$TARGET" 
 			fi
-			mv ~/"$REPO"/build/"$VERSION"_pc.old ~/"$REPO"/build/"$VERSION"_pc
-		fi
-		echo "smlinux exiting incomplete.  Contact #help-desk for support."
-		xdg-open https://discord.gg/B7x4svT &disown
-		exit
-	elif [ ! -f ~/"$REPO"/build/"$VERSION"_web/sm64."$VERSION".f3dex2e.html ] && [ "$TARGET_WEB" = 1 ]; then
-		echo
-		echo ERROR: You do not have the expected html ~/"$REPO"/build/"$VERSION"_web/sm64."$VERSION".f3dex2e.html
-		if [ -d ~/"$REPO"/build/"$VERSION"_web.old ]; then
-			echo Restoring previous build...
-			if [ -d ~/"$REPO"/build/"$VERSION"_web ]; then 
-				rm -rf ~/"$REPO"/build/"$VERSION"_web 
-			fi
-			mv ~/"$REPO"/build/"$VERSION"_web.old ~/"$REPO"/build/"$VERSION"_web
+			mv ~/"$REPO"/build/"$VERSION"_"$TARGET".old ~/"$REPO"/build/"$VERSION"_"$TARGET"
 		fi
 		echo "smlinux exiting incomplete.  Contact #help-desk for support."
 		xdg-open https://discord.gg/B7x4svT &disown
 		exit
 	fi
-	if [ -d ~/"$REPO"/build/"$VERSION"_pc.old/res ] && [ "$TARGET_WEB" = 0 ]; then
+	if [ -d ~/"$REPO"/build/"$VERSION"_"$TARGET".old/res ]; then
 		echo Restoring External Resources...
-		cp -rpn ~/"$REPO"/build/"$VERSION"_pc.old/res/. ~/"$REPO"/build/"$VERSION"_pc/res
+		cp -rpn ~/"$REPO"/build/"$VERSION"_"$TARGET".old/res/. ~/"$REPO"/build/"$VERSION"_"$TARGET"/res
 	fi
-	if [ -d ~/"$REPO"/build/"$VERSION"_pc/res/.git ] ; then
+	if [ -d ~/"$REPO"/build/"$VERSION"_"$TARGET"/res/.git ] ; then
 		echo Checking for Cleaner Aesthetics Texture updates on Github...
-		cd ~/"$REPO"/build/"$VERSION"_pc/res
+		cd ~/"$REPO"/build/"$VERSION"_"$TARGET"/res
 		git pull
 	fi
-	if [ -d ~/"$REPO"/build/"$VERSION"_pc.old/romfs ]; then
+	if [ -d ~/"$REPO"/build/"$VERSION"_"$TARGET".old/romfs ]; then
 		echo "Restoring Savefile, ROM and ROM Filesystem (paks)"
-		cp -rpn ~/"$REPO"/build/"$VERSION"_pc.old/romfs/. ~/"$REPO"/build/"$VERSION"_pc/romfs
-		ln -s ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64.sav ~/"$REPO"/build/"$VERSION"_pc/sm64.sav 
-		ln -s ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64.log ~/"$REPO"/build/"$VERSION"_pc/sm64.log 
-		ln -s ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/conf.bin ~/"$REPO"/build/"$VERSION"_pc/conf.bin
-	 	ln -s ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/gamepad1.bindings.json ~/"$REPO"/build/"$VERSION"_pc/gamepad1.bindings.json
-		ln -s ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/keyboard1.bindings.json ~/"$REPO"/build/"$VERSION"_pc/keyboard1.bindings.json
-		ln -s ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/baserom."$VERSION".z64 ~/"$REPO"/build/"$VERSION"_pc/baserom."$VERSION".z64
+		cp -rpn ~/"$REPO"/build/"$VERSION"_"$TARGET".old/romfs/. ~/"$REPO"/build/"$VERSION"_"$TARGET"/romfs
+		ln -s ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64.sav ~/"$REPO"/build/"$VERSION"_"$TARGET"/sm64.sav 
+		ln -s ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64.log ~/"$REPO"/build/"$VERSION"_"$TARGET"/sm64.log 
+		ln -s ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/conf.bin ~/"$REPO"/build/"$VERSION"_"$TARGET"/conf.bin
+	 	ln -s ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/gamepad1.bindings.json ~/"$REPO"/build/"$VERSION"_"$TARGET"/gamepad1.bindings.json
+		ln -s ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/keyboard1.bindings.json ~/"$REPO"/build/"$VERSION"_"$TARGET"/keyboard1.bindings.json
+		ln -s ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/baserom."$VERSION".z64 ~/"$REPO"/build/"$VERSION"_"$TARGET"/baserom."$VERSION".z64
 	elif [ "$REPO" = "sm64nx" ]; then
 		prepnx
 		if [ "$InstallHD" = 1 ]; then
@@ -703,29 +684,29 @@ fi
 
 echo
 echo [3] Downloading "$REPO" source from github... 
-if [ -d ~/"$REPO" ]; then
+if [ -d ~/"$REPO"/build/"$VERSION"_"$TARGET" ]; then
 	echo WARNING: "$REPO" directory already exists!  Renaming to "$REPO".old...
 	if [ -f ~/"$REPO".old ]; then
 		rm -rf ~/"$REPO".old
 	fi
 	mv ~/"$REPO" ~/"$REPO".old
 fi
-cd
-if [ "$REPO" = "sm64nx" ]; then
-	git clone https://github.com/teamsalta/"$REPO".git -b "$Branch"
-elif [ "$REPO" = "sm64ex" ]; then
-	git clone https://github.com/sm64pc/"$REPO".git -b "$Branch"
-else
-	git clone https://github.com/"$REPO"/"$REPO".git -b "$Branch"
+if [ -d ~/"$REPO" ]; then
+	cd
+	if [ "$REPO" = "sm64nx" ]; then
+		git clone https://github.com/teamsalta/"$REPO" -b "$Branch"
+	elif [ "$REPO" = "sm64ex" ]; then
+		git clone https://github.com/sm64pc/"$REPO" -b "$Branch"
+	else
+		git clone https://github.com/"$REPO"/"$REPO" -b "$Branch"
+	fi
 fi
-
 if [ ! -d ~/"$REPO" ]; then
 	echo "ERROR: Could not reach github."
 	echo "Script Ending Incomplete.  Contact #help-desk for support."
 	xdg-open https://discord.gg/B7x4svT &disown
 	exit
 fi
-
 ln -s ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/baserom."$VERSION".z64 ~/"$REPO"/baserom."$VERSION".z64
 
 echo
@@ -750,15 +731,9 @@ fi
 echo
 echo [6] Compiling...
 domake
-if [ ! -f ~/"$REPO"/build/"$VERSION"_pc/sm64."$VERSION".f3dex2e ] && [ "$TARGET_WEB" = 0 ]; then
+if [ ! -f ~/"$REPO"/build/"$VERSION"_"$TARGET"/sm64."$VERSION".f3dex2* ]; then
 	echo
-	echo ERROR: You do not have the expected binary ~/"$REPO"/build/"$VERSION"_pc/sm64."$VERSION".f3dex2e
-	echo "smlinux exiting incomplete.  Contact #help-desk for support."
-	xdg-open https://discord.gg/B7x4svT &disown
-	exit
-elif [ ! -f ~/"$REPO"/build/"$VERSION"_web/sm64."$VERSION".f3dex2e.html ] && [ "$TARGET_WEB" = 1 ]; then
-	echo
-	echo ERROR: You do not have the expected html ~/"$REPO"/build/"$VERSION"_web/sm64."$VERSION".f3dex2e.html
+	echo ERROR: Build Failure.  Expected output file not found.
 	echo "smlinux exiting incomplete.  Contact #help-desk for support."
 	xdg-open https://discord.gg/B7x4svT &disown
 	exit
