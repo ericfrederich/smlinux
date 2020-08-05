@@ -3,13 +3,13 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0804-1921
+# 2020-0804-1923
 
 domake(){ 
 	if [ "$TARGET_WEB" = 1 ]; then 
 		loademsdk
 		if "$InstallHD" = 1; then
-			sed -i 's/TOTAL_MEMORY=20MB/TOTAL_MEMORY=25MB/g' ~/"$REPO"/Makefile
+			sed -i 's/TOTAL_MEMORY=20MB/TOTAL_MEMORY=28MB/g' ~/"$REPO"/Makefile
 		fi
 	fi
 	if [ "$REPO" = "sm64nx" ]; then
