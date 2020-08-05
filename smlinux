@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0731-2352
+# 2020-0804-1854
 
 domake(){ 
 	if [ "$TARGET_WEB" = 1 ]; then 
@@ -688,9 +688,9 @@ echo [3] Downloading "$REPO" source from github...
 if [ -d ~/"$REPO" ]; then
 	echo WARNING: "$REPO" directory already exists!  Renaming to "$REPO".old...
 	if [ -f ~/"$REPO".old" ]; then
-		rm -rf ~/"$REPO".old"
+		rm -rf ~/"$REPO".old
 	fi
-	mv ~/"$REPO" ~/"$REPO".old"
+	mv ~/"$REPO" ~/"$REPO".old
 fi
 cd
 if [ "$REPO" = "sm64nx" ]; then
