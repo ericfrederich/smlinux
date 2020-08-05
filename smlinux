@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0804-2005
+# 2020-0804-2008
 
 domake(){ 
 	if [ "$TARGET_WEB" = 1 ]; then 
@@ -529,7 +529,7 @@ if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ] || ( [ "$TARG
 		echo Adding Community Enhancements...
 		dohd
 	fi
-	if [ "$InstallHD" = 1 ] && [ "TARGET_WEB" = 1 ]; then
+	if [ "$InstallHD" = 1 ] && [ "TARGET_WEB" = 1 ] && [ -d ~/"$REPO"/build/"$VERSION"_pc ]; then
 		if [ -f ~/"$REPO"/enhancements/60fps_ex.patch ]; then
 			git apply -R enhancements/60fps_ex.patch
 		elif [ -f ~/"$REPO"/enhancements/60fps.patch ]; then
@@ -542,7 +542,7 @@ if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ] || ( [ "$TARG
 		sh -c 'mplayer -nolirc -really-quiet ~/'"$REPO"'/sound/samples/sfx_mario/0C.aiff&'
 	fi
 	domake
-	if [ "$InstallHD" = 1 ] && [ "TARGET_WEB" = 1 ]; then
+	if [ "$InstallHD" = 1 ] && [ "TARGET_WEB" = 1 ] && [ -d ~/"$REPO"/build/"$VERSION"_pc ]; then
 		if [ -f ~/"$REPO"/enhancements/60fps_ex.patch ]; then
 			git apply enhancements/60fps_ex.patch
 		elif [ -f ~/"$REPO"/enhancements/60fps.patch ]; then
