@@ -3,14 +3,14 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0804-1923
+# 2020-0804-2005
 
 domake(){ 
 	if [ "$TARGET_WEB" = 1 ]; then 
-		loademsdk
 		if "$InstallHD" = 1; then
 			sed -i 's/TOTAL_MEMORY=20MB/TOTAL_MEMORY=28MB/g' ~/"$REPO"/Makefile
 		fi
+		loademsdk
 	fi
 	if [ "$REPO" = "sm64nx" ]; then
 		sed -i 's/-no-pie -lpthread -lzstd/-no-pie -lpthread -lzstd -lstdc++fs/g' ~/"$REPO"/Makefile
@@ -242,10 +242,10 @@ dohd(){
 			elif [ "$REPO" = "sm64ex" ] || [ "$REPO" = "sm64-port" ]; then
 				git apply enhancements/3d_coin_v2_nightly.patch --ignore-whitespace
 		fi	fi
-		if [ -f ~/"$REPO"/enhancements/60fps_ex.patch ] && [ `arch` = "x86_64" ]; then
+		if [ -f ~/"$REPO"/enhancements/60fps_ex.patch ] && [ `arch` = "x86_64" ] && [ "$TARGET_WEB" = 0]; then
 			git apply enhancements/60fps_ex.patch
 			sed -i 's/vsync false/vsync true/g' ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64config.txt
-		elif [ -f ~/"$REPO"/enhancements/60fps.patch ] && [ `arch` = "x86_64" ]; then
+		elif [ -f ~/"$REPO"/enhancements/60fps.patch ] && [ `arch` = "x86_64" ] && [ "$TARGET_WEB" = 0]; then
 			git apply enhancements/60fps.patch
 			sed -i 's/vsync false/vsync true/g' ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64config.txt
 		fi
@@ -528,12 +528,27 @@ if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ] || ( [ "$TARG
 	if [ "$2" = "--updatehd" ] || [ "$2" = "--HD" ] || [ "$3" = "--hd" ] || [ "$UpdateHD" = 1 ]; then
 		echo Adding Community Enhancements...
 		dohd
-	fi	
+	fi
+	if [ "$InstallHD" = 1 ] && [ "TARGET_WEB" = 1 ]; then
+		if [ -f ~/"$REPO"/enhancements/60fps_ex.patch ]; then
+			git apply -R enhancements/60fps_ex.patch
+		elif [ -f ~/"$REPO"/enhancements/60fps.patch ]; then
+			git apply -R enhancements/60fps.patch
+		fi
+	fi
+			
 	echo Compiling...
 	if [ -f /usr/bin/mplayer ]; then
 		sh -c 'mplayer -nolirc -really-quiet ~/'"$REPO"'/sound/samples/sfx_mario/0C.aiff&'
 	fi
 	domake
+	if [ "$InstallHD" = 1 ] && [ "TARGET_WEB" = 1 ]; then
+		if [ -f ~/"$REPO"/enhancements/60fps_ex.patch ]; then
+			git apply enhancements/60fps_ex.patch
+		elif [ -f ~/"$REPO"/enhancements/60fps.patch ]; then
+			git apply enhancements/60fps.patch
+		fi
+	fi
 	if [ ! -f ~/"$REPO"/build/"$VERSION"_pc/sm64."$VERSION".f3dex2e ] && [ "$TARGET_WEB" = 0 ]; then
 		echo
 		echo ERROR: You do not have the expected binary ~/"$REPO"/build/"$VERSION"_pc/sm64."$VERSION".f3dex2e
@@ -632,18 +647,18 @@ if [ -f "$1" ] || [ -f "$LAUNCH_DIR"/"$1" ] || ( [ -f ${XDG_DATA_HOME:-$HOME/.lo
 		echo Script Update Complete.
 	else	# Fresh Build
 		if [ ! -d ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/.git ] || [ "$2" = "--depends" ] || [ "$3" = "--depends" ]; then
-			echo [1] Installing required build tools...
+			echo "[1] Installing required build tools..."
 			$Linux
 			if [ "$REPO" = "sm64nx" ] ; then
 				pip3 install pillow zstandard tqdm xxhash
 				gcccheck
 			fi			
 		elif [ "$REPO" = "sm64nx" ] && [ ! ~/"$REPO" ]; then
-			echo [1] Installing required build tools for nx...
+			echo "[1] Installing required build tools for nx..."
 			pip3 install pillow zstandard tqdm xxhash
 			gcccheck
 		else
-			echo [1] This is not first install, skipping dependencies...
+			echo "[1] This is not first install, skipping dependencies..."
 		fi
 		echo
 		echo [2] Checking for Script Updates from Github...
