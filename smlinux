@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0804-2008
+# 2020-0804-2019
 
 domake(){ 
 	if [ "$TARGET_WEB" = 1 ]; then 
@@ -106,9 +106,9 @@ loadconfig(){
 				echo WARNING: Jobs set to -j`nproc` because nuz nx has problems with unlimited.
 			fi
 		elif [ "$TARGET_WEB" = "1" ]; then
-			JOBS=-j1
+			JOBS=-j`nproc`
 			if [ ! -f ~/.smlinuxUpdate ]; then
-				echo WARNING: Unlimited jobs removed cuz emsdk cache doesnt behave well. 
+				echo WARNING: Jobs set to -j`nproc` because nuz emsdk has problems with unlimited. 
 			fi
 		fi
 	fi
