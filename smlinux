@@ -687,7 +687,7 @@ echo
 echo [3] Downloading "$REPO" source from github... 
 if [ -d ~/"$REPO" ]; then
 	echo WARNING: "$REPO" directory already exists!  Renaming to "$REPO".old...
-	if [ -f ~/"$REPO".old" ]; then
+	if [ -f ~/"$REPO".old ]; then
 		rm -rf ~/"$REPO".old
 	fi
 	mv ~/"$REPO" ~/"$REPO".old
@@ -702,7 +702,7 @@ else
 fi
 
 if [ ! -d ~/"$REPO" ]; then
-	echo "ERROR: Could not reach github.  "
+	echo "ERROR: Could not reach github."
 	echo "Script Ending Incomplete.  Contact #help-desk for support."
 	xdg-open https://discord.gg/B7x4svT &disown
 	exit
