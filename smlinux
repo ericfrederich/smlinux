@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0805-1032
+# 2020-0805-0844
 
 domake(){ 
 	if [ "$TARGET_WEB" = 1 ]; then 
@@ -112,7 +112,7 @@ loadconfig(){
 			fi
 		fi
 	fi
-	if [ ! `arch` = "x86_64" ]; then
+	if [ ! `arch` = "x86_64" ] || [ ! "$VERSION" = "us" ]; then
 		DISCORDRPC=0
 	fi
 	if [ "$TARGET_WEB" = 1 ]; then 
@@ -219,7 +219,7 @@ dohd(){
 		cd ~/"$REPO"/build/"$VERSION"_"$TARGET"/romfs/"~NES Retro"
 		wget https://cdn.discordapp.com/attachments/730416836780490752/730431589749620736/nes.pak
 	else
-		if [ "EXTERNAL_DATA" = 1 ; then
+		if [ "$EXTERNAL_DATA" = 1 ; then
 			if [ ! -d ~/"$REPO"/build ] ; then mkdir ~/"$REPO"/build
 			fi
 			mkdir ~/"$REPO"/build/"$VERSION"_"$TARGET"
