@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0808-1529
+# 2020-0808-1547
 
 domake(){ 
 	if [ "$TARGET_WEB" = 1 ]; then 
@@ -124,8 +124,12 @@ loadconfig(){
 	fi
 	if [ "$2" = "--updatehd" ] || [ "$3" = "--updatehd" ] ||[ "$4" = "--updatehd" ] ||[ "$5" = "--updatehd" ]; then
 		export UpdateHD=1
+	elif [ "$2" = "--hd" ] || [ "$3" = "--hd" ] ||[ "$4" = "--hd" ] ||[ "$5" = "--hd" ]; then
+		export UpdateHD=1
 	fi
 	if [ "$2" = "--sgi" ] || [ "$3" = "--sgi" ] ||[ "$4" = "--sgi" ] ||[ "$5" = "--sgi" ]; then
+		export SGI=1
+	elif [ "$2" = "--SGI" ] || [ "$3" = "--SGI" ] ||[ "$4" = "--SGI" ] ||[ "$5" = "--SGI" ]; then
 		export SGI=1
 	fi
 	if [ "$2" = "--config" ] || [ "$3" = "--config" ] ||[ "$4" = "--config" ] ||[ "$5" = "--config" ]; then
@@ -234,12 +238,23 @@ dohd(){
 		wget https://cdn.discordapp.com/attachments/730416836780490752/730431589749620736/nes.pak
 	else
 		if [ "$EXTERNAL_DATA" = 1 ; then
-			if [ ! -d ~/"$REPO"/build ] ; then mkdir ~/"$REPO"/build
+			if [ ! -d ~/"$REPO"/build ] ; then 
+				mkdir ~/"$REPO"/build
 			fi
-			mkdir ~/"$REPO"/build/"$VERSION"_"$TARGET"
-			git clone --single-branch https://github.com/CrashCrod/Cleaner-Aesthetics.git ~/"$REPO"/build/"$VERSION"_"$TARGET"/res
-			cd ~/"$REPO"/build/"$VERSION"_"$TARGET"/res	
-			wget https://github.com/MapAnon/sm64-pc-hq-sounds/releases/download/5.1/hq_sounds_v5.1.zip
+			if [ ! -d ~/"$REPO"/build/"$VERSION"_"$TARGET" ] ; then 
+				mkdir ~/"$REPO"/build/"$VERSION"_"$TARGET"
+			fi
+			if [ -d ~/"$REPO"/build/"$VERSION"_"$TARGET"/res ] ; then
+				mv ~/"$REPO"/build/"$VERSION"_"$TARGET"/res.old
+				git clone --single-branch https://github.com/CrashCrod/Cleaner-Aesthetics.git ~/"$REPO"/build/"$VERSION"_"$TARGET"/res
+				cd ~/"$REPO"/build/"$VERSION"_"$TARGET"/res	
+				wget https://github.com/MapAnon/sm64-pc-hq-sounds/releases/download/5.1/hq_sounds_v5.1.zip
+				cp -rpn ~/"$REPO"/build/"$VERSION"_"$TARGET"/res.old/ ~/"$REPO"/build/"$VERSION"_"$TARGET"/res
+			else
+				git clone --single-branch https://github.com/CrashCrod/Cleaner-Aesthetics.git ~/"$REPO"/build/"$VERSION"_"$TARGET"/res
+				cd ~/"$REPO"/build/"$VERSION"_"$TARGET"/res	
+				wget https://github.com/MapAnon/sm64-pc-hq-sounds/releases/download/5.1/hq_sounds_v5.1.zip
+			fi
 		fi
 		if [ ! -f ~/"$REPO"/enhancements/hd_bowser.rar ] && [ ! "$SGI" = 1 ]; then
 			cd ~/"$REPO"/enhancements
