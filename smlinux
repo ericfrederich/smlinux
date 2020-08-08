@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0805-0844
+# 2020-0808-1437
 
 domake(){ 
 	if [ "$TARGET_WEB" = 1 ]; then 
@@ -31,6 +31,24 @@ domake(){
 		git checkout Makefile
 	fi
 	}
+
+checkoptions(){
+	if [ "$2" = "--updatehd" ] || [ "$3" = "--updatehd" ] ||[ "$4" = "--updatehd" ] ||[ "$5" = "--updatehd" ]; then
+		UpdateHD=1
+	fi
+	if [ "$2" = "--sgi" ] || [ "$3" = "--sgi" ] ||[ "$4" = "--sgi" ] ||[ "$5" = "--sgi" ]; then
+		SGI=1
+	fi
+	if [ "$2" = "--config" ] || [ "$3" = "--config" ] ||[ "$4" = "--config" ] ||[ "$5" = "--config" ]; then
+		CONFIG=1
+	elif [ "$2" = "config" ] || [ "$3" = "config" ] ||[ "$4" = "config" ] ||[ "$5" = "config" ]; then
+		CONFIG=1
+	fi
+	if [ "$2" = "--depends" ] || [ "$3" = "--depends" ] ||[ "$4" = "--depends" ] ||[ "$5" = "--depends" ]; then
+		DEPENDS=1
+	fi
+	}
+
 
 gcccheck(){
 	if [ `gcc -dumpversion` \> 7.99 ]; then
@@ -88,7 +106,7 @@ InstallHD=1
 UpdateHD=0
 TARGET_WEB=0
 JOBS=-j
-Linux="sudo apt install -y build-essential git python3 libaudiofile-dev libglew-dev libsdl2-dev binutils libusb-1.0-0-dev libzstd-dev python3-pip"'> ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinuxcfg.txt
+Linux="sudo apt install -y build-essential git python3 libaudiofile-dev libglew-dev libsdl2-dev binutils libusb-1.0-0-dev libzstd-dev python3-pip p7zip-full"'> ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinuxcfg.txt
 	}
 
 loadconfig(){
@@ -122,6 +140,7 @@ loadconfig(){
 	else
 		TARGET=pc
 	fi
+	checkoptions
 	}
 
 doconfig(){
@@ -227,8 +246,8 @@ dohd(){
 			cd ~/"$REPO"/build/"$VERSION"_"$TARGET"/res	
 			wget https://github.com/MapAnon/sm64-pc-hq-sounds/releases/download/5.1/hq_sounds_v5.1.zip
 		fi
-		cd ~/"$REPO"/enhancements
-		if [ ! -f ~/"$REPO"/enhancements/hw_bowser.rar ]; then
+		if [ ! -f ~/"$REPO"/enhancements/hd_bowser.rar ] && [ ! "$SGI" = 1 ]; then
+			cd ~/"$REPO"/enhancements
 			wget https://cdn.discordapp.com/attachments/716459185230970880/719758031990030427/Old_School_HD_Mario_Model.zip 
 			wget https://cdn.discordapp.com/attachments/716459185230970880/718990046442684456/hd_bowser.rar	
 			if [ "$REPO" = "sm64pc" ]; then
@@ -244,16 +263,55 @@ dohd(){
 				git apply enhancements/3d_coin_v2.patch --ignore-whitespace
 			elif [ "$REPO" = "sm64ex" ] || [ "$REPO" = "sm64-port" ]; then
 				git apply enhancements/3d_coin_v2_nightly.patch --ignore-whitespace
-		fi	fi
-		if [ -f ~/"$REPO"/enhancements/60fps_ex.patch ] && [ `arch` = "x86_64" ] && [ "$TARGET_WEB" = 0]; then
+			fi
+		fi
+		cd ~/"$REPO"	
+		if [ -f ~/"$REPO"/enhancements/60fps_ex.patch ] && [ `arch` = "x86_64" ] && [ "$TARGET_WEB" = 0] && [ ! "$SGI" = 1 ]; then
 			git apply enhancements/60fps_ex.patch
 			sed -i 's/vsync false/vsync true/g' ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64config.txt
-		elif [ -f ~/"$REPO"/enhancements/60fps.patch ] && [ `arch` = "x86_64" ] && [ "$TARGET_WEB" = 0]; then
+		elif [ -f ~/"$REPO"/enhancements/60fps.patch ] && [ `arch` = "x86_64" ] && [ "$TARGET_WEB" = 0] && [ ! "$SGI" = 1 ]; then
 			git apply enhancements/60fps.patch
 			sed -i 's/vsync false/vsync true/g' ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64config.txt
 		fi
 	fi
 	}
+
+dosgi(){
+	if [ ! "$REPO" = "sm64ex" ] || [ ! "$Branch" = "nightly" ] || [ "$TARGET_WEB" = 1 ]; then
+		echo WARNING: sgi is unlikely to succeed on anything besides sm64ex-nightly for pc
+		echo Proceeding anyway, but it is unlikely to build unless something has changed since this was written.
+	fi
+	if [ ! -f /usr/bin/7z ]; then
+		echo "This comes as a 7z file but you don't have a tool to extract it."
+		if [ -f /usr/bin/apt ]; then
+			echo Please provide your password to install 7z...
+			sudo apt install p7zip-full
+		else
+			echo This script checks for /usr/bin/7z.  The ubuntu package is called p7zip.
+			echo Please install whatever package gets you 7z and run smlinux again.
+			echo Also please let author know what package and distro so I can add it
+			echo to depdencency list so others avoid this message.  
+			exit
+		fi
+	fi
+	cd ~/$REPO
+	rm -rf actors
+	git checkout actors
+	if [ -f ~/"$REPO"/enhancements/3d_coin_v2_nightly.patch ]; then
+		git apply -R enhancements/3d_coin_v2_nightly.patch
+		if [ -f ~/"$REPO"/enhancements/60fps_ex.patch ]; then
+			git apply -R enhancements/60fps_ex.patch
+		elif [ -f ~/"$REPO"/enhancements/60fps.patch ]; then
+			git apply -R enhancements/60fps.patch
+		fi
+	fi
+	cd enhancements
+	wget https://cdn.discordapp.com/attachments/730551213376143431/733303520043728956/Old_School_HD_SGI_Base_Models_V1.3_Refresh_11.7z
+	cd ..
+	7z x -ao enhancements/Old_School_HD_SGI_Base_Models_V1.3_Refresh_11.7z
+	}
+
+	
 
 scriptUpdate(){
 if [ ! -f ~/.smlinuxUpdate ]; then 
@@ -396,34 +454,36 @@ if [ ! -d ${XDG_DATA_HOME:-$HOME/.local/share}/icons ]; then mkdir ${XDG_DATA_HO
 fi
 if [ ! -d ${XDG_DATA_HOME:-$HOME/.local/share}/applications ]; then mkdir ${XDG_DATA_HOME:-$HOME/.local/share}/applications
 fi
-if [ ! -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinuxcfg.txt ]; then
-	echo Creating ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinuxcfg.txt
-	makeconfig
-	doconfig
-elif [ "$2" = "config" ] || [ "$2" = "--config" ] || [ "$3" = "--config" ] || [ "$3" = "config" ]; then
-	if [ ! -f ~/.smlinuxUpdate ]; then 
-		doconfig
+if [ ! -f ~/.smlinuxUpdate ]; then
+	#Play a sound clip for no reason.
+	if [ -f /usr/bin/mplayer ]; then
+		if [ -f ~/sm64pc/sound/samples/sfx_mario_peach/0D.aiff ]; then
+			sh -c 'mplayer -nolirc -really-quiet ~/sm64pc/sound/samples/sfx_mario_peach/0D.aiff&'
+		elif [ -f ~/sm64ex/sound/samples/sfx_mario_peach/0D.aiff ]; then
+			sh -c 'mplayer -nolirc -really-quiet ~/sm64ex/sound/samples/sfx_mario_peach/0D.aiff&'
+		elif [ -f ~/sm64-port/sound/samples/sfx_mario_peach/0D.aiff ]; then
+			sh -c 'mplayer -nolirc -really-quiet ~/sm64-port/sound/samples/sfx_mario_peach/0D.aiff&'
+		fi
 	fi
-elif [ "$1" = "config" ]; then
-	if [ ! -f ~/.smlinuxUpdate ]; then 
+	echo
+	echo [0] Loading configuration from ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinuxcfg.txt...
+	if [ ! -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinuxcfg.txt ]; then
+		echo File not found, so making a new one...
+		makeconfig
+		CONFIG=1
+	elif [ "$1" = "config" ]; then
 		editconfig
 		exit
 	fi
-fi
-if [ ! -f ~/.smlinuxUpdate ]; then
-	echo
-	echo [0] Loading configuration from ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinuxcfg.txt...
-fi
-loadconfig
-#Play a sound clip for no reason.
-if [ -f /usr/bin/mplayer ] && [ -f ~/"$REPO"/sound/samples/sfx_mario_peach/0D.aiff ] && [ ! -f ~/.smlinuxUpdate ]; then
-	sh -c 'mplayer -nolirc -really-quiet ~/'"$REPO"'/sound/samples/sfx_mario_peach/0D.aiff&'
-fi
-#Make Safevile Dir
-if [ ! -d ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO" ]; then 
-	mkdir ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"
-fi
-if [ ! -f ~/.smlinuxUpdate ]; then
+	loadconfig
+	if [ "$CONFIG" = 1 ]; then
+		doconfig
+		loadconfig
+	fi
+	#Make Safevile Dir
+	if [ ! -d ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO" ]; then 
+		mkdir ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"
+	fi
 	echo Verifying ROM...
 	if [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/baserom."$VERSION".z64 ]; then
 		echo ROM Available.
@@ -470,7 +530,7 @@ if [ ! -f ~/.smlinuxUpdate ]; then
 	fi
 fi
 
-if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ]; then
+if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ] || [ "$1" = "up" ]; then
 	if [ -f ~/.smlinuxUpdate ]; then 
 		rm ~/.smlinuxUpdate
 		echo Script Update Complete.	
@@ -485,7 +545,7 @@ if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ]; then
 		exit
 	fi
 	cd ~/"$REPO"
-	echo Checking for "$REPO" repo updates on Github...
+	echo Checking "$REPO" Github repository for updates...
 	git checkout "$Branch"
 	git fetch
 	if [ "$(git diff HEAD origin/HEAD)" != "" ]; then git merge
@@ -519,11 +579,15 @@ if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ]; then
 		mv ~/"$REPO"/build/"$VERSION"_"$TARGET" ~/"$REPO"/build/"$VERSION"_"$TARGET".old
 	fi
 	
-	if [ "$2" = "--updatehd" ] || [ "$2" = "--HD" ] || [ "$3" = "--hd" ] || [ "$UpdateHD" = 1 ]; then
-		echo Adding Community Enhancements...
+	if [ "$UpdateHD" = 1 ]; then
+		echo Adding Community Upscale Enhancements...
 		dohd
 	fi
-	if [ "$InstallHD" = 1 ] && [ "TARGET_WEB" = 1 ] && [ -d ~/"$REPO"/build/"$VERSION"_"$TARGET" ]; then
+	if [ "$SGI" = 1 ]; then
+		echo Adding SGI Models...
+		dosgi
+	fi
+	if [ "$InstallHD" = 1 ] && [ "TARGET_WEB" = 1 ] && [ -d ~/"$REPO"/build/"$VERSION"_pc ]; then
 		if [ -f ~/"$REPO"/enhancements/60fps_ex.patch ]; then
 			git apply -R enhancements/60fps_ex.patch
 		elif [ -f ~/"$REPO"/enhancements/60fps.patch ]; then
@@ -627,7 +691,7 @@ if [ -f "$1" ] || [ -f "$LAUNCH_DIR"/"$1" ] || ( [ -f ${XDG_DATA_HOME:-$HOME/.lo
 		rm ~/.smlinuxUpdate
 		echo Script Update Complete.
 	else	# Fresh Build
-		if [ ! -d ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/.git ] || [ "$2" = "--depends" ] || [ "$3" = "--depends" ]; then
+		if [ ! -d ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/.git ] || [ "$DEPENDS" = 1 ]; then
 			echo "[1] Installing required build tools..."
 			$Linux
 			if [ "$REPO" = "sm64nx" ] ; then
@@ -670,6 +734,7 @@ else
 	echo "| Options: --config   prompt to edit config file before build                 |"
 	echo "|          --depends  install depdendencies (automatic during install)        |"
 	echo "|          --updatehd (re)aquire & apply community upscale enhancements       |"
+	echo "|          --sgi      Apply Render96's SGI Model Pack                         |"
 	echo "|                                                                             |"
 	echo "-------------------------------------------------------------------------------"
 	if [ "$1" = "--help" ] || [ "$1" = "-help" ] || [ "$1" = "help" ] || [ "$1" = "-h" ]; then
@@ -722,6 +787,9 @@ fi
 echo
 echo [5] Applying Community Enhancements...
 echo
+if [ "$SGI" = 1 ]; then
+	dosgi
+fi
 if [ "$InstallHD" = 1 ]; then 
 	dohd
 else
