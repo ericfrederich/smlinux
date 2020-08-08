@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0808-1437
+# 2020-0808-1450
 
 domake(){ 
 	if [ "$TARGET_WEB" = 1 ]; then 
@@ -34,18 +34,18 @@ domake(){
 
 checkoptions(){
 	if [ "$2" = "--updatehd" ] || [ "$3" = "--updatehd" ] ||[ "$4" = "--updatehd" ] ||[ "$5" = "--updatehd" ]; then
-		UpdateHD=1
+		export UpdateHD=1
 	fi
 	if [ "$2" = "--sgi" ] || [ "$3" = "--sgi" ] ||[ "$4" = "--sgi" ] ||[ "$5" = "--sgi" ]; then
-		SGI=1
+		export SGI=1
 	fi
 	if [ "$2" = "--config" ] || [ "$3" = "--config" ] ||[ "$4" = "--config" ] ||[ "$5" = "--config" ]; then
-		CONFIG=1
+		export CONFIG=1
 	elif [ "$2" = "config" ] || [ "$3" = "config" ] ||[ "$4" = "config" ] ||[ "$5" = "config" ]; then
-		CONFIG=1
+		export CONFIG=1
 	fi
 	if [ "$2" = "--depends" ] || [ "$3" = "--depends" ] ||[ "$4" = "--depends" ] ||[ "$5" = "--depends" ]; then
-		DEPENDS=1
+		export DEPENDS=1
 	fi
 	}
 
@@ -170,7 +170,7 @@ editconfig(){
        			$editor "$url"
        		fi
 		if [ $? -eq 0 ]; then
-			return
+			returnloadconfig
        		fi
 		done
 	}
