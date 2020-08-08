@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0808-1510
+# 2020-0808-1521
 
 domake(){ 
 	if [ "$TARGET_WEB" = 1 ]; then 
@@ -289,7 +289,7 @@ dosgi(){
 			exit
 		fi
 	fi
-	cd ~/$REPO
+	cd ~/"$REPO"
 	rm -rf actors
 	git checkout actors
 	if [ -f ~/"$REPO"/enhancements/3d_coin_v2_nightly.patch ]; then
