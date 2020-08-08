@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0808-1521
+# 2020-0808-1529
 
 domake(){ 
 	if [ "$TARGET_WEB" = 1 ]; then 
@@ -303,7 +303,7 @@ dosgi(){
 	cd enhancements
 	wget https://cdn.discordapp.com/attachments/730551213376143431/733303520043728956/Old_School_HD_SGI_Base_Models_V1.3_Refresh_11.7z
 	cd ..
-	7z x -ao enhancements/Old_School_HD_SGI_Base_Models_V1.3_Refresh_11.7z
+	7z x -aoa enhancements/Old_School_HD_SGI_Base_Models_V1.3_Refresh_11.7z
 	}
 
 	
@@ -523,6 +523,8 @@ if [ ! -f ~/.smlinuxUpdate ]; then
 			echo WARNING: No ROM file found.  Please specify a romfile when you are ready to build.
 		fi
 	fi
+else
+	loadconfig "$@"
 fi
 
 if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ] || [ "$1" = "up" ]; then
