@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0809-1503
+# 2020-0809-1623
 
 domake(){ 
 	if [ "$TARGET_WEB" = 1 ]; then 
@@ -317,6 +317,7 @@ dosgi(){
 		elif [ -f ~/"$REPO"/enhancements/60fps.patch ]; then
 			git apply -R enhancements/60fps.patch
 		fi
+		sed -i 's/vsync true/vsync false/g' ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64config.txt
 	fi
 	cd enhancements
 	wget https://cdn.discordapp.com/attachments/730551213376143431/733303520043728956/Old_School_HD_SGI_Base_Models_V1.3_Refresh_11.7z
