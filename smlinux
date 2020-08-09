@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0809-1447
+# 2020-0809-1503
 
 domake(){ 
 	if [ "$TARGET_WEB" = 1 ]; then 
@@ -749,7 +749,7 @@ else
 	echo "| Options: --config   prompt to edit config file before build                 |"
 	echo "|          --depends  install depdendencies (automatic during install)        |"
 	echo "|          --updatehd (re)aquire & apply community upscale enhancements       |"
-	echo "|          --sgi      Apply Render96's SGI Model Pack                         |"
+	echo "|          --sgi      aquire and apply Render96 SGI model pack                |"
 	echo "|                                                                             |"
 	echo "-------------------------------------------------------------------------------"
 	if [ "$1" = "--help" ] || [ "$1" = "-help" ] || [ "$1" = "help" ] || [ "$1" = "-h" ]; then
