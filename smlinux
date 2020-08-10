@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0809-1623
+# 2020-0810-0859
 
 domake(){ 
 	if [ "$TARGET_WEB" = 1 ]; then 
@@ -289,8 +289,12 @@ dohd(){
 
 dosgi(){
 	if [ ! "$REPO" = "sm64ex" ] || [ ! "$Branch" = "nightly" ] || [ "$TARGET_WEB" = 1 ]; then
-		echo WARNING: sgi is unlikely to succeed on anything besides sm64ex-nightly for pc
-		echo Proceeding anyway, but it is unlikely to build unless something has changed since this was written.
+		if(whiptail --title "SGI Model Warning" --yesno "SGI Models are unlikely to succeed unless REPO=sm64ex Branch=nightly and TARGET_WEB=0." 10 50 --yes-button "Continue Anyway" --no-button "Cancel" --defaultno); then
+			echo WARNING: sgi is unlikely to succeed on anything besides sm64ex-nightly for pc
+			echo Proceeding anyway, but it is unlikely to build unless something has changed since this was written.
+		else
+			exit
+		fi
 	fi
 	if [ ! -f /usr/bin/7z ]; then
 		echo "This comes as a 7z file but you don't have a tool to extract it."
