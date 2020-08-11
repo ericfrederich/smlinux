@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0810-0859
+# 2020-0810-1823
 
 domake(){ 
 	if [ "$TARGET_WEB" = 1 ]; then 
@@ -206,7 +206,7 @@ prepnx(){
 		echo 
 		echo Unable to extract and pak ROM.
 		echo "smlinux exiting incomplete.  Contact #help-desk for support."
-		xdg-open https://discord.gg/B7x4svT &disown
+		xdg-open https://discord.gg/Ub6YHRm &disown
 		exit
 	fi
 	}
@@ -324,13 +324,12 @@ dosgi(){
 		sed -i 's/vsync true/vsync false/g' ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64config.txt
 	fi
 	cd enhancements
-	wget https://cdn.discordapp.com/attachments/730551213376143431/733303520043728956/Old_School_HD_SGI_Base_Models_V1.3_Refresh_11.7z
+	wget https://cdn.discordapp.com/attachments/730551213376143431/742471533951189143/1.4.1_keyhotfix.zip
 	cd ..
-	7z x -aoa enhancements/Old_School_HD_SGI_Base_Models_V1.3_Refresh_11.7z
+	7z x -aoa enhancements/1.4.1_keyhotfix.zip
+	TEXTSAVES=1
 	}
-
 	
-
 scriptUpdate(){
 if [ ! -f ~/.smlinuxUpdate ]; then 
 	if [ ! -f "${MAPFILE[0]}"/smlinux ]; then
@@ -638,7 +637,7 @@ if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ] || [ "$1" = "
 			mv ~/"$REPO"/build/"$VERSION"_"$TARGET".old ~/"$REPO"/build/"$VERSION"_"$TARGET"
 		fi
 		echo "smlinux exiting incomplete.  Contact #help-desk for support."
-		xdg-open https://discord.gg/B7x4svT &disown
+		xdg-open https://discord.gg/Ub6YHRm &disown
 		exit
 	fi
 	if [ -d ~/"$REPO"/build/"$VERSION"_"$TARGET".old/res ]; then
@@ -789,7 +788,7 @@ fi
 if [ ! -d ~/"$REPO" ]; then
 	echo "ERROR: Could not reach github."
 	echo "Script Ending Incomplete.  Contact #help-desk for support."
-	xdg-open https://discord.gg/B7x4svT &disown
+	xdg-open https://discord.gg/Ub6YHRm &disown
 	exit
 fi
 ln -s ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/baserom."$VERSION".z64 ~/"$REPO"/baserom."$VERSION".z64
@@ -823,7 +822,7 @@ if [ ! -f ~/"$REPO"/build/"$VERSION"_"$TARGET"/sm64."$VERSION".f3dex2* ]; then
 	echo
 	echo ERROR: Build Failure.  Expected output file not found.
 	echo "smlinux exiting incomplete.  Contact #help-desk for support."
-	xdg-open https://discord.gg/B7x4svT &disown
+	xdg-open https://discord.gg/Ub6YHRm &disown
 	exit
 fi
 
