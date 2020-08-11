@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0811-1533
+# 2020-0811-1634
 
 domake(){ 
 	if [ "$TARGET_WEB" = 1 ]; then 
@@ -283,10 +283,10 @@ dohd(){
 			fi
 		fi
 		cd ~/"$REPO"	
-		if [ -f ~/"$REPO"/enhancements/60fps_ex.patch ] && [ `arch` = "x86_64" ] && [ "$TARGET_WEB" = 0] && [ ! "$SGI" = 1 ]; then
+		if [ -f ~/"$REPO"/enhancements/60fps_ex.patch ] && [ `arch` = "x86_64" ] && [ "$TARGET_WEB" = 0 ] && [ ! "$SGI" = 1 ]; then
 			git apply enhancements/60fps_ex.patch
 			sed -i 's/vsync false/vsync true/g' ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64config.txt
-		elif [ -f ~/"$REPO"/enhancements/60fps.patch ] && [ `arch` = "x86_64" ] && [ "$TARGET_WEB" = 0] && [ ! "$SGI" = 1 ]; then
+		elif [ -f ~/"$REPO"/enhancements/60fps.patch ] && [ `arch` = "x86_64" ] && [ "$TARGET_WEB" = 0 ] && [ ! "$SGI" = 1 ]; then
 			git apply enhancements/60fps.patch
 			sed -i 's/vsync false/vsync true/g' ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64config.txt
 		fi
@@ -302,7 +302,8 @@ dosgi(){
 			exit
 		fi
 	fi
-	if [ ! -f /usr/bin/7z ]; then
+# Removed!  Formerly it was 7zipped
+	if [ 1 = 0 ] && [ ! -f /usr/bin/7z ]; then 
 		echo "This comes as a 7z file but you don't have a tool to extract it."
 		if [ -f /usr/bin/apt ]; then
 			echo Please provide your password to install 7z...
@@ -332,7 +333,7 @@ dosgi(){
 	cd enhancements
 	wget https://cdn.discordapp.com/attachments/730551213376143431/742471533951189143/1.4.1_keyhotfix.zip
 	cd ..
-	7z x -aoa enhancements/1.4.1_keyhotfix.zip
+	unzip -o enhancements/1.4.1_keyhotfix.zip
 	TEXTSAVES=1
 	}
 	
@@ -509,6 +510,9 @@ if [ ! -f ~/.smlinuxUpdate ]; then
 	fi
 	echo Verifying ROM...
 	if [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/baserom."$VERSION".z64 ]; then
+		if [ ! -f ~/"$REPO"/baserom."$VERSION".z64 ]; then
+			ln -s ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/baserom."$VERSION".z64 ~/"$REPO"/baserom."$VERSION".z64
+		fi
 		echo ROM Available.
 	else
 		cd "$LAUNCH_DIR"
