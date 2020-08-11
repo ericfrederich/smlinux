@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0811-1448
+# 2020-0811-1533
 
 domake(){ 
 	if [ "$TARGET_WEB" = 1 ]; then 
@@ -556,14 +556,16 @@ else
 fi
 
 if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ] || [ "$1" = "up" ]; then
+	echo
 	if [ -f ~/.smlinuxUpdate ]; then 
 		rm ~/.smlinuxUpdate
 		echo Script Update Complete.	
 	elif [ "$AutoUpdate" = 1 ]; then
-		echo Checking for Script Updates on Github...
+		echo [1] Checking for Script Updates on Github...
 		scriptUpdate "$@"
 	else
 		echo "WARNING: AutoUpdate Disabled in Config File!"
+		[1] Skipping Check for Script Updates on Github...
 	fi
 	if [ ! -d ~/"$REPO" ]; then
 		echo ERROR: No ~/"$REPO" folder to update!
@@ -571,7 +573,8 @@ if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ] || [ "$1" = "
 		exit
 	fi
 	cd ~/"$REPO"
-	echo Checking "$REPO" Github repository for updates...
+	echo
+	echo [2] Checking "$REPO" Github repository for updates...
 	git checkout "$Branch"
 	git fetch
 	if [ "$(git diff HEAD origin/HEAD)" != "" ]; then git merge
@@ -604,7 +607,8 @@ if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ] || [ "$1" = "
 		fi
 		mv ~/"$REPO"/build/"$VERSION"_"$TARGET" ~/"$REPO"/build/"$VERSION"_"$TARGET".old
 	fi
-	
+	echo
+	echo [3] Applying selected pre-build modifications...
 	if [ "$UpdateHD" = 1 ]; then
 		printf "\nAdding Community Upscale Enhancements...\n\n"
 		dohd
@@ -621,7 +625,7 @@ if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ] || [ "$1" = "
 		fi
 	fi
 			
-	echo Compiling...
+	echo [4] Compiling...
 	if [ -f /usr/bin/mplayer ]; then
 		sh -c 'mplayer -nolirc -really-quiet ~/'"$REPO"'/sound/samples/sfx_mario/0C.aiff&'
 	fi
@@ -633,8 +637,8 @@ if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ] || [ "$1" = "
 			git apply enhancements/60fps.patch
 		fi
 	fi
+	echo
 	if [ ! -f ~/"$REPO"/build/"$VERSION"_"$TARGET"/sm64."$VERSION".f3dex2* ]; then
-		echo
 		echo ERROR: Build Failure - output file not found.  
 		if [ -d ~/"$REPO"/build/"$VERSION"_"$TARGET".old ]; then
 			echo Restoring previous build...
@@ -648,7 +652,7 @@ if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ] || [ "$1" = "
 		exit
 	fi
 	if [ -d ~/"$REPO"/build/"$VERSION"_"$TARGET".old/res ]; then
-		echo Restoring External Resources...
+		echo [5] Restoring External Resources...
 		cp -rpn ~/"$REPO"/build/"$VERSION"_"$TARGET".old/res/. ~/"$REPO"/build/"$VERSION"_"$TARGET"/res
 	fi
 	if [ -d ~/"$REPO"/build/"$VERSION"_"$TARGET"/res/.git ] ; then
@@ -657,7 +661,7 @@ if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ] || [ "$1" = "
 		git pull
 	fi
 	if [ -d ~/"$REPO"/build/"$VERSION"_"$TARGET".old/romfs ]; then
-		echo "Restoring Savefile, ROM and ROM Filesystem (paks)"
+		echo "[5] Restoring Savefile, ROM and ROM Filesystem (paks)"
 		cp -rpn ~/"$REPO"/build/"$VERSION"_"$TARGET".old/romfs/. ~/"$REPO"/build/"$VERSION"_"$TARGET"/romfs
 		ln -s ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64.sav ~/"$REPO"/build/"$VERSION"_"$TARGET"/sm64.sav 
 		ln -s ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64.log ~/"$REPO"/build/"$VERSION"_"$TARGET"/sm64.log 
@@ -666,12 +670,13 @@ if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ] || [ "$1" = "
 		ln -s ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/keyboard1.bindings.json ~/"$REPO"/build/"$VERSION"_"$TARGET"/keyboard1.bindings.json
 		ln -s ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/baserom."$VERSION".z64 ~/"$REPO"/build/"$VERSION"_"$TARGET"/baserom."$VERSION".z64
 	elif [ "$REPO" = "sm64nx" ]; then
+		echo "[5] Preparing Savefile, ROM and ROM Filesystem (paks)"
 		prepnx
 		if [ "$InstallHD" = 1 ]; then
 			dohd
 		fi		
 	fi
-	echo Update Complete.  Testing Application...
+	echo [6] Update Complete.  Testing Application...
 	if [ ! -f ${XDG_DATA_HOME:-$HOME/.local/share}/applications/"$REPO".desktop ]; then
 		makedesktop
 	fi
