@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0810-1823
+# 2020-0811-1235
 
 domake(){ 
 	if [ "$TARGET_WEB" = 1 ]; then 
@@ -37,20 +37,29 @@ gcccheck(){
 		echo gcc 8 or higher confirmed
 	else 
 		if [ -f /usr/bin/apt ]; then		
-			echo Attempting to install gcc 8.
-			sudo apt update
-			sudo apt install -y g++-8
-			sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-8 80 --slave /usr/bin/g++ g++ /usr/bin/g++-8 --slave /usr/bin/gcov gcov /usr/bin/gcov-8
+			echo Attempting to install gcc 9.
+			sudo add-apt-repository ppa:ubuntu-toolchain-r/test
+			sudo apt install -y g++-9
+			sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 80 --slave /usr/bin/g++ g++ /usr/bin/g++-9 --slave /usr/bin/gcov gcov /usr/bin/gcov-9
+			if [ `gcc -dumpversion` \> 8.99 ]; then
+				echo gcc 9 succesfully installed
+				return
+			else
+				echo Attempting to install gcc 8.
+				sudo apt install -y g++-8
+				sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-8 80 --slave /usr/bin/g++ g++ /usr/bin/g++-8 --slave /usr/bin/gcov gcov /usr/bin/gcov-8
+				if [ `gcc -dumpversion` \> 7.99 ]; then
+					echo gcc 8 succesfully installed
+					return
+				fi
+			fi			
 		fi
-		if [ `gcc -dumpversion` \> 7.99 ]; then
-			echo gcc 8 succesfully installed
-		else 
-			echo WARNING: Your C compiler is not new enough for sm64nx. 
-			echo gcc --version must report 8 or higher.  
-			echo Please install it then rerun smlinux, or use another repo.
-			echo
-			exit
-	fi	fi
+		echo WARNING: Your C compiler is not new enough for sm64nx. 
+		echo gcc --version must report 8 or higher.  
+		echo Please install it then rerun smlinux, or use another repo.
+		echo
+		exit
+	fi	
 	}
 
 vettrom(){
