@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0811-1634
+# 2020-0811-1645
 
 domake(){ 
 	if [ "$TARGET_WEB" = 1 ]; then 
@@ -565,11 +565,11 @@ if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ] || [ "$1" = "
 		rm ~/.smlinuxUpdate
 		echo Script Update Complete.	
 	elif [ "$AutoUpdate" = 1 ]; then
-		echo [1] Checking for Script Updates on Github...
+		echo [1] Checking smlinux github repository for updates...
 		scriptUpdate "$@"
 	else
 		echo "WARNING: AutoUpdate Disabled in Config File!"
-		[1] Skipping Check for Script Updates on Github...
+		[1] Skipping check for smlinux updates...
 	fi
 	if [ ! -d ~/"$REPO" ]; then
 		echo ERROR: No ~/"$REPO" folder to update!
@@ -578,7 +578,7 @@ if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ] || [ "$1" = "
 	fi
 	cd ~/"$REPO"
 	echo
-	echo [2] Checking "$REPO" Github repository for updates...
+	echo [2] Checking "$REPO" github repository for updates...
 	git checkout "$Branch"
 	git fetch
 	if [ "$(git diff HEAD origin/HEAD)" != "" ]; then git merge
@@ -634,7 +634,7 @@ if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ] || [ "$1" = "
 		sh -c 'mplayer -nolirc -really-quiet ~/'"$REPO"'/sound/samples/sfx_mario/0C.aiff&'
 	fi
 	domake
-	if [ "$InstallHD" = 1 ] && [ "TARGET_WEB" = 1 ] && [ -d ~/"$REPO"/build/"$VERSION"_"$TARGET" ]; then
+	if [ "$InstallHD" = 1 ] && [ "TARGET_WEB" = 1 ] && [ -d ~/"$REPO"/build/"$VERSION"_pc ]; then
 		if [ -f ~/"$REPO"/enhancements/60fps_ex.patch ]; then
 			git apply enhancements/60fps_ex.patch
 		elif [ -f ~/"$REPO"/enhancements/60fps.patch ]; then
