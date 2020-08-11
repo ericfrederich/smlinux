@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0811-1426
+# 2020-0811-1445
 
 domake(){ 
 	if [ "$TARGET_WEB" = 1 ]; then 
@@ -15,17 +15,11 @@ domake(){
 	if [ "$REPO" = "sm64nx" ]; then
 		sed -i 's/-no-pie -lpthread -lzstd/-no-pie -lpthread -lzstd -lstdc++fs/g' ~/"$REPO"/Makefile
 	fi
-	cd ~/"$REPO"
-	if [ "$REPO" = "sm64-port" ] || [ "$REPO" = "sm64nx" ]; then
-		time make VERSION=$VERSION TARGET_WEB=$TARGET_WEB "$JOBS"	
-	elif [ "$REPO" = "sm64pc" ] || [ "$REPO" = "sm64ex" ]; then
-		time make BETTERCAMERA=$BETTERCAMERA NODRAWINGDISTANCE=$NODRAWINGDISTANCE TEXTURE_FIX=$TEXTURE_FIX EXTERNAL_DATA=$EXTERNAL_DATA DISCORDRPC=$DISCORDRPC VERSION=$VERSION RENDER_API=$RENDER_API TARGET_WEB=$TARGET_WEB TEXTSAVES=$TEXTSAVES "$JOBS"
-	else
-		echo "$REPO" is not a known repository.  Check your REPO setting and try again.
-		echo Known repos are sm64-port, sm64nx, sm64pc, and sm64ex.
-		echo smlinux exiting incomplete.
-		exit
+	if [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/buildlog.txt ]; then
+		mv -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/buildlog.txt ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/buildlog.old
 	fi
+	cd ~/"$REPO"
+	time make BETTERCAMERA=$BETTERCAMERA NODRAWINGDISTANCE=$NODRAWINGDISTANCE TEXTURE_FIX=$TEXTURE_FIX EXTERNAL_DATA=$EXTERNAL_DATA DISCORDRPC=$DISCORDRPC VERSION=$VERSION RENDER_API=$RENDER_API TARGET_WEB=$TARGET_WEB TEXTSAVES=$TEXTSAVES "$JOBS" > ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/buildlog.txt
 	if [ "$REPO" = "sm64nx" ] || ( [ "$TARGET_WEB" = 1 ] && [ "$InstallHD" = 1 ] ); then
 		rm Makefile
 		git checkout Makefile
