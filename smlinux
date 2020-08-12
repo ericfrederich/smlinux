@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0812-1537
+# 2020-0812-1554
 
 domake(){
 	#Here We go & music to build to
@@ -481,6 +481,8 @@ if [ ! -f ${XDG_DATA_HOME:-$HOME/.local/share}/icons/"$REPO".* ]; then
 		cp ~/"$REPO"/textures/segment2/segment2.05A00.rgba16.png ${XDG_DATA_HOME:-$HOME/.local/share}/icons/"$REPO".png
 		echo 16x16 image from ROM used.  Reccommend replacing ${XDG_DATA_HOME:-$HOME/.local/share}/icons/"$REPO".png
 	fi	
+else
+	echo Icon already exists...
 fi
 if [ ! -f ${XDG_DATA_HOME:-$HOME/.local/share}/applications/"$REPO".desktop ]; then
 	echo '[Desktop Entry]
@@ -502,6 +504,8 @@ echo Name=Super Mario 64 \("$REPO"\) >>${XDG_DATA_HOME:-$HOME/.local/share}/appl
 		echo Exec=~/"$REPO"/build/"$VERSION"_"$TARGET"/sm64."$VERSION".f3dex2e>>${XDG_DATA_HOME:-$HOME/.local/share}/applications/"$REPO".desktop
 	fi
 cp ${XDG_DATA_HOME:-$HOME/.local/share}/applications/"$REPO".desktop ${XDG_DESKTOP_DIR:-$HOME/Desktop}
+else
+	echo Menu entry desktop file already exists...
 fi
 }
 
@@ -761,6 +765,7 @@ if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ] || [ "$1" = "
 	elif [ ! "$ANDROID" = 1 ] ; then
 		echo [6] Creating Menu Entry and Desktop Shortcut....
 		makedesktop
+		echo
 		echo [7] Update Complete.  Testing Application...
 	else
 		echo [6] Update Complete. App should be installed to your phone. 
