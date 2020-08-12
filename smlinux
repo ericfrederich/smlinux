@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0811-2011
+# 2020-0811-2100
 
 domake(){
 	#Here We go & music to build to
@@ -173,6 +173,11 @@ loadconfig(){
 		REPO="sm64-port-android-base/app/jni/src"
 		ANDROID=1
 		EXTERNAL_DATA=0
+		Branch=master
+	fi
+	if [ "$REPO" = "sm64nx" ]; then
+		EXTERNAL_DATA=0
+		Branch=master
 	fi
 
 	if [ "$2" = "--updatehd" ] || [ "$3" = "--updatehd" ] ||[ "$4" = "--updatehd" ] ||[ "$5" = "--updatehd" ]; then
@@ -654,8 +659,14 @@ if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ] || [ "$1" = "
 				git apply enhancements/60fps.patch
 			fi
 		fi
-	fi	
-
+	fi
+	if [ "$REPO" = "sm64-port-android-base/app/jni/src" ]; then
+		git submodule init
+		git submodule update	
+		if [ -d ~/"$REPO"/../../build ]; then
+			rm -rf -d ~/"$REPO"/../../build
+		fi
+	fi
 	if [ -d ~/"$REPO"/build/"$VERSION"_"$TARGET" ]; then
 		if [ -d ~/"$REPO"/build/"$VERSION"_"$TARGET".old ]; then
 			rm -rf ~/"$REPO"/build/"$VERSION"_"$TARGET".old
@@ -728,15 +739,25 @@ if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ] || [ "$1" = "
 			dohd
 		fi		
 	fi
-	echo [6] Update Complete.  Testing Application...
-	if [ ! -f ${XDG_DATA_HOME:-$HOME/.local/share}/applications/"$REPO".desktop ]; then
+	echo
+	if [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/applications/"$REPO".desktop ] || [ "$TARGET" = "web" ]; then
+		echo [6] Update Complete.  Testing Application...
+	elif [ "$ANDROID" = 1 ] && [ ! -f ~/"$REPO"/../../build/outputs/apk/debug/app-debug.apk ]; then
+		echo
+		echo ERROR: Build Failure.  APK file not found.
+		echo "smlinux exiting incomplete.  Contact #help-desk for support."
+		xdg-open https://discord.gg/Ub6YHRm &disown
+		exit
+	else
+		echo [6] Creating Menu Entry and Desktop Shortcut....
 		makedesktop
+		echo [7] Update Complete.  Testing Application...
 	fi
 	rungame
 	sleep 10
 	echo
 	echo Script Done.  You may exit or close this terminal window.
-	if [ "$TARGET_WEB" = 1 ]; then
+	if [ "$TARGET" = "web" ]; then
 		echo Python Webserver will remain running until it is closed.
 	fi
 	echo
@@ -858,11 +879,11 @@ fi
 if [ ! -d ~/"$REPO" ]; then
 	cd
 	if [ "$REPO" = "sm64nx" ]; then
-		git clone https://github.com/teamsalta/"$REPO" 
+		git clone https://github.com/teamsalta/"$REPO" -b "$Branch"
 	elif [ "$REPO" = "sm64ex" ]; then
 		git clone https://github.com/sm64pc/"$REPO" -b "$Branch"
 	elif [ "$REPO" = "sm64-port-android-base/app/jni/src" ]; then
-		git clone https://github.com/vdavid003/sm64-port-android-base 
+		git clone https://github.com/vdavid003/sm64-port-android-base -b "$Branch"
 		cd sm64-port-android-base
 		git submodule init
 		git submodule update
