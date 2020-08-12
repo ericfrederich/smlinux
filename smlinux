@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0811-2100
+# 2020-0811-2135
 
 domake(){
 	#Here We go & music to build to
@@ -512,6 +512,7 @@ rungame(){
 			xdg-open http://localhost:8100&disown
 		fi
 	elif [ "$ANDROID"  = 1 ]; then
+		adb shell am start -n com.vdavid003.sm64port/.sm64portActivity
 		xdg-open ~/"$REPO"/../../build/outputs/apk/debug &disown
 	else
 		gtk-launch "$REPO"&disown
@@ -748,10 +749,12 @@ if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ] || [ "$1" = "
 		echo "smlinux exiting incomplete.  Contact #help-desk for support."
 		xdg-open https://discord.gg/Ub6YHRm &disown
 		exit
-	else
+	elif [ ! "$ANDROID" = 1 ] ; then
 		echo [6] Creating Menu Entry and Desktop Shortcut....
 		makedesktop
 		echo [7] Update Complete.  Testing Application...
+	else
+		echo [6] Update Complete. App should be installed to your phone. 
 	fi
 	rungame
 	sleep 10
