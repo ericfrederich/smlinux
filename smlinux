@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0812-1413
+# 2020-0812-1517
 
 domake(){
 	#Here We go & music to build to
@@ -128,7 +128,7 @@ TEXTSAVES=0
 VERSION=us
 #REPO supports sm64pc sm64-port sm64ex sm64nx sm64-port-android-base
 REPO=sm64ex
-Branch=master
+Branch=nightly
 AutoUpdate=1
 InstallHD=1
 UpdateHD=0
