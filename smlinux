@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0812-1517
+# 2020-0812-1537
 
 domake(){
 	#Here We go & music to build to
@@ -658,9 +658,9 @@ if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ] || [ "$1" = "
 			echo WARNING: Unable to merge source updates from github.
 		elif [ -f ~/"$REPO"/enhancements/3d_coin_v2_nightly.patch ]; then
 			git apply enhancements/3d_coin_v2_nightly.patch
-			if [ -f ~/"$REPO"/enhancements/60fps_ex.patch ]; then
+			if [ -f ~/"$REPO"/enhancements/60fps_ex.patch ] && [ `arch` = "x86_64" ]; then
 				git apply enhancements/60fps_ex.patch
-			elif [ -f ~/"$REPO"/enhancements/60fps.patch ]; then
+			elif [ -f ~/"$REPO"/enhancements/60fps.patch ] && [ `arch` = "x86_64" ]; then
 				git apply enhancements/60fps.patch
 			fi
 		fi
@@ -700,10 +700,10 @@ if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ] || [ "$1" = "
 			git apply -R enhancements/60fps.patch
 		fi
 	fi
-			
+	echo		
 	echo [4] Compiling...
 	domake
-	if [ "$InstallHD" = 1 ] && [ "TARGET_WEB" = 1 ] && [ -d ~/"$REPO"/build/"$VERSION"_pc ]; then
+	if [ "$InstallHD" = 1 ] && [ "TARGET_WEB" = 1 ] && [ -d ~/"$REPO"/build/"$VERSION"_pc ] && [ `arch` = "x86_64" ]; then
 		if [ -f ~/"$REPO"/enhancements/60fps_ex.patch ]; then
 			git apply enhancements/60fps_ex.patch
 		elif [ -f ~/"$REPO"/enhancements/60fps.patch ]; then
