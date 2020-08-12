@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0811-1645
+# 2020-0811-1909
 
 domake(){ 
 	if [ "$TARGET_WEB" = 1 ]; then 
@@ -12,18 +12,48 @@ domake(){
 		fi
 		loademsdk
 	fi
+	if [ "$ANDROID" = 1 ]; then
+		export PATH=~/android-sdk/tools/bin:$PATH
+		export ANDROID_HOME=~/android-sdk
+	fi
 	if [ "$REPO" = "sm64nx" ]; then
 		sed -i 's/-no-pie -lpthread -lzstd/-no-pie -lpthread -lzstd -lstdc++fs/g' ~/"$REPO"/Makefile
 	fi
 	if [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/buildlog.txt ]; then
 		mv -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/buildlog.txt ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/buildlog.old
 	fi
-	cd ~/"$REPO"
+	if [ "$REPO" = "sm64-port-android-base" ]; then
+		cd ~/"$REPO"/app/jni/src
+	else
+		cd ~/"$REPO"
+	fi
 	time make BETTERCAMERA=$BETTERCAMERA NODRAWINGDISTANCE=$NODRAWINGDISTANCE TEXTURE_FIX=$TEXTURE_FIX EXTERNAL_DATA=$EXTERNAL_DATA DISCORDRPC=$DISCORDRPC VERSION=$VERSION RENDER_API=$RENDER_API TARGET_WEB=$TARGET_WEB TEXTSAVES=$TEXTSAVES "$JOBS" > ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/buildlog.txt
 	if [ "$REPO" = "sm64nx" ] || ( [ "$TARGET_WEB" = 1 ] && [ "$InstallHD" = 1 ] ); then
 		rm Makefile
 		git checkout Makefile
 	fi
+	if [ "$REPO" = "sm64-port-android-base/app/jni/src" ]; then
+		zenity --info --text='\nPlug in your android device via USB and grant it debugging permission.\n\nDelete existing copy of SM64 from device.' --title="Starting Android Compilation...." --width=470 &disown
+		echo "Plug in your android device via USB and grant it debugging permission."
+		cd ~/sm64-port-android-base
+		./gradlew installDebug
+	fi
+	}
+
+androidsdk(){
+	if [ -f /usr/bin/apt ]; then
+		sudo apt install android-sdk -y
+	fi
+	if [ ! -d ~/android-sdk/tools/sdkmanager ]; then
+		cd
+		wget https://dl.google.com/android/repository/commandlinetools-linux-6609375_latest.zip
+		unzip -o commandlinetools-linux-6609375_latest android-sdk
+		rm commandlinetools-linux-6609375_latest.zip
+	fi
+	export PATH=~/android-sdk/tools/bin:$PATH
+	export ANDROID_HOME=~/android-sdk
+	yes | sdkmananger --licenses
+	sdkmanager --install ndk-bundle
 	}
 
 gcccheck(){
@@ -86,7 +116,7 @@ TEXTSAVES=0
 #[Script] These settings tell script what to do.
 #VERSION supports us jp eu (must correspond to rom version)
 VERSION=us
-#REPO supports sm64pc sm64-port sm64ex sm64nx 
+#REPO supports sm64pc sm64-port sm64ex sm64nx sm64-port-android-base
 REPO=sm64ex
 Branch=master
 AutoUpdate=1
@@ -129,6 +159,12 @@ loadconfig(){
 	else
 		TARGET=pc
 	fi
+	if [ "$REPO" = "sm64-port-android-base" ]; then
+		REPO="sm64-port-android-base/app/jni/src"
+		ANDROID=1
+		EXTERNAL_DATA=0
+	fi
+
 	if [ "$2" = "--updatehd" ] || [ "$3" = "--updatehd" ] ||[ "$4" = "--updatehd" ] ||[ "$5" = "--updatehd" ]; then
 		UpdateHD=1
 	elif [ "$2" = "--hd" ] || [ "$3" = "--hd" ] ||[ "$4" = "--hd" ] ||[ "$5" = "--hd" ]; then
@@ -282,13 +318,15 @@ dohd(){
 				git apply enhancements/3d_coin_v2_nightly.patch --ignore-whitespace
 			fi
 		fi
-		cd ~/"$REPO"	
-		if [ -f ~/"$REPO"/enhancements/60fps_ex.patch ] && [ `arch` = "x86_64" ] && [ "$TARGET_WEB" = 0 ] && [ ! "$SGI" = 1 ]; then
-			git apply enhancements/60fps_ex.patch
-			sed -i 's/vsync false/vsync true/g' ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64config.txt
-		elif [ -f ~/"$REPO"/enhancements/60fps.patch ] && [ `arch` = "x86_64" ] && [ "$TARGET_WEB" = 0 ] && [ ! "$SGI" = 1 ]; then
-			git apply enhancements/60fps.patch
-			sed -i 's/vsync false/vsync true/g' ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64config.txt
+		cd ~/"$REPO"
+		if [ `arch` = "x86_64" ] && [ ! "$TARGET_WEB" = 1 ] && [ ! "$SGI" = 1 ] && [ ! "$ANDROID" = 1 ]; then	
+			if [ -f ~/"$REPO"/enhancements/60fps_ex.patch ]; then
+				git apply enhancements/60fps_ex.patch
+				sed -i 's/vsync false/vsync true/g' ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64config.txt
+			elif [ -f ~/"$REPO"/enhancements/60fps.patch ]; then
+				git apply enhancements/60fps.patch
+				sed -i 's/vsync false/vsync true/g' ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64config.txt
+			fi
 		fi
 	fi
 	}
@@ -323,6 +361,7 @@ dosgi(){
 	fi
 	if [ -f ~/"$REPO"/enhancements/3d_coin_v2_nightly.patch ]; then
 		git apply -R enhancements/3d_coin_v2_nightly.patch
+		rm enhancements/3d_coin_v2_nightly.patch
 		if [ -f ~/"$REPO"/enhancements/60fps_ex.patch ]; then
 			git apply -R enhancements/60fps_ex.patch
 		elif [ -f ~/"$REPO"/enhancements/60fps.patch ]; then
@@ -457,6 +496,8 @@ rungame(){
 		else
 			xdg-open http://localhost:8100&disown
 		fi
+	elif [ "$ANDROID"  = 1 ]; then
+		xdg-open ~/"$REPO"/../../build/outputs/apk/debug &disown
 	else
 		gtk-launch "$REPO"&disown
 	fi
@@ -505,12 +546,12 @@ if [ ! -f ~/.smlinuxUpdate ]; then
 		loadconfig "$@"
 	fi
 	#Make Safevile Dir
-	if [ ! -d ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO" ]; then 
+	if [ ! -d ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO" ] && [ ! "$ANDROID" = 1 ]; then 
 		mkdir ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"
 	fi
 	echo Verifying ROM...
 	if [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/baserom."$VERSION".z64 ]; then
-		if [ ! -f ~/"$REPO"/baserom."$VERSION".z64 ]; then
+		if [ ! -f ~/"$REPO"/baserom."$VERSION".z64 ]  && [ -d ~/"$REPO" ]; then
 			ln -s ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/baserom."$VERSION".z64 ~/"$REPO"/baserom."$VERSION".z64
 		fi
 		echo ROM Available.
@@ -732,11 +773,18 @@ if [ -f "$1" ] || [ -f "$LAUNCH_DIR"/"$1" ] || ( [ -f ${XDG_DATA_HOME:-$HOME/.lo
 			if [ "$REPO" = "sm64nx" ] ; then
 				pip3 install pillow zstandard tqdm xxhash
 				gcccheck
-			fi			
-		elif [ "$REPO" = "sm64nx" ] && [ ! ~/"$REPO" ]; then
+			fi
+			if [ "$ANDROID" = 1 ]; then
+				androidsdk
+			fi
+						
+		elif [ "$REPO" = "sm64nx" ] && [ ! -d ~/"$REPO" ]; then
 			echo "[1] Installing required build tools for nx..."
 			pip3 install pillow zstandard tqdm xxhash
 			gcccheck
+		elif [ "$ANDROID" = 1 ] && [ ! -d ~/"$REPO" ]; then
+			echo "[1] Installing required build tools for Android..."
+			androidsdk
 		else
 			echo "[1] This is not first install, skipping dependencies..."
 		fi
@@ -745,7 +793,7 @@ if [ -f "$1" ] || [ -f "$LAUNCH_DIR"/"$1" ] || ( [ -f ${XDG_DATA_HOME:-$HOME/.lo
 		if [ "$AutoUpdate" = 1 ]; then
 			scriptUpdate "$@"
 		else
-			echo "WARNING: AutoUpdate Disabled in Config File! You are using an old version!"
+			echo "WARNING: AutoUpdate Disabled in Config File! You might be using an old version!"
 		fi
 	fi
 else
@@ -785,18 +833,32 @@ fi
 echo
 echo [3] Downloading "$REPO" source from github... 
 if [ -d ~/"$REPO"/build/"$VERSION"_"$TARGET" ]; then
-	echo WARNING: "$REPO" directory already exists!  Renaming to "$REPO".old...
-	if [ -f ~/"$REPO".old ]; then
-		rm -rf ~/"$REPO".old
+	if [ "$REPO" = "sm64-port-android-base/app/jni/src" ]; then
+		echo WARNING: sm64-port-android-base directory already exists!  Renaming to sm64-port-android-base.old...
+		if [ -f ~/sm64-port-android-base.old ]; then
+			rm -rf ~/sm64-port-android-base.old
+		fi
+		mv ~/sm64-port-android-base ~/sm64-port-android-base.old
+	else
+		echo WARNING: "$REPO" directory already exists!  Renaming to "$REPO".old...
+		if [ -f ~/"$REPO".old ]; then
+			rm -rf ~/"$REPO".old
+		fi
+		mv ~/"$REPO" ~/"$REPO".old
 	fi
-	mv ~/"$REPO" ~/"$REPO".old
 fi
 if [ ! -d ~/"$REPO" ]; then
 	cd
 	if [ "$REPO" = "sm64nx" ]; then
-		git clone https://github.com/teamsalta/"$REPO" -b "$Branch"
+		git clone https://github.com/teamsalta/"$REPO" 
 	elif [ "$REPO" = "sm64ex" ]; then
 		git clone https://github.com/sm64pc/"$REPO" -b "$Branch"
+	elif [ "$REPO" = "sm64-port-android-base/app/jni/src" ]; then
+		git clone https://github.com/vdavid003/sm64-port-android-base 
+		cd sm64-port-android-base
+		git submodule init
+		git submodule update
+		./getSDL.sh
 	else
 		git clone https://github.com/"$REPO"/"$REPO" -b "$Branch"
 	fi
@@ -841,11 +903,17 @@ if [ ! -f ~/"$REPO"/build/"$VERSION"_"$TARGET"/sm64."$VERSION".f3dex2* ]; then
 	xdg-open https://discord.gg/Ub6YHRm &disown
 	exit
 fi
-
+if [ "$ANDROID" = 1 ] && [ ! -f ~/"$REPO"/../../build/outputs/apk/debug/app-debug.apk ]; then
+	echo
+	echo ERROR: Build Failure.  Expected output file not found.
+	echo "smlinux exiting incomplete.  Contact #help-desk for support."
+	xdg-open https://discord.gg/Ub6YHRm &disown
+	exit
+fi
 echo
 echo [7] Echo Creating Desktop Shortcut and Menu Entry...
-if [ "$TARGET_WEB" = 1 ]; then
-	echo Skipping for web target...
+if [ "$TARGET_WEB" = 1 ] || [ "$ANDROID" = 1 ]; then
+	Skipping for non pc version...
 else
 	makedesktop
 fi
