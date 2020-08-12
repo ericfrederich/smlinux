@@ -3,9 +3,19 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0811-1909
+# 2020-0811-2011
 
-domake(){ 
+domake(){
+	#Here We go & music to build to
+	if [ -f /usr/bin/mplayer ]  && [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/File_Select_64_slowed_down.mp3 ]; then
+		if [ -f ~/"$REPO"/sound/samples/sfx_mario/0C.aiff ]; then
+			sh -c 'mplayer -nolirc -really-quiet ~/'"$REPO"'/sound/samples/sfx_mario/0C.aiff;mplayer -nolirc -really-quiet -volume 50 '${XDG_DATA_HOME:-$HOME/.local/share}'/sm64pc/File_Select_64_slowed_down.mp3&'
+		elif [ -f ~/sm64ex/sound/samples/sfx_mario/0C.aiff ]; then
+			sh -c 'mplayer -nolirc -really-quiet ~/sm64ex/sound/samples/sfx_mario/0C.aiff;mplayer -nolirc -really-quiet -volume 50 '${XDG_DATA_HOME:-$HOME/.local/share}'/sm64pc/File_Select_64_slowed_down.mp3&'
+		else
+			sh -c 'mplayer -nolirc -really-quiet -volume 50 '${XDG_DATA_HOME:-$HOME/.local/share}'/sm64pc/File_Select_64_slowed_down.mp3&'
+		fi
+	fi 
 	if [ "$TARGET_WEB" = 1 ]; then 
 		if [ "$InstallHD" = 1 ]; then
 			sed -i 's/TOTAL_MEMORY=20MB/TOTAL_MEMORY=28MB/g' ~/"$REPO"/Makefile
@@ -520,7 +530,7 @@ fi
 if [ ! -d ${XDG_DATA_HOME:-$HOME/.local/share}/applications ]; then mkdir ${XDG_DATA_HOME:-$HOME/.local/share}/applications
 fi
 if [ ! -f ~/.smlinuxUpdate ]; then
-	#Play a sound clip for no reason.
+	#Play a sound clip for no reason - thank you for playing my game.
 	if [ -f /usr/bin/mplayer ]; then
 		if [ -f ~/sm64pc/sound/samples/sfx_mario_peach/0D.aiff ]; then
 			sh -c 'mplayer -nolirc -really-quiet ~/sm64pc/sound/samples/sfx_mario_peach/0D.aiff&'
@@ -610,7 +620,7 @@ if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ] || [ "$1" = "
 		scriptUpdate "$@"
 	else
 		echo "WARNING: AutoUpdate Disabled in Config File!"
-		[1] Skipping check for smlinux updates...
+		echo [1] Skipping check for smlinux updates...
 	fi
 	if [ ! -d ~/"$REPO" ]; then
 		echo ERROR: No ~/"$REPO" folder to update!
@@ -653,7 +663,7 @@ if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ] || [ "$1" = "
 		mv ~/"$REPO"/build/"$VERSION"_"$TARGET" ~/"$REPO"/build/"$VERSION"_"$TARGET".old
 	fi
 	echo
-	echo [3] Applying selected pre-build modifications...
+	echo [3] Applying any selected pre-build modifications...
 	if [ "$UpdateHD" = 1 ]; then
 		printf "\nAdding Community Upscale Enhancements...\n\n"
 		dohd
@@ -671,9 +681,6 @@ if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ] || [ "$1" = "
 	fi
 			
 	echo [4] Compiling...
-	if [ -f /usr/bin/mplayer ]; then
-		sh -c 'mplayer -nolirc -really-quiet ~/'"$REPO"'/sound/samples/sfx_mario/0C.aiff&'
-	fi
 	domake
 	if [ "$InstallHD" = 1 ] && [ "TARGET_WEB" = 1 ] && [ -d ~/"$REPO"/build/"$VERSION"_pc ]; then
 		if [ -f ~/"$REPO"/enhancements/60fps_ex.patch ]; then
@@ -834,14 +841,15 @@ echo
 echo [3] Downloading "$REPO" source from github... 
 if [ -d ~/"$REPO"/build/"$VERSION"_"$TARGET" ]; then
 	if [ "$REPO" = "sm64-port-android-base/app/jni/src" ]; then
-		echo WARNING: sm64-port-android-base directory already exists!  Renaming to sm64-port-android-base.old...
-		if [ -f ~/sm64-port-android-base.old ]; then
+		echo WARNING: sm64-port-android-base directory already exists! 
+		echo Renaming to sm64-port-android-base.old...
+		if [ -d ~/sm64-port-android-base.old ]; then
 			rm -rf ~/sm64-port-android-base.old
 		fi
 		mv ~/sm64-port-android-base ~/sm64-port-android-base.old
 	else
 		echo WARNING: "$REPO" directory already exists!  Renaming to "$REPO".old...
-		if [ -f ~/"$REPO".old ]; then
+		if [ -d ~/"$REPO".old ]; then
 			rm -rf ~/"$REPO".old
 		fi
 		mv ~/"$REPO" ~/"$REPO".old
