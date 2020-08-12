@@ -14,7 +14,7 @@
 5. Optionally applies community sourced upscale modifications 
 6. Makes (compiles and links) into binary
 7. Creates Menu Entry & Desktop Shortcut
-8. Launches Super Mario 64 on your Personal Computer!
+8. Launches Super Mario 64 on your Personal Computer or Android Device!
 
 ...and! you can use it again later to quickly rebuild and sync to the latest updates from github.
  
