@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0812-1409
+# 2020-0812-1413
 
 domake(){
 	#Here We go & music to build to
@@ -688,7 +688,7 @@ if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ] || [ "$1" = "
 		printf "\nAdding SGI Models...\n\n"
 		dosgi
 	fi
-	if [ "$REPO" = "sm64ex" ] && [ ! -f ~/"$REPO"/enhancements/CHEATERv2.patch ]; then
+	if [ "$REPO" = "sm64ex" ] && [ "$Branch" = "nightly" ] && [ ! -f ~/"$REPO"/enhancements/CHEATERv2.patch ]; then
 		cd ~/"$REPO"
 		unzip -j '${XDG_DATA_HOME:-$HOME/.local/share}'/sm64pc/CHEATERv2 CHEATERv2/CHEATERv2.patch -d enhancements
 		git apply enhancements/CHEATERv2.patch
@@ -933,7 +933,7 @@ if [ "$InstallHD" = 1 ]; then
 else
 	echo "WARNING: InstallHD Disabled in Config File."
 fi
-if [ "$REPO" = "sm64ex" ] && [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/CHEATERv2.zip ]; then
+if [ "$REPO" = "sm64ex" ] && [ "$Branch" = "nightly" ] && [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/CHEATERv2.zip ]; then
 	cd ~/"$REPO"
 	unzip -j ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/CHEATERv2 CHEATERv2/CHEATERv2.patch -d enhancements
 	git apply enhancements/CHEATERv2.patch
