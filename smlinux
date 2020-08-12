@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0811-2135
+# 2020-0812-1147
 
 domake(){
 	#Here We go & music to build to
@@ -384,6 +384,10 @@ dosgi(){
 		fi
 		sed -i 's/vsync true/vsync false/g' ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64config.txt
 	fi
+	if [ "$REPO" = "sm64ex" ] && [ -f ~/"$REPO"/enhancements/CHEATERv2.patch ]; then
+		git apply -R enhancements/CHEATERv2.patch
+		rm enhancements/CHEATERv2.patch
+	fi
 	cd enhancements
 	wget https://cdn.discordapp.com/attachments/730551213376143431/742471533951189143/1.4.1_keyhotfix.zip
 	cd ..
@@ -684,6 +688,10 @@ if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ] || [ "$1" = "
 		printf "\nAdding SGI Models...\n\n"
 		dosgi
 	fi
+	if [ "$REPO" = "sm64ex" ] && [ ! -f ~/"$REPO"/enhancements/CHEATERv2.patch ]; then
+		unzip -j ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/CHEATERv2 -d enhancements
+		git apply enhancements/CHEATERv2.patch
+	fi
 	if [ "$InstallHD" = 1 ] && [ "TARGET_WEB" = 1 ] && [ -d ~/"$REPO"/build/"$VERSION"_pc ]; then
 		if [ -f ~/"$REPO"/enhancements/60fps_ex.patch ]; then
 			git apply -R enhancements/60fps_ex.patch
@@ -924,20 +932,25 @@ if [ "$InstallHD" = 1 ]; then
 else
 	echo "WARNING: InstallHD Disabled in Config File."
 fi
+if [ "$REPO" = "sm64ex" ] && [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/CHEATERv2.zip ]; then
+	cd ~/"$REPO"
+	unzip -j ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/CHEATERv2 -d enhancements
+	git apply enhancements/CHEATERv2.patch
+fi
 
 echo
 echo [6] Compiling...
 domake
 if [ ! -f ~/"$REPO"/build/"$VERSION"_"$TARGET"/sm64."$VERSION".f3dex2* ]; then
 	echo
-	echo ERROR: Build Failure.  Expected output file not found.
+	echo ERROR: Build Failure.  Expected binary file not found.
 	echo "smlinux exiting incomplete.  Contact #help-desk for support."
 	xdg-open https://discord.gg/Ub6YHRm &disown
 	exit
 fi
 if [ "$ANDROID" = 1 ] && [ ! -f ~/"$REPO"/../../build/outputs/apk/debug/app-debug.apk ]; then
 	echo
-	echo ERROR: Build Failure.  Expected output file not found.
+	echo ERROR: Build Failure.  Expected apk file not found.
 	echo "smlinux exiting incomplete.  Contact #help-desk for support."
 	xdg-open https://discord.gg/Ub6YHRm &disown
 	exit
