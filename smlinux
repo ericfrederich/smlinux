@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0812-1732
+# 2020-0812-1739
 
 domake(){
 	#Here We go & music to build to
@@ -560,7 +560,8 @@ if [ ! -f ~/.smlinuxUpdate ]; then
 		echo File not found, so making a new one...
 		makeconfig
 		CONFIG=1
-	elif [ "$1" = "config" ]; then
+	fi
+	if [ "$1" = "config" ]; then
 		editconfig
 		exit
 	fi
@@ -847,7 +848,7 @@ else
 	echo "|      Super Mario 64 Install * Build * Update Script for Linux               |"
 	echo "|                                                                             |"
 	echo "| Installation & First Build: chmod +x smlinux                                |"
-	echo "|                             ./smlinux <romfile>                             |"
+	echo "|                             ./smlinux <romfile> <options>                   |"
 	echo "|  for example:                                                               |"
 	echo "|   ./smlinux ~/roms/n64/sm64.z64  or  ./smlinux \"Super Mario 64 (U) [!].z64\" |"
 	echo "|                                                                             |"
@@ -860,7 +861,7 @@ else
 	echo "|  purge:  Removes all files created by this script, including sm64           |"
 	echo "|                                                                             |"
 	echo "| Options: --config   prompt to edit config file before build                 |"
-	echo "|          --depends  install depdendencies (automatic during install)        |"
+	echo "|          --depends  reinstall dependencies                                  |"
 	echo "|          --updatehd (re)aquire & apply community upscale enhancements       |"
 	echo "|          --sgi      aquire and apply Render96 SGI model pack                |"
 	echo "|                                                                             |"
