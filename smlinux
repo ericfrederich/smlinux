@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0813-1140
+# 2020-0813-1150
 
 domake(){
 	#Here We go & music to build to
@@ -646,14 +646,20 @@ if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ] || [ "$1" = "
 		echo Specify smlinux build for a fresh build.
 		exit
 	fi
-	cd ~/"$REPO"
 	echo
 	echo [2] Checking "$REPO" github repository for updates...
+	if [ "$REPO" = "sm64-port-android-base/app/jni/src" ]; then
+		cd ~/"$REPO"/../../..
+	else
+		cd ~/"$REPO"
+	fi
+	echo
 	git fetch
 	git checkout "$Branch"
 	if [ "$(git diff HEAD origin/HEAD)" != "" ]; then git merge
 	fi
 	if [ "$?" = "1" ]; then
+		cd ~/"$REPO"
 		if [ -f ~/"$REPO"/enhancements/3d_coin_v2_nightly.patch ]; then
 			git apply -R enhancements/3d_coin_v2_nightly.patch
 			if [ -f ~/"$REPO"/enhancements/60fps_ex.patch ]; then
