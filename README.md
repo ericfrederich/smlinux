@@ -142,9 +142,9 @@ Put the patch file into ~/sm64pc/enhancements (or specify the path differently w
 ## **What about distros other than Ubuntu/Debian?**
 *Tested on Bodhi 5.1,32 & 64-bit, so should work as-is on recent Ubuntu/debian, Arch confirmed on ex/nx, others unconfirmed.*
 
-Change your Linux=parameter during first install to one that works with your distro such as those listed below, or just install dependencies first and run smlinux with Linux="" in settings (or just ignore the error from apt); it only installs dependendencies automatically during first installation.  If your distro needs additional dependencies not listed here, please let me know so I can add them.
+Change your Linux=parameter during first install to one that works with your distro such as those listed below, or just install dependencies first and run smlinux with Linux="" in settings (or just ignore the error from apt).  smlinux only installs dependendencies automatically during the very first installation.  If your distro needs additional dependencies not listed here, please let me know so I can add them.
 
-Some build targets require additional packages not listed below.  Android builds require android-sdk and sm64nx requires g++-8 or higher.  Installation of these packages when needed will only be automatically attempted if apt is present, otherwise you will need to install those packages manually.  If gcc --version does not report 8 or newer when building sm64nx, smlinux will attempt first to install gcc-9 then if unsuccesful gcc-8.  (Note Ubuntu 20.04 build-essential provides gcc9.3, whereas for 18.04 its gcc7.5.)  
+Some build targets depend on an additional package not listed below.  Android builds require android-sdk and sm64nx requires g++-8 or higher.  Installation when needed will only be automatically attempted if apt is present, other distros will need to install those packages manually.  If gcc --version does not report 8 or newer when building sm64nx, smlinux will attempt first to install gcc-9 then if unsuccesful gcc-8.  (Note Ubuntu 20.04 build-essential provides gcc9.3, whereas for 18.04 its gcc7.5.)  
 
 Arch: 
     
