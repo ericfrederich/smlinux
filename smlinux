@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0812-1805
+# 2020-0812-1825
 
 domake(){
 	#Here We go & music to build to
@@ -47,6 +47,9 @@ domake(){
 		echo "Plug in your android device via USB and grant it debugging permission."
 		cd ~/sm64-port-android-base
 		./gradlew installDebug
+	fi
+	if [ -f /usr/bin/mplayer ]  && [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/File_Select_64_slowed_down.mp3 ]; then
+		killall -q -y2m mplayer
 	fi
 	}
 
