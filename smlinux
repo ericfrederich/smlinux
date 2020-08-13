@@ -45,6 +45,7 @@ domake(){
 	if [ "$REPO" = "sm64-port-android-base/app/jni/src" ]; then
 		zenity --info --text='\nPlug in your android device via USB and grant it debugging permission.\n\nDelete existing copy of SM64 from device.' --title="Starting Android Compilation...." --width=470 &disown
 		echo "Plug in your android device via USB and grant it debugging permission."
+		echo
 		cd ~/sm64-port-android-base
 		./gradlew installDebug
 	fi
@@ -60,7 +61,7 @@ androidsdk(){
 	if [ ! -d ~/android-sdk/tools/sdkmanager ]; then
 		cd
 		wget https://dl.google.com/android/repository/commandlinetools-linux-6609375_latest.zip
-		unzip -o commandlinetools-linux-6609375_latest android-sdk
+		unzip -o commandlinetools-linux-6609375_latest -d android-sdk
 		rm commandlinetools-linux-6609375_latest.zip
 	fi
 	export PATH=~/android-sdk/tools/bin:$PATH
