@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0812-1751
+# 2020-0812-1805
 
 domake(){
 	#Here We go & music to build to
@@ -314,7 +314,7 @@ dohd(){
 				wget https://github.com/MapAnon/sm64-pc-hq-sounds/releases/download/5.1/hq_sounds_v5.1.zip
 			fi
 		fi
-		if [ ! -f ~/"$REPO"/enhancements/hd_bowser.rar ] && [ ! "$SGI" = 1 ]; then
+		if [ ! -f ~/"$REPO"/enhancements/hd_bowser.rar ] && [ ! "$SGI" = 1 ] && [ ! -f ~/"$REPO"/enhancements/1.4.1_keyhotfix.zip ]; then
 			cd ~/"$REPO"/enhancements
 			wget https://cdn.discordapp.com/attachments/716459185230970880/719758031990030427/Old_School_HD_Mario_Model.zip 
 			wget https://cdn.discordapp.com/attachments/716459185230970880/718990046442684456/hd_bowser.rar	
