@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0812-1831
+# 2020-0813-1129
 
 domake(){
 	#Here We go & music to build to
@@ -176,7 +176,9 @@ loadconfig(){
 		REPO="sm64-port-android-base/app/jni/src"
 		ANDROID=1
 		EXTERNAL_DATA=0
-		Branch=master
+		if [ "$Branch" = "nightly" ]; then
+			Branch=sm64ex
+		fi
 	fi
 	if [ "$REPO" = "sm64nx" ]; then
 		EXTERNAL_DATA=0
