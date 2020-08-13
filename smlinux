@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0812-1739
+# 2020-0812-1743
 
 domake(){
 	#Here We go & music to build to
@@ -555,7 +555,7 @@ if [ ! -f ~/.smlinuxUpdate ]; then
 		fi
 	fi
 	echo
-	echo [0] Loading configuration from ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinuxcfg.txt...
+	echo Loading configuration from ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinuxcfg.txt...
 	if [ ! -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinuxcfg.txt ]; then
 		echo File not found, so making a new one...
 		makeconfig
@@ -570,8 +570,8 @@ if [ ! -f ~/.smlinuxUpdate ]; then
 		doconfig
 		loadconfig "$@"
 	fi
-	#Make Safevile Dir
-	if [ ! -d ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO" ] && [ ! "$ANDROID" = 1 ]; then 
+	if [ ! -d ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO" ] && [ ! "$ANDROID" = 1 ]; then
+		echo Creating ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO" folder for game save and configuration.
 		mkdir ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"
 	fi
 	echo Verifying ROM...
