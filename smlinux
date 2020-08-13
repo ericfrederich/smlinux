@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0812-1825
+# 2020-0812-1831
 
 domake(){
 	#Here We go & music to build to
@@ -777,7 +777,7 @@ if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ] || [ "$1" = "
 	rungame
 	sleep 10
 	echo
-	echo Script Done.  You may exit or close this terminal window.
+	echo smlinux is complete.  You may exit or close this terminal window.
 	if [ "$TARGET" = "web" ]; then
 		echo Python Webserver will remain running until it is closed.
 	fi
@@ -984,7 +984,7 @@ else
 	sleep 10
 fi
 echo
-echo Script Done.  You may exit or close this terminal window.
+echo smlinux is complete.  You may exit or close this terminal window.
 if [ "$TARGET_WEB" = 1 ]; then
 	echo Python Webserver will remain running until it is closed.
 fi
