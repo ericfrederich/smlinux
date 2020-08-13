@@ -144,7 +144,7 @@ Put the patch file into ~/sm64pc/enhancements (or specify the path differently w
 
 Change your Linux=parameter during first install to one that works with your distro such as those listed below, or just install dependencies first and run smlinux with Linux="" in settings (or just ignore the error from apt); it only installs dependendencies automatically during first installation.  If your distro needs additional dependencies not listed here, please let me know so I can add them.
 
-Some build targets require additional packages not listed below.  Android builds requires android-sdk and sm64nx requires g++-8 or higher for which installation when needed will only be automatically attempted if apt is present, otherwise you will need to install those packages manually.  (Note Ubuntu 20.04 build-essential provides gcc9.3, whereas for 18.04 they provide 7.5.  If gcc --version does not report 8 or newer when building sm64nx, smlinux will attempt first to install gcc-9 then if unsuccesful gcc-8 ).
+Some build targets require additional packages not listed below.  Android builds require android-sdk and sm64nx requires g++-8 or higher.  Installation of these packages when needed will only be automatically attempted if apt is present, otherwise you will need to install those packages manually.  If gcc --version does not report 8 or newer when building sm64nx, smlinux will attempt first to install gcc-9 then if unsuccesful gcc-8.  (Note Ubuntu 20.04 build-essential provides gcc9.3, whereas for 18.04 its gcc7.5.)  
 
 Arch: 
     
