@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0813-1730
+# 2020-0813-1749
 
 domake(){
 	#Here We go & music to build to
@@ -25,6 +25,8 @@ domake(){
 	if [ "$ANDROID" = 1 ]; then
 		export PATH=~/android-sdk/tools/bin:$PATH
 		export ANDROID_HOME=~/android-sdk
+		PATH=~/android-sdk/tools/bin:$PATH
+		ANDROID_HOME=~/android-sdk
 	fi
 	if [ "$REPO" = "sm64nx" ]; then
 		sed -i 's/-no-pie -lpthread -lzstd/-no-pie -lpthread -lzstd -lstdc++fs/g' ~/"$REPO"/Makefile
@@ -66,6 +68,8 @@ androidsdk(){
 	fi
 	export PATH=~/android-sdk/tools/bin:$PATH
 	export ANDROID_HOME=~/android-sdk
+	PATH=~/android-sdk/tools/bin:$PATH
+	ANDROID_HOME=~/android-sdk
 	yes | sdkmananger --licenses
 	sdkmanager --install ndk-bundle
 	}
