@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0814-1519
+# 2020-0814-1554
 
 domake(){
 	#Here We go & music to build to
@@ -487,7 +487,7 @@ if [ ! -f ~/.smlinuxUpdate ]; then
 				fi
 				if [ -f ~/Downloads/smlinux.sh ]; then mv -f ~/Downloads/smlinux.sh ~/Downloads/smlinux.old.backup
 				fi
-				if [ -f ~/Downloads/smlinux.txt ]; then mv -f ~/Downloads/smlinux.sh ~/Downloads/smlinux.old.backup
+				if [ -f ~/Downloads/smlinux.txt ]; then mv -f ~/Downloads/smlinux.txt ~/Downloads/smlinux.old.backup
 				fi	
 				exec smlinux "$@"' > ~/.smlinuxUpdate
 				chmod +x ~/.smlinuxUpdate
@@ -662,172 +662,6 @@ else
 	loadconfig "$@"
 fi
 
-if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ] || [ "$1" = "up" ]; then
-	echo
-	if [ -f ~/.smlinuxUpdate ]; then 
-		rm ~/.smlinuxUpdate
-		echo Script Update Complete.	
-	elif [ "$AutoUpdate" = 1 ]; then
-		echo [1] Checking smlinux github repository for updates...
-		scriptUpdate "$@"
-	else
-		echo "WARNING: AutoUpdate Disabled in Config File!"
-		echo [1] Skipping check for smlinux updates...
-	fi
-	if [ ! -d ~/"$REPO" ]; then
-		echo ERROR: No ~/"$REPO" folder to update!
-		echo Specify smlinux build for a fresh build.
-		exit
-	fi
-	echo
-	echo [2] Checking "$REPO" github repository for updates...
-	if [ "$REPO" = "sm64-port-android-base/app/jni/src" ]; then
-		cd $HOME/"$REPO"/../../..
-	else
-		cd $HOME/"$REPO"
-	fi
-	echo
-	git fetch
-	git checkout "$Branch"
-	if [ "$(git diff HEAD origin/HEAD)" != "" ]; then
-		 git merge
-	fi
-	if [ "$?" = "1" ]; then
-		cd ~/"$REPO"
-		if [ -f ~/"$REPO"/enhancements/3d_coin_v2_nightly.patch ]; then
-			git apply -R enhancements/3d_coin_v2_nightly.patch
-			if [ -f ~/"$REPO"/enhancements/60fps_ex.patch ]; then
-				git apply -R enhancements/60fps_ex.patch
-			elif [ -f ~/"$REPO"/enhancements/60fps.patch ]; then
-				git apply -R enhancements/60fps.patch
-			fi
-		fi
-		git merge
-		if [ "$?" = "1" ]; then
-			echo WARNING: Unable to merge source updates from github.
-		elif [ -f ~/"$REPO"/enhancements/3d_coin_v2_nightly.patch ]; then
-			git apply enhancements/3d_coin_v2_nightly.patch
-			if [ -f ~/"$REPO"/enhancements/60fps_ex.patch ] && [ `arch` = "x86_64" ]; then
-				git apply enhancements/60fps_ex.patch
-			elif [ -f ~/"$REPO"/enhancements/60fps.patch ] && [ `arch` = "x86_64" ]; then
-				git apply enhancements/60fps.patch
-			fi
-		fi
-	fi
-	if [ "$REPO" = "sm64-port-android-base/app/jni/src" ]; then
-		git submodule init
-		git submodule update	
-		if [ -d ~/"$REPO"/../../build ]; then
-			rm -rf ~/"$REPO"/../../build
-			rm -rf ~/"$REPO"/../../.externalNativeBuild
-		fi
-	fi
-	if [ -d ~/"$REPO"/build/"$VERSION"_"$TARGET" ]; then
-		if [ -d ~/"$REPO"/build/"$VERSION"_"$TARGET".old ]; then
-			rm -rf ~/"$REPO"/build/"$VERSION"_"$TARGET".old
-		fi
-		mv ~/"$REPO"/build/"$VERSION"_"$TARGET" ~/"$REPO"/build/"$VERSION"_"$TARGET".old
-	fi
-	echo
-	echo [3] Applying pre-build modifications...
-	if [ "$UpdateHD" = 1 ]; then
-		printf "\nAdding Community Upscale Enhancements...\n\n"
-		dohd
-	fi
-	if [ "$SGI" = 1 ]; then
-		printf "\nAdding SGI Models...\n\n"
-		dosgi
-	fi
-	if [ "$REPO" = "sm64ex" ] && [ "$Branch" = "nightly" ] && [ ! -f ~/"$REPO"/enhancements/CHEATERv2.patch ]; then
-		cd ~/"$REPO"
-		unzip -j ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/CHEATERv2 CHEATERv2/CHEATERv2.patch -d enhancements
-		git apply enhancements/CHEATERv2.patch
-	fi
-	if [ "$InstallHD" = 1 ] && [ "TARGET_WEB" = 1 ] && [ -d ~/"$REPO"/build/"$VERSION"_pc ]; then
-		if [ -f ~/"$REPO"/enhancements/60fps_ex.patch ]; then
-			git apply -R enhancements/60fps_ex.patch
-		elif [ -f ~/"$REPO"/enhancements/60fps.patch ]; then
-			git apply -R enhancements/60fps.patch
-		fi
-	fi
-	echo		
-	echo [4] Compiling...
-	domake
-	if [ "$InstallHD" = 1 ] && [ "TARGET_WEB" = 1 ] && [ -d ~/"$REPO"/build/"$VERSION"_pc ] && [ `arch` = "x86_64" ]; then
-		if [ -f ~/"$REPO"/enhancements/60fps_ex.patch ]; then
-			git apply enhancements/60fps_ex.patch
-		elif [ -f ~/"$REPO"/enhancements/60fps.patch ]; then
-			git apply enhancements/60fps.patch
-		fi
-	fi
-	echo
-	if [ ! -f ~/"$REPO"/build/"$VERSION"_"$TARGET"/sm64."$VERSION".f3dex2* ]; then
-		echo "ERROR: Build Failure - output file not found."  
-		if [ -d ~/"$REPO"/build/"$VERSION"_"$TARGET".old ]; then
-			echo "Restoring previous build..."
-			if [ -d ~/"$REPO"/build/"$VERSION"_"$TARGET" ]; then 
-				rm -rf ~/"$REPO"/build/"$VERSION"_"$TARGET" 
-			fi
-			mv ~/"$REPO"/build/"$VERSION"_"$TARGET".old ~/"$REPO"/build/"$VERSION"_"$TARGET"
-		fi
-		echo "smlinux exiting incomplete.  Contact #help-desk for support."
-		xdg-open https://discord.gg/Ub6YHRm &disown
-		exit
-	fi
-	if [ -d ~/"$REPO"/build/"$VERSION"_"$TARGET".old/res ]; then
-		echo [5] Restoring External Resources...
-		cp -rpn ~/"$REPO"/build/"$VERSION"_"$TARGET".old/res/. ~/"$REPO"/build/"$VERSION"_"$TARGET"/res
-	fi
-	if [ -d ~/"$REPO"/build/"$VERSION"_"$TARGET"/res/.git ] ; then
-		echo Checking for Cleaner Aesthetics Texture updates on Github...
-		cd ~/"$REPO"/build/"$VERSION"_"$TARGET"/res
-		git pull
-	fi
-	if [ -d ~/"$REPO"/build/"$VERSION"_"$TARGET".old/romfs ]; then
-		echo "[5] Restoring Savefile, ROM and ROM Filesystem (paks)"
-		cp -rpn ~/"$REPO"/build/"$VERSION"_"$TARGET".old/romfs/. ~/"$REPO"/build/"$VERSION"_"$TARGET"/romfs
-		ln -s ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64.sav ~/"$REPO"/build/"$VERSION"_"$TARGET"/sm64.sav 
-		ln -s ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64.log ~/"$REPO"/build/"$VERSION"_"$TARGET"/sm64.log 
-		ln -s ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/conf.bin ~/"$REPO"/build/"$VERSION"_"$TARGET"/conf.bin
-	 	ln -s ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/gamepad1.bindings.json ~/"$REPO"/build/"$VERSION"_"$TARGET"/gamepad1.bindings.json
-		ln -s ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/keyboard1.bindings.json ~/"$REPO"/build/"$VERSION"_"$TARGET"/keyboard1.bindings.json
-		ln -s ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/baserom."$VERSION".z64 ~/"$REPO"/build/"$VERSION"_"$TARGET"/baserom."$VERSION".z64
-	elif [ "$REPO" = "sm64nx" ]; then
-		echo "[5] Preparing Savefile, ROM and ROM Filesystem (paks)"
-		prepnx
-		if [ "$InstallHD" = 1 ]; then
-			dohd
-		fi		
-	fi
-	echo
-	if [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/applications/"$REPO".desktop ] || [ "$TARGET" = "web" ]; then
-		echo [6] Update Complete.  Testing Application...
-	elif [ "$ANDROID" = 1 ] && [ ! -f ~/"$REPO"/../../build/outputs/apk/debug/app-debug.apk ]; then
-		echo
-		echo ERROR: Build Failure.  APK file not found.
-		echo "smlinux exiting incomplete.  Contact #help-desk for support."
-		xdg-open https://discord.gg/Ub6YHRm &disown
-		exit
-	elif [ ! "$ANDROID" = 1 ] ; then
-		echo [6] Creating Menu Entry and Desktop Shortcut....
-		makedesktop
-		echo
-		echo [7] Update Complete.  Testing Application...
-	else
-		mv ~/"$REPO"/../../build/outputs/apk/debug/app-debug.apk ~/"$REPO"/../../build/outputs/apk/debug/sm64."$VERSION".f3dex2e.apk
-		echo [6] Update Complete. 
-	fi
-	rungame
-	sleep 10
-	echo
-	echo smlinux is complete.  You may exit or close this terminal window.
-	if [ "$TARGET" = "web" ]; then
-		echo Python Webserver will remain running until it is closed.
-	fi
-	echo
-	exit
-fi
-
 if [ "$1" = "--purge" ] || [ "$1" = "purge" ]; then
 	
 	echo Wiping...
@@ -853,7 +687,7 @@ if [ "$1" = "--purge" ] || [ "$1" = "purge" ]; then
         exit
 fi
 
-if [ -f "$1" ] || [ -f "$LAUNCH_DIR"/"$1" ] || ( [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/baserom."$VERSION".z64 ] && [ "$1" = "build" ] ); then
+if [ -f "$1" ] || [ -f "$LAUNCH_DIR"/"$1" ] || ( [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/baserom."$VERSION".z64 ] && ( [ "$1" = "build" ] || [ "$1" = "update" ]  ); then
 	echo
 	if [ -f ~/.smlinuxUpdate ]; then 
 		rm ~/.smlinuxUpdate
@@ -921,7 +755,161 @@ else
 	fi
 	exit
 fi
-
+if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ] || [ "$1" = "up" ]; then
+	echo
+	if [ ! -d ~/"$REPO" ]; then
+		echo ERROR: No ~/"$REPO" folder to update!
+		echo Specify smlinux build for a fresh build.
+		exit
+	fi
+	echo
+	echo [3] Checking "$REPO" github repository for updates...
+	if [ "$REPO" = "sm64-port-android-base/app/jni/src" ]; then
+		cd $HOME/"$REPO"/../../..
+	else
+		cd $HOME/"$REPO"
+	fi
+	echo
+	git fetch
+	git checkout "$Branch"
+	if [ "$(git diff HEAD origin/HEAD)" != "" ]; then
+		 git merge
+	fi
+	if [ "$?" = "1" ]; then
+		cd ~/"$REPO"
+		if [ -f ~/"$REPO"/enhancements/3d_coin_v2_nightly.patch ]; then
+			git apply -R enhancements/3d_coin_v2_nightly.patch
+			if [ -f ~/"$REPO"/enhancements/60fps_ex.patch ]; then
+				git apply -R enhancements/60fps_ex.patch
+			elif [ -f ~/"$REPO"/enhancements/60fps.patch ]; then
+				git apply -R enhancements/60fps.patch
+			fi
+		fi
+		git merge
+		if [ "$?" = "1" ]; then
+			echo WARNING: Unable to merge source updates from github.
+		elif [ -f ~/"$REPO"/enhancements/3d_coin_v2_nightly.patch ]; then
+			git apply enhancements/3d_coin_v2_nightly.patch
+			if [ -f ~/"$REPO"/enhancements/60fps_ex.patch ] && [ `arch` = "x86_64" ]; then
+				git apply enhancements/60fps_ex.patch
+			elif [ -f ~/"$REPO"/enhancements/60fps.patch ] && [ `arch` = "x86_64" ]; then
+				git apply enhancements/60fps.patch
+			fi
+		fi
+	fi
+	if [ "$REPO" = "sm64-port-android-base/app/jni/src" ]; then
+		git submodule init
+		git submodule update	
+		if [ -d ~/"$REPO"/../../build ]; then
+			rm -rf ~/"$REPO"/../../build
+			rm -rf ~/"$REPO"/../../.externalNativeBuild
+		fi
+	fi
+	if [ -d ~/"$REPO"/build/"$VERSION"_"$TARGET" ]; then
+		if [ -d ~/"$REPO"/build/"$VERSION"_"$TARGET".old ]; then
+			rm -rf ~/"$REPO"/build/"$VERSION"_"$TARGET".old
+		fi
+		mv ~/"$REPO"/build/"$VERSION"_"$TARGET" ~/"$REPO"/build/"$VERSION"_"$TARGET".old
+	fi
+	echo
+	echo [4] Applying pre-build modifications...
+	if [ "$UpdateHD" = 1 ]; then
+		printf "\nAdding Community Upscale Enhancements...\n\n"
+		dohd
+	fi
+	if [ "$SGI" = 1 ]; then
+		printf "\nAdding SGI Models...\n\n"
+		dosgi
+	fi
+	if [ "$REPO" = "sm64ex" ] && [ "$Branch" = "nightly" ] && [ ! -f ~/"$REPO"/enhancements/CHEATERv2.patch ]; then
+		cd ~/"$REPO"
+		unzip -j ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/CHEATERv2 CHEATERv2/CHEATERv2.patch -d enhancements
+		git apply enhancements/CHEATERv2.patch
+	fi
+	if [ "$InstallHD" = 1 ] && [ "TARGET_WEB" = 1 ] && [ -d ~/"$REPO"/build/"$VERSION"_pc ]; then
+		if [ -f ~/"$REPO"/enhancements/60fps_ex.patch ]; then
+			git apply -R enhancements/60fps_ex.patch
+		elif [ -f ~/"$REPO"/enhancements/60fps.patch ]; then
+			git apply -R enhancements/60fps.patch
+		fi
+	fi
+	echo		
+	echo [5] Compiling...
+	domake
+	if [ "$InstallHD" = 1 ] && [ "TARGET_WEB" = 1 ] && [ -d ~/"$REPO"/build/"$VERSION"_pc ] && [ `arch` = "x86_64" ]; then
+		if [ -f ~/"$REPO"/enhancements/60fps_ex.patch ]; then
+			git apply enhancements/60fps_ex.patch
+		elif [ -f ~/"$REPO"/enhancements/60fps.patch ]; then
+			git apply enhancements/60fps.patch
+		fi
+	fi
+	echo
+	if [ ! -f ~/"$REPO"/build/"$VERSION"_"$TARGET"/sm64."$VERSION".f3dex2* ]; then
+		echo "ERROR: Build Failure - output file not found."  
+		if [ -d ~/"$REPO"/build/"$VERSION"_"$TARGET".old ]; then
+			echo "Restoring previous build..."
+			if [ -d ~/"$REPO"/build/"$VERSION"_"$TARGET" ]; then 
+				rm -rf ~/"$REPO"/build/"$VERSION"_"$TARGET" 
+			fi
+			mv ~/"$REPO"/build/"$VERSION"_"$TARGET".old ~/"$REPO"/build/"$VERSION"_"$TARGET"
+		fi
+		echo "smlinux exiting incomplete.  Contact #help-desk for support."
+		xdg-open https://discord.gg/Ub6YHRm &disown
+		exit
+	fi
+	if [ -d ~/"$REPO"/build/"$VERSION"_"$TARGET".old/res ]; then
+		echo [5] Restoring External Resources...
+		cp -rpn ~/"$REPO"/build/"$VERSION"_"$TARGET".old/res/. ~/"$REPO"/build/"$VERSION"_"$TARGET"/res
+	fi
+	if [ -d ~/"$REPO"/build/"$VERSION"_"$TARGET"/res/.git ] ; then
+		echo Checking for Cleaner Aesthetics Texture updates on Github...
+		cd ~/"$REPO"/build/"$VERSION"_"$TARGET"/res
+		git pull
+	fi
+	if [ -d ~/"$REPO"/build/"$VERSION"_"$TARGET".old/romfs ]; then
+		echo "[5] Restoring Savefile, ROM and ROM Filesystem (paks)"
+		cp -rpn ~/"$REPO"/build/"$VERSION"_"$TARGET".old/romfs/. ~/"$REPO"/build/"$VERSION"_"$TARGET"/romfs
+		ln -s ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64.sav ~/"$REPO"/build/"$VERSION"_"$TARGET"/sm64.sav 
+		ln -s ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64.log ~/"$REPO"/build/"$VERSION"_"$TARGET"/sm64.log 
+		ln -s ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/conf.bin ~/"$REPO"/build/"$VERSION"_"$TARGET"/conf.bin
+	 	ln -s ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/gamepad1.bindings.json ~/"$REPO"/build/"$VERSION"_"$TARGET"/gamepad1.bindings.json
+		ln -s ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/keyboard1.bindings.json ~/"$REPO"/build/"$VERSION"_"$TARGET"/keyboard1.bindings.json
+		ln -s ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/baserom."$VERSION".z64 ~/"$REPO"/build/"$VERSION"_"$TARGET"/baserom."$VERSION".z64
+	elif [ "$REPO" = "sm64nx" ]; then
+		echo "[6] Preparing Savefile, ROM and ROM Filesystem (paks)"
+		prepnx
+		if [ "$InstallHD" = 1 ]; then
+			dohd
+		fi		
+	fi
+	echo
+	if [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/applications/"$REPO".desktop ] || [ "$TARGET" = "web" ]; then
+		echo [7] Update Complete.  Testing Application...
+	elif [ "$ANDROID" = 1 ] && [ ! -f ~/"$REPO"/../../build/outputs/apk/debug/app-debug.apk ]; then
+		echo
+		echo ERROR: Build Failure.  APK file not found.
+		echo "smlinux exiting incomplete.  Contact #help-desk for support."
+		xdg-open https://discord.gg/Ub6YHRm &disown
+		exit
+	elif [ ! "$ANDROID" = 1 ] ; then
+		echo [7] Creating Menu Entry and Desktop Shortcut....
+		makedesktop
+		echo
+		echo [8] Update Complete.  Testing Application...
+	else
+		mv ~/"$REPO"/../../build/outputs/apk/debug/app-debug.apk ~/"$REPO"/../../build/outputs/apk/debug/sm64."$VERSION".f3dex2e.apk
+		echo [7] Update Complete. 
+	fi
+	rungame
+	sleep 10
+	echo
+	echo smlinux is complete.  You may exit or close this terminal window.
+	if [ "$TARGET" = "web" ]; then
+		echo Python Webserver will remain running until it is closed.
+	fi
+	echo
+	exit
+fi
 echo
 echo [3] Downloading "$REPO" source from github... 
 if [ -d ~/"$REPO"/build/"$VERSION"_"$TARGET" ]; then
