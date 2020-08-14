@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0813-1751
+# 2020-0813-1908
 
 domake(){
 	#Here We go & music to build to
@@ -70,8 +70,8 @@ androidsdk(){
 	export ANDROID_HOME=~/android-sdk
 	PATH=~/android-sdk/tools/bin:$PATH
 	ANDROID_HOME=~/android-sdk
-	yes | sdkmanager --licenses
-	sdkmanager --install ndk-bundle
+	yes | sdkmananger --sdk_root=${ANDROID_HOME} --licenses
+	sdkmanager --install --sdk_root=${ANDROID_HOME} ndk-bundle
 	}
 
 gcccheck(){
