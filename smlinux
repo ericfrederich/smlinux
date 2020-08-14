@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0813-1952
+# 2020-0813-2005
 
 domake(){
 	#Here We go & music to build to
@@ -45,6 +45,9 @@ domake(){
 		git checkout Makefile
 	fi
 	if [ "$REPO" = "sm64-port-android-base/app/jni/src" ]; then
+		if [ "$Branch" = "sm64ex" ] || ["$Branch" = "sm64ex_nightly" ]; then
+			make BETTERCAMERA=$BETTERCAMERA NODRAWINGDISTANCE=$NODRAWINGDISTANCE TEXTURE_FIX=$TEXTURE_FIX EXTERNAL_DATA=$EXTERNAL_DATA DISCORDRPC=$DISCORDRPC VERSION=$VERSION RENDER_API=$RENDER_API TARGET_WEB=$TARGET_WEB TEXTSAVES=$TEXTSAVES "$JOBS" > ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/buildlog.txt
+		fi
 		cd ~/sm64-port-android-base
 		./gradlew installDebug
 	fi
