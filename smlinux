@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0814-1554
+# 2020-0814-1558
 
 domake(){
 	#Here We go & music to build to
@@ -687,7 +687,7 @@ if [ "$1" = "--purge" ] || [ "$1" = "purge" ]; then
         exit
 fi
 
-if [ -f "$1" ] || [ -f "$LAUNCH_DIR"/"$1" ] || ( [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/baserom."$VERSION".z64 ] && ( [ "$1" = "build" ] || [ "$1" = "update" ]  ); then
+if [ -f "$1" ] || [ -f "$LAUNCH_DIR"/"$1" ] || ( [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/baserom."$VERSION".z64 ] && ( [ "$1" = "build" ] || [ "$1" = "update" ]  )); then
 	echo
 	if [ -f ~/.smlinuxUpdate ]; then 
 		rm ~/.smlinuxUpdate
