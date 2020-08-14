@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0813-2050
+# 2020-0813-2114
 
 domake(){
 	#Here We go & music to build to
@@ -465,36 +465,37 @@ if [ ! -f ~/.smlinuxUpdate ]; then
 		if [ "$(git diff HEAD origin/HEAD -- smlinux)" != "" ]; then
 			git merge
 			if [ ! -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinux ]; then
-				echo "ERROR WTF!  Script Update Unsuccesful."
+				echo "ERROR: Script Update Unsuccesful."
 				echo "Try #help-desk if script udpates continue to fail"
 			else
-			echo 'mapfile -t -d: <<<"$PATH"
-			mv -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinux "${MAPFILE[0]}"/
-			if [ ! -f "${MAPFILE[0]}"/smlinux ]; then
-				echo WARNING: Could not write to first path directory.  Creating ~/bin.
-				touch ~/.smlinuxNopath
-				mkdir ~/bin
-				export PATH=~/bin:$PATH
-				mapfile -t -d: <<<"$PATH"
+				echo 'mapfile -t -d: <<<"$PATH"
 				mv -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinux "${MAPFILE[0]}"/
 				if [ ! -f "${MAPFILE[0]}"/smlinux ]; then
-					echo ERROR - Could not add to path.  Run without AutoUpdate enabled.
-				exit
+					echo WARNING: Could not write to first path directory.  Creating ~/bin.
+					touch ~/.smlinuxNopath
+					mkdir ~/bin
+					export PATH=~/bin:$PATH
+					mapfile -t -d: <<<"$PATH"
+					mv -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinux "${MAPFILE[0]}"/
+					if [ ! -f "${MAPFILE[0]}"/smlinux ]; then
+						echo ERROR - Could not add to path.  Run without AutoUpdate enabled.
+						exit
+					fi
 				fi
+				chmod +x "${MAPFILE[0]}"/smlinux
+				if [ -f ~/Downloads/smlinux ]; then mv -f ~/Downloads/smlinux ~/Downloads/smlinux.old.backup
+				fi
+				if [ -f ~/Downloads/smlinux.sh ]; then mv -f ~/Downloads/smlinux.sh ~/Downloads/smlinux.old.backup
+				fi
+				if [ -f ~/Downloads/smlinux.txt ]; then mv -f ~/Downloads/smlinux.sh ~/Downloads/smlinux.old.backup
+				fi	
+				exec smlinux "$@"' > ~/.smlinuxUpdate
+				chmod +x ~/.smlinuxUpdate
+				cd "$LAUNCH_DIR"
+				exec ~/.smlinuxUpdate "$@"
 			fi
-			chmod +x "${MAPFILE[0]}"/smlinux
-			if [ -f ~/Downloads/smlinux ]; then mv -f ~/Downloads/smlinux ~/Downloads/smlinux.old.backup
-			fi
-			if [ -f ~/Downloads/smlinux.sh ]; then mv -f ~/Downloads/smlinux.sh ~/Downloads/smlinux.old.backup
-			fi
-			if [ -f ~/Downloads/smlinux.txt ]; then mv -f ~/Downloads/smlinux.sh ~/Downloads/smlinux.old.backup
-			fi	
-			exec smlinux "$@"' > ~/.smlinuxUpdate
-			chmod +x ~/.smlinuxUpdate
-			cd "$LAUNCH_DIR"
-			exec ~/.smlinuxUpdate "$@"
-			fi
-		else    echo Already up to date.
+		else    
+			echo Already up to date.
 		fi
 	fi
 fi
@@ -552,7 +553,7 @@ rungame(){
 			xdg-open http://localhost:8100&disown
 		fi
 	elif [ "$ANDROID"  = 1 ] ; then
-		if [ "$GOTPHONE" = 1 " ]; then
+		if [ "$GOTPHONE" = 1 ]; then
 			adb shell am start -n com.vdavid003.sm64port/.sm64portActivity
 		fi
 		xdg-open ~/"$REPO"/../../build/outputs/apk/debug &disown
@@ -679,14 +680,15 @@ if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ] || [ "$1" = "
 	echo
 	echo [2] Checking "$REPO" github repository for updates...
 	if [ "$REPO" = "sm64-port-android-base/app/jni/src" ]; then
-		cd ~/"$REPO"/../../..
+		cd $HOME/"$REPO"/../../..
 	else
-		cd ~/"$REPO"
+		cd $HOME/"$REPO"
 	fi
 	echo
 	git fetch
 	git checkout "$Branch"
-	if [ "$(git diff HEAD origin/HEAD)" != "" ]; then git merge
+	if [ "$(git diff HEAD origin/HEAD)" != "" ]; then
+		 git merge
 	fi
 	if [ "$?" = "1" ]; then
 		cd ~/"$REPO"
@@ -714,8 +716,8 @@ if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ] || [ "$1" = "
 		git submodule init
 		git submodule update	
 		if [ -d ~/"$REPO"/../../build ]; then
-			rm -rf -d ~/"$REPO"/../../build
-			rm -rf -d ~/"$REPO"/../../.externalNativeBuild
+			rm -rf ~/"$REPO"/../../build
+			rm -rf ~/"$REPO"/../../.externalNativeBuild
 		fi
 	fi
 	if [ -d ~/"$REPO"/build/"$VERSION"_"$TARGET" ]; then
@@ -758,9 +760,9 @@ if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ] || [ "$1" = "
 	fi
 	echo
 	if [ ! -f ~/"$REPO"/build/"$VERSION"_"$TARGET"/sm64."$VERSION".f3dex2* ]; then
-		echo ERROR: Build Failure - output file not found.  
+		echo "ERROR: Build Failure - output file not found."  
 		if [ -d ~/"$REPO"/build/"$VERSION"_"$TARGET".old ]; then
-			echo Restoring previous build...
+			echo "Restoring previous build..."
 			if [ -d ~/"$REPO"/build/"$VERSION"_"$TARGET" ]; then 
 				rm -rf ~/"$REPO"/build/"$VERSION"_"$TARGET" 
 			fi
@@ -810,7 +812,7 @@ if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ] || [ "$1" = "
 		echo
 		echo [7] Update Complete.  Testing Application...
 	else
-		echo [6] Update Complete. App should be installed to your phone. 
+		echo [6] Update Complete. 
 	fi
 	rungame
 	sleep 10
