@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0813-1908
+# 2020-0813-1952
 
 domake(){
 	#Here We go & music to build to
@@ -23,10 +23,10 @@ domake(){
 		loademsdk
 	fi
 	if [ "$ANDROID" = 1 ]; then
-		export PATH=~/android-sdk/tools/bin:$PATH
 		export ANDROID_HOME=~/android-sdk
-		PATH=~/android-sdk/tools/bin:$PATH
-		ANDROID_HOME=~/android-sdk
+		zenity --info --text='\nIf you want SM64 installed to your Android device,\nplug it in via USB and grant it debugging permission.\n\nDelete existing copy of SM64 from device.' --title="Preparing for Android Compilation...." --width=440 &disown
+		echo "Plug in your android device via USB and grant it debugging permission."
+		echo
 	fi
 	if [ "$REPO" = "sm64nx" ]; then
 		sed -i 's/-no-pie -lpthread -lzstd/-no-pie -lpthread -lzstd -lstdc++fs/g' ~/"$REPO"/Makefile
@@ -45,9 +45,6 @@ domake(){
 		git checkout Makefile
 	fi
 	if [ "$REPO" = "sm64-port-android-base/app/jni/src" ]; then
-		zenity --info --text='\nPlug in your android device via USB and grant it debugging permission.\n\nDelete existing copy of SM64 from device.' --title="Starting Android Compilation...." --width=470 &disown
-		echo "Plug in your android device via USB and grant it debugging permission."
-		echo
 		cd ~/sm64-port-android-base
 		./gradlew installDebug
 	fi
@@ -66,11 +63,10 @@ androidsdk(){
 		unzip -o commandlinetools-linux-6609375_latest -d android-sdk
 		rm commandlinetools-linux-6609375_latest.zip
 	fi
+	PATH=~/android-sdk/tools/bin:$PATH
 	export PATH=~/android-sdk/tools/bin:$PATH
 	export ANDROID_HOME=~/android-sdk
-	PATH=~/android-sdk/tools/bin:$PATH
-	ANDROID_HOME=~/android-sdk
-	yes | sdkmananger --sdk_root=${ANDROID_HOME} --licenses
+	yes | sdkmanager --sdk_root=${ANDROID_HOME} --licenses
 	sdkmanager --install --sdk_root=${ANDROID_HOME} ndk-bundle
 	}
 
@@ -181,7 +177,7 @@ loadconfig(){
 		REPO="sm64-port-android-base/app/jni/src"
 		ANDROID=1
 		if [ "$Branch" = "nightly" ]; then
-			Branch=sm64ex
+			Branch=sm64ex-nightly
 		fi
 	fi
 	if [ "$REPO" = "sm64nx" ]; then
