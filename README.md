@@ -148,13 +148,13 @@ Some build targets depend on an additional package not listed below.  Android bu
 
 Arch: 
     
-	sudo pacman -S base-devel python audiofile sdl2 glew python-zstandard python-pip 
+	sudo pacman -S base-devel python audiofile sdl2 glew python-zstandard python-pip zstd
 Debian / Ubuntu:  
 
 	sudo apt install -y build-essential git python3 libaudiofile-dev libglew-dev libsdl2-dev binutils libusb-1.0-0-dev libzstd-dev python3-pip p7zip-full
 Fedora  / Red Hat:
 
-	sudo dnf install make gcc python3 audiofile-devel glew-devel SDL2-devel
+	sudo dnf install make gcc python3 audiofile-devel glew-devel SDL2-devel zstd
 openSuSE:
 
 	sudo zypper in gcc make python3 libaudiofile1 glew-devel libSDL2-devel
@@ -164,7 +164,7 @@ Solus:
 
 Void: 
 
-	sudo xbps-install -S base-devel python3 audiofile-devel SDL2-devel glew-devel
+	sudo xbps-install -S base-devel python3 audiofile-devel SDL2-devel glew-devel zstd 
 	
 
 
