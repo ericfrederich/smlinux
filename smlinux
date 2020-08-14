@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0813-2114
+# 2020-0813-2204
 
 domake(){
 	#Here We go & music to build to
@@ -26,11 +26,11 @@ domake(){
 		export ANDROID_HOME=~/android-sdk
 		checkphone
 		if [ "$GOTPHONE" = 1 ]; then
-			zenity --info --text='\nPhone Detected.  Be sure to grant it debugging permission.\n\nDExisting copies of SM64 must be removed from device.' --title="Preparing for Android Installation...." --width=440 &disown
+			zenity --info --text='\nPhone Detected.  Be sure to grant it debugging permission.\n\nExisting copies must also be removed from device.' --title="Preparing for Android Installation...." --width=440 &disown
 		else
-			echo "If you want SM64 installed to your Android device,"
-			echo "Plug it in via USB and grant it debugging permission."
-			zenity --info --text='\nIf you want SM64 installed to your Android device,\nplug it in via USB and grant it debugging permission.\n\nDExisting copies of SM64 must be removed from device.' --title="Preparing for Android Installation...." --width=440 &disown
+			echo "If you want the app installed to your Android device,"
+			echo "plug it in now via USB and grant it debugging permission."
+			zenity --info --text='\nIf you want the app installed to your Android device,\nplug it in now via USB and grant it debugging permission.\n\nExisting copies must also be removed from device.' --title="Preparing for Android Installation...." --width=440 &disown
 			echo
 		fi
 	fi
@@ -61,7 +61,7 @@ domake(){
 			echo Do not disconnect phone until complete...
 			./gradlew installDebug
 		else
-			echo Phone not deteced, buliding apk only...
+			echo Phone not deteced, building apk without installation...
 			./gradlew assembleDebug
 
 		fi
@@ -165,7 +165,7 @@ InstallHD=1
 UpdateHD=0
 TARGET_WEB=0
 JOBS=-j
-Linux="sudo apt install -y build-essential git python3 libaudiofile-dev libglew-dev libsdl2-dev binutils libusb-1.0-0-dev libzstd-dev python3-pip p7zip-full"
+Linux="sudo apt install -y build-essential git python3 libaudiofile-dev libglew-dev libsdl2-dev binutils libusb-1.0-0-dev libzstd-dev python3-pip mplayer"
 CONFIG=0'> ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinuxcfg.txt
 	}
 
@@ -812,6 +812,7 @@ if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ] || [ "$1" = "
 		echo
 		echo [7] Update Complete.  Testing Application...
 	else
+		mv ~/"$REPO"/../../build/outputs/apk/debug/app-debug.apk ~/"$REPO"/../../build/outputs/apk/debug/sm64."$VERSION".f3dex2e.apk
 		echo [6] Update Complete. 
 	fi
 	rungame
@@ -1004,6 +1005,8 @@ if [ "$ANDROID" = 1 ] && [ ! -f ~/"$REPO"/../../build/outputs/apk/debug/app-debu
 	echo "smlinux exiting incomplete.  Contact #help-desk for support."
 	xdg-open https://discord.gg/Ub6YHRm &disown
 	exit
+elif [ -f ~/"$REPO"/../../build/outputs/apk/debug/app-debug.apk ]; then
+	mv ~/"$REPO"/../../build/outputs/apk/debug/app-debug.apk ~/"$REPO"/../../build/outputs/apk/debug/sm64."$VERSION".f3dex2e.apk
 fi
 echo
 echo [7] Echo Creating Desktop Shortcut and Menu Entry...
