@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0814-1623
+# 2020-0814-1646
 
 domake(){
 	#Here We go & music to build to
@@ -103,7 +103,7 @@ gcccheck(){
 			echo gcc 8 or higher confirmed
 			return
 		fi
-	else 
+	fi 
 		if [ -f /usr/bin/apt ]; then		
 			echo Attempting to install gcc 9.
 			echo | sudo add-apt-repository ppa:ubuntu-toolchain-r/test
