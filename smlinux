@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0813-2012
+# 2020-0813-2029
 
 domake(){
 	#Here We go & music to build to
@@ -24,7 +24,7 @@ domake(){
 	fi
 	if [ "$ANDROID" = 1 ]; then
 		export ANDROID_HOME=~/android-sdk
-		zenity --info --text='\nIf you want SM64 installed to your Android device,\nplug it in via USB and grant it debugging permission.\n\nDelete existing copy of SM64 from device.' --title="Preparing for Android Compilation...." --width=440 &disown
+		zenity --info --text='\nIf you want SM64 installed to your Android device,\nplug it in via USB and grant it debugging permission.\n\nDExisting copies of SM64 must be removed from device.' --title="Preparing for Android Installation...." --width=440 &disown
 		echo "Plug in your android device via USB and grant it debugging permission."
 		echo
 	fi
@@ -689,6 +689,7 @@ if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ] || [ "$1" = "
 		git submodule update	
 		if [ -d ~/"$REPO"/../../build ]; then
 			rm -rf -d ~/"$REPO"/../../build
+			rm -rf -d ~/"$REPO"/../../.externalNativeBuild
 		fi
 	fi
 	if [ -d ~/"$REPO"/build/"$VERSION"_"$TARGET" ]; then
