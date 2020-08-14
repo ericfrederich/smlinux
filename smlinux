@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0814-1558
+# 2020-0814-1605
 
 domake(){
 	#Here We go & music to build to
@@ -695,6 +695,9 @@ if [ -f "$1" ] || [ -f "$LAUNCH_DIR"/"$1" ] || ( [ -f ${XDG_DATA_HOME:-$HOME/.lo
 	else	# Fresh Build
 		if [ ! -d ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/.git ] || [ "$DEPENDS" = 1 ]; then
 			echo "[1] Installing required build tools..."
+			if [ -f /usr/bin/apt ]; then
+				sudo apt update
+			fi
 			$Linux
 			if [ "$REPO" = "sm64nx" ] ; then
 				pip3 install pillow zstandard tqdm xxhash
