@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0813-2210
+# 2020-0814-1519
 
 domake(){
 	#Here We go & music to build to
@@ -593,7 +593,9 @@ if [ ! -f ~/.smlinuxUpdate ]; then
 	if [ ! -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinuxcfg.txt ]; then
 		echo File not found, so making a new one...
 		makeconfig
-		CONFIG=1
+		if [ ! "$1" = "config" ]; then
+			doconfig
+		fi
 	fi
 	if [ "$1" = "config" ]; then
 		editconfig
