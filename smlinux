@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0813-2029
+# 2020-0813-2050
 
 domake(){
 	#Here We go & music to build to
@@ -24,9 +24,15 @@ domake(){
 	fi
 	if [ "$ANDROID" = 1 ]; then
 		export ANDROID_HOME=~/android-sdk
-		zenity --info --text='\nIf you want SM64 installed to your Android device,\nplug it in via USB and grant it debugging permission.\n\nDExisting copies of SM64 must be removed from device.' --title="Preparing for Android Installation...." --width=440 &disown
-		echo "Plug in your android device via USB and grant it debugging permission."
-		echo
+		checkphone
+		if [ "$GOTPHONE" = 1 ]; then
+			zenity --info --text='\nPhone Detected.  Be sure to grant it debugging permission.\n\nDExisting copies of SM64 must be removed from device.' --title="Preparing for Android Installation...." --width=440 &disown
+		else
+			echo "If you want SM64 installed to your Android device,"
+			echo "Plug it in via USB and grant it debugging permission."
+			zenity --info --text='\nIf you want SM64 installed to your Android device,\nplug it in via USB and grant it debugging permission.\n\nDExisting copies of SM64 must be removed from device.' --title="Preparing for Android Installation...." --width=440 &disown
+			echo
+		fi
 	fi
 	if [ "$REPO" = "sm64nx" ]; then
 		sed -i 's/-no-pie -lpthread -lzstd/-no-pie -lpthread -lzstd -lstdc++fs/g' ~/"$REPO"/Makefile
@@ -49,7 +55,16 @@ domake(){
 			make BETTERCAMERA=$BETTERCAMERA NODRAWINGDISTANCE=$NODRAWINGDISTANCE TEXTURE_FIX=$TEXTURE_FIX EXTERNAL_DATA=$EXTERNAL_DATA DISCORDRPC=$DISCORDRPC VERSION=$VERSION RENDER_API=$RENDER_API TARGET_WEB=$TARGET_WEB TEXTSAVES=$TEXTSAVES "$JOBS" > ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/buildlog.txt
 		fi
 		cd ~/sm64-port-android-base
-		./gradlew installDebug
+		checkphone
+		if [ "$GOTPHONE" = 1 ]; then
+			echo
+			echo Do not disconnect phone until complete...
+			./gradlew installDebug
+		else
+			echo Phone not deteced, buliding apk only...
+			./gradlew assembleDebug
+
+		fi
 	fi
 	if [ -f /usr/bin/mplayer ]  && [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/File_Select_64_slowed_down.mp3 ]; then
 		killall -q -y2m mplayer
@@ -71,6 +86,15 @@ androidsdk(){
 	export ANDROID_HOME=~/android-sdk
 	yes | sdkmanager --sdk_root=${ANDROID_HOME} --licenses
 	sdkmanager --install --sdk_root=${ANDROID_HOME} ndk-bundle
+	}
+
+checkphone(){
+	adb devices | while read line
+	do
+		if [ ! "$line" = "" ] && [ `echo $line | awk '{print $2}'` = "device" ]; then
+        		GOTPHONE=1
+		fi
+	done
 	}
 
 gcccheck(){
@@ -527,10 +551,12 @@ rungame(){
 		else
 			xdg-open http://localhost:8100&disown
 		fi
-	elif [ "$ANDROID"  = 1 ]; then
-		adb shell am start -n com.vdavid003.sm64port/.sm64portActivity
+	elif [ "$ANDROID"  = 1 ] ; then
+		if [ "$GOTPHONE" = 1 " ]; then
+			adb shell am start -n com.vdavid003.sm64port/.sm64portActivity
+		fi
 		xdg-open ~/"$REPO"/../../build/outputs/apk/debug &disown
-	else
+	else 
 		gtk-launch "$REPO"&disown
 	fi
 }
