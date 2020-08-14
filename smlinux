@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0813-1150
+# 2020-0813-1730
 
 domake(){
 	#Here We go & music to build to
@@ -839,7 +839,7 @@ if [ -f "$1" ] || [ -f "$LAUNCH_DIR"/"$1" ] || ( [ -f ${XDG_DATA_HOME:-$HOME/.lo
 			echo "[1] Installing required build tools for nx..."
 			pip3 install pillow zstandard tqdm xxhash
 			gcccheck
-		elif [ "$ANDROID" = 1 ] && [ ! -d ~/"$REPO" ]; then
+		elif [ "$ANDROID" = 1 ]; then
 			echo "[1] Installing required build tools for Android..."
 			androidsdk
 		else
