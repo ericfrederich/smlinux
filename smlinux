@@ -3,11 +3,11 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0814-1701
+# 2020-0815-1611
 
 domake(){
 	#Here We go & music to build to
-	if [ -f /usr/bin/mplayer ]  && [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/File_Select_64_slowed_down.mp3 ]; then
+	if ( [ -f /usr/bin/mplayer ] || [ -f /bin/mplayer ] )  && [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/File_Select_64_slowed_down.mp3 ]; then
 		if [ -f ~/"$REPO"/sound/samples/sfx_mario/0C.aiff ]; then
 			sh -c 'mplayer -nolirc -really-quiet ~/'"$REPO"'/sound/samples/sfx_mario/0C.aiff;mplayer -nolirc -really-quiet -volume 50 '${XDG_DATA_HOME:-$HOME/.local/share}'/sm64pc/File_Select_64_slowed_down.mp3&'
 		elif [ -f ~/sm64ex/sound/samples/sfx_mario/0C.aiff ]; then
@@ -98,13 +98,13 @@ checkphone(){
 	}
 
 gcccheck(){
-	if [ -f /usr/bin/gcc ]; then
+	if [ -f /usr/bin/gcc ] || [ -f /bin/gcc ]; then
 		if [ `gcc -dumpversion` \> 7.99 ]; then
 			echo gcc 8 or higher confirmed
 			return
 		fi
 	fi 
-	if [ -f /usr/bin/apt ]; then		
+	if [ -f /usr/bin/apt ] || [ -f /bin/apt ]; then		
 		echo Attempting to install gcc 9.
 		echo | sudo add-apt-repository ppa:ubuntu-toolchain-r/test
 		sudo apt install -y g++-9
@@ -579,7 +579,7 @@ if [ ! -d ${XDG_DATA_HOME:-$HOME/.local/share}/applications ]; then mkdir ${XDG_
 fi
 if [ ! -f ~/.smlinuxUpdate ]; then
 	#Play a sound clip for no reason - thank you for playing my game.
-	if [ -f /usr/bin/mplayer ]; then
+	if [ -f /usr/bin/mplayer ] || [ -f /bin/mplayer ]; then
 		if [ -f ~/sm64pc/sound/samples/sfx_mario_peach/0D.aiff ]; then
 			sh -c 'mplayer -nolirc -really-quiet ~/sm64pc/sound/samples/sfx_mario_peach/0D.aiff&'
 		elif [ -f ~/sm64ex/sound/samples/sfx_mario_peach/0D.aiff ]; then
