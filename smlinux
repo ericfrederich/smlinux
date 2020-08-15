@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0814-1650
+# 2020-0814-1701
 
 domake(){
 	#Here We go & music to build to
@@ -709,6 +709,9 @@ if [ -f "$1" ] || [ -f "$LAUNCH_DIR"/"$1" ] || ( [ -f ${XDG_DATA_HOME:-$HOME/.lo
 		elif [ "$REPO" = "sm64nx" ] && [ ! -d ~/"$REPO" ]; then
 			echo "[1] Installing required build tools for nx..."
 			pip3 install pillow zstandard tqdm xxhash
+			gcccheck
+		elif [ "$REPO" = "sm64nx" ]; then
+			echo "[1] Confirming gcc version good enough for nx..."
 			gcccheck
 		elif [ "$ANDROID" = 1 ] && [ ! -f ~/android-sdk/tools/bin/sdkmanager ]; then
 			echo "[1] Installing required build tools for Android..."
