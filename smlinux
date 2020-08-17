@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0817-1319
+# 2020-0817-1353
 
 domake(){
 	#Here We go & music to build to
@@ -40,11 +40,7 @@ domake(){
 	if [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/buildlog.txt ]; then
 		mv -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/buildlog.txt ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/buildlog.old
 	fi
-	if [ "$REPO" = "sm64-port-android-base" ]; then
-		cd ~/"$REPO"/app/jni/src
-	else
-		cd ~/"$REPO"
-	fi
+	cd ~/"$REPO"
 	time make BETTERCAMERA=$BETTERCAMERA NODRAWINGDISTANCE=$NODRAWINGDISTANCE TEXTURE_FIX=$TEXTURE_FIX EXTERNAL_DATA=$EXTERNAL_DATA DISCORDRPC=$DISCORDRPC VERSION=$VERSION RENDER_API=$RENDER_API TARGET_WEB=$TARGET_WEB TEXTSAVES=$TEXTSAVES "$JOBS" > ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/buildlog.txt
 	if [ "$REPO" = "sm64nx" ] || ( [ "$TARGET_WEB" = 1 ] && [ "$InstallHD" = 1 ] ); then
 		rm Makefile
@@ -416,16 +412,13 @@ dosgi(){
 		fi
 		sed -i 's/vsync true/vsync false/g' ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64config.txt
 	fi
-	if  [ -f ~/"$REPO"/enhancements/CHEATERv2.patch ]; then
-		git apply -R enhancements/CHEATERv2.patch
-	fi
 	cd enhancements
 	wget https://cdn.discordapp.com/attachments/727722992137666573/743787700892729364/Old_School_HD_SGI_Base_Models_V1.3_Refresh_11.7z
 	cd ~/"$REPO"
-	if  [ -f ~/"$REPO"/enhancements/CHEATERv2.patch ]; then
-		git apply -R enhancements/CHEATERv2.patch
+	if  [ -f ~/"$REPO"/enhancements/CHEATER*.patch ]; then
+		git apply -R enhancements/CHEATER*.patch
 		7z x enhancements/Old_School_HD_SGI_Base_Models_V1.3_Refresh_11.7z -aoa
-		git apply enhancements/CHEATERv2.patch
+		git apply enhancements/CHEATER*.patch
 	else
 		7z x enhancements/Old_School_HD_SGI_Base_Models_V1.3_Refresh_11.7z -aoa
 	fi
@@ -831,10 +824,15 @@ if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ] || [ "$1" = "
 		printf "\nAdding SGI Models...\n\n"
 		dosgi
 	fi
-	if (( [ "$REPO" = "sm64ex" ] && [ "$Branch" = "nightly" ] ) || [ "$Branch" = "sm64ex_nightly" ] ) && [ ! -f ~/"$REPO"/enhancements/CHEATERv2.patch ]; then
-		cd ~/"$REPO"
-		unzip -j ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/CHEATERv2 CHEATERv2/CHEATERv2.patch -d enhancements
-		git apply enhancements/CHEATERv2.patch
+	if (( [ "$REPO" = "sm64ex" ] && [ "$Branch" = "nightly" ] ) || [ "$Branch" = "sm64ex_nightly" ] ) && [ ! -f ~/"$REPO"/enhancements/CHEATERv4.patch ]; then
+		cd ~/"$REPO"/enhancements
+		if [ -f ~/"$REPO"/enhancements/CHEATERv2.patch ]; then
+			git apply -R CHEATERv2.patch
+			rm CHEATERv2.patch
+		fi
+		wget https://cdn.discordapp.com/attachments/716459185230970880/744989758127865876/CHEATERv4.zip
+		unzip -j CHEATERv4 CHEATERv4/CHEATERv4.patch -d ./
+		git apply CHEATERv4.patch
 	fi
 	if [ "$InstallHD" = 1 ] && [ "TARGET_WEB" = 1 ] && [ -d ~/"$REPO"/build/"$VERSION"_pc ]; then
 		if [ -f ~/"$REPO"/enhancements/60fps_ex.patch ]; then
@@ -983,10 +981,11 @@ if [ "$InstallHD" = 1 ]; then
 else
 	echo "WARNING: InstallHD Disabled in Config File."
 fi
-if (( [ "$REPO" = "sm64ex" ] && [ "$Branch" = "nightly" ] ) || [ "$Branch" = "sm64ex_nightly" ] )&& [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/CHEATERv2.zip ]; then
-	cd ~/"$REPO"
-	unzip -j ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/CHEATERv2 CHEATERv2/CHEATERv2.patch -d enhancements
-	git apply enhancements/CHEATERv2.patch
+if ( [ "$REPO" = "sm64ex" ] && [ "$Branch" = "nightly" ] ) || [ "$Branch" = "sm64ex_nightly" ] 
+	cd ~/"$REPO"/enhancements
+	wget https://cdn.discordapp.com/attachments/716459185230970880/744989758127865876/CHEATERv4.zip
+	unzip -j CHEATERv4 CHEATERv4/CHEATERv4.patch -d ./
+	git apply CHEATERv4.patch
 fi
 
 echo
