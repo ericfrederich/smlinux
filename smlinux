@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0817-1255
+# 2020-0817-1308
 
 domake(){
 	#Here We go & music to build to
@@ -378,10 +378,10 @@ dohd(){
 	}
 
 dosgi(){
-	if [ ! "$REPO" = "sm64ex" ] || [ ! "$Branch" = "nightly" ] || [ "$TARGET_WEB" = 1 ]; then
+	if ( [ ! "$REPO" = "sm64ex" ] || [ ! "$REPO" = "sm64-port-android-base" ] ) || [ "$TARGET_WEB" = 1 ]; then
 		if(whiptail --title "SGI Model Warning" --yesno "SGI Models are unlikely to succeed unless REPO=sm64ex Branch=nightly and TARGET_WEB=0." 10 50 --yes-button "Continue Anyway" --no-button "Cancel" --defaultno); then
 			echo WARNING: sgi is unlikely to succeed on anything besides sm64ex-nightly for pc
-			echo Proceeding anyway, but it is unlikely to build unless something has changed since this was written.
+			echo Proceeding anyway, but it may not be succesful.
 		else
 			exit
 		fi
@@ -416,14 +416,18 @@ dosgi(){
 		fi
 		sed -i 's/vsync true/vsync false/g' ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64config.txt
 	fi
-	if ( [ "$REPO" = "sm64ex" ] || [ "$Branch" = "sm64ex_nightly" ] ) && [ -f ~/"$REPO"/enhancements/CHEATERv2.patch ]; then
+	if  [ -f ~/"$REPO"/enhancements/CHEATERv2.patch ]; then
 		git apply -R enhancements/CHEATERv2.patch
-		rm enhancements/CHEATERv2.patch
 	fi
 	cd enhancements
 	wget https://cdn.discordapp.com/attachments/727722992137666573/743787700892729364/Old_School_HD_SGI_Base_Models_V1.3_Refresh_11.7z
-	cd ..
-	7z x enhancements/Old_School_HD_SGI_Base_Models_V1.3_Refresh_11.7z -aoa
+	cd ~/"$REPO"
+	if  [ -f ~/"$REPO"/enhancements/CHEATERv2.patch ]; then
+		git apply -R enhancements/CHEATERv2.patch
+		7z x enhancements/Old_School_HD_SGI_Base_Models_V1.3_Refresh_11.7z -aoa
+		git apply enhancements/CHEATERv2.patch
+	else
+		7z x enhancements/Old_School_HD_SGI_Base_Models_V1.3_Refresh_11.7z -aoa
 	}
 	
 scriptUpdate(){
