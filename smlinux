@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0815-1613
+# 2020-0817-1255
 
 domake(){
 	#Here We go & music to build to
@@ -164,7 +164,7 @@ InstallHD=1
 UpdateHD=0
 TARGET_WEB=0
 JOBS=-j
-Linux="sudo apt install -y build-essential git python3 libaudiofile-dev libglew-dev libsdl2-dev binutils libusb-1.0-0-dev libzstd-dev python3-pip mplayer"
+Linux="sudo apt install -y build-essential git python3 libaudiofile-dev libglew-dev libsdl2-dev binutils libusb-1.0-0-dev libzstd-dev python3-pip p7zip-full mplayer"
 CONFIG=0'> ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinuxcfg.txt
 	}
 
@@ -345,7 +345,7 @@ dohd(){
 				wget https://github.com/MapAnon/sm64-pc-hq-sounds/releases/download/5.1/hq_sounds_v5.1.zip
 			fi
 		fi
-		if [ ! -f ~/"$REPO"/enhancements/hd_bowser.rar ] && [ ! "$SGI" = 1 ] && [ ! -f ~/"$REPO"/enhancements/1.4.1_keyhotfix.zip ]; then
+		if [ ! -f ~/"$REPO"/enhancements/hd_bowser.rar ] && [ ! "$SGI" = 1 ] && [ ! -f ~/"$REPO"/enhancements/Old_School_HD_SGI_Base_Models_V1.3_Refresh_11.7z ]; then
 			cd ~/"$REPO"/enhancements
 			wget https://cdn.discordapp.com/attachments/716459185230970880/719758031990030427/Old_School_HD_Mario_Model.zip 
 			wget https://cdn.discordapp.com/attachments/716459185230970880/718990046442684456/hd_bowser.rar	
@@ -386,18 +386,19 @@ dosgi(){
 			exit
 		fi
 	fi
-# Removed!  Formerly it was 7zipped
-	if [ 1 = 0 ] && [ ! -f /usr/bin/7z ]; then 
-		echo "This comes as a 7z file but you don't have a tool to extract it."
-		if [ -f /usr/bin/apt ]; then
-			echo Please provide your password to install 7z...
-			sudo apt install p7zip-full
-		else
-			echo This script checks for /usr/bin/7z.  The ubuntu package is called p7zip.
-			echo Please install whatever package gets you 7z and run smlinux again.
-			echo Also please let author know what package and distro so I can add it
-			echo to depdencency list so others avoid this message.  
-			exit
+	if [ ! -f /usr/bin/7z ]; then 
+		if [ ! -f /bin/7z ]; then
+			echo "This comes as a 7z file but you don't have a tool to extract it."
+			if [ -f /usr/bin/apt ]; then
+				echo Please provide your password to install 7z...
+				sudo apt install p7zip-full
+			else
+				echo This script checks for /usr/bin/7z.  The ubuntu package is called p7zip.
+				echo Please install whatever package gets you 7z and run smlinux again.
+				echo Also please let author know what package and distro so I can add it
+				echo to depdencency list so others avoid this message.  
+				exit
+			fi
 		fi
 	fi
 	cd ~/"$REPO"
@@ -420,10 +421,9 @@ dosgi(){
 		rm enhancements/CHEATERv2.patch
 	fi
 	cd enhancements
-	wget https://cdn.discordapp.com/attachments/730551213376143431/742471533951189143/1.4.1_keyhotfix.zip
+	wget https://cdn.discordapp.com/attachments/727722992137666573/743787700892729364/Old_School_HD_SGI_Base_Models_V1.3_Refresh_11.7z
 	cd ..
-	unzip -o enhancements/1.4.1_keyhotfix.zip
-	TEXTSAVES=1
+	7z x enhancements/Old_School_HD_SGI_Base_Models_V1.3_Refresh_11.7z -aoa
 	}
 	
 scriptUpdate(){
@@ -748,7 +748,7 @@ else
 	echo "| Options: --config   prompt to edit config file before build                 |"
 	echo "|          --depends  reinstall dependencies                                  |"
 	echo "|          --updatehd (re)aquire & apply community upscale enhancements       |"
-	echo "|          --sgi      aquire and apply Render96 SGI model pack                |"
+	echo "|          --sgi      aquire and apply Render96 SGI model pack v1.3           |"
 	echo "|                                                                             |"
 	echo "-------------------------------------------------------------------------------"
 	if [ "$1" = "--help" ] || [ "$1" = "-help" ] || [ "$1" = "help" ] || [ "$1" = "-h" ]; then
