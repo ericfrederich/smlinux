@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0817-1308
+# 2020-0817-1319
 
 domake(){
 	#Here We go & music to build to
@@ -428,6 +428,7 @@ dosgi(){
 		git apply enhancements/CHEATERv2.patch
 	else
 		7z x enhancements/Old_School_HD_SGI_Base_Models_V1.3_Refresh_11.7z -aoa
+	fi
 	}
 	
 scriptUpdate(){
