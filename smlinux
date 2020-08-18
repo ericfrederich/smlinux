@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0817-2115
+# 2020-0817-2340
 
 domake(){
 	#Here We go & music to build to
@@ -151,7 +151,6 @@ vettrom(){
 		rm ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/baserom."$VERSION".z64
 	fi
 	}
-
 
 makeconfig(){
 echo '# [sm64pc/sm64ex] These settings only apply to sm64pc/sm64ex fork.
@@ -374,9 +373,9 @@ dohd(){
 			cd ~/"$REPO"/enhancements
 			wget https://cdn.discordapp.com/attachments/716459185230970880/719758031990030427/Old_School_HD_Mario_Model.zip 
 			wget https://cdn.discordapp.com/attachments/716459185230970880/718990046442684456/hd_bowser.rar	
-			if [ "$REPO" = "sm64pc" ]; then
+			if [ "$REPO" = "sm64pc" ] || ([ "$REPO" = "sm64ex" ] && [ "$BRANCH" = "master" ]); then
 				wget https://cdn.discordapp.com/attachments/716459185230970880/718674249631662120/3d_coin_v2.patch
-			elif [ "$REPO" = "sm64ex" ] || [ "$REPO" = "sm64-port" ]; then	
+			else
 				wget https://cdn.discordapp.com/attachments/721806706547490868/725041183700680807/3d_coin_v2_nightly.patch
 			fi
 			cd ..	
@@ -385,27 +384,26 @@ dohd(){
 			unrar x -o+ enhancements/hd_bowser
  			if [ "$REPO" = "sm64pc" ]; then
 				git apply enhancements/3d_coin_v2.patch --ignore-whitespace
-			elif [ "$REPO" = "sm64ex" ] || [ "$REPO" = "sm64-port" ]; then
+			else 
 				git apply enhancements/3d_coin_v2_nightly.patch --ignore-whitespace
 			fi
 		fi
 		cd ~/"$REPO"
 		if [ `arch` = "x86_64" ] && [ ! "$TARGET_WEB" = 1 ] && [ ! "$SGI" = 1 ]; then	
-			if [ -f ~/"$REPO"/enhancements/60fps_ex.patch ]; then
-				git apply enhancements/60fps_ex.patch
-			elif [ -f ~/"$REPO"/enhancements/60fps.patch ]; then
-				git apply enhancements/60fps.patch
-				sed -i 's/vsync false/vsync true/g' ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64config.txt
-			fi
-			if [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64config.txt ]; then
-				sed -i 's/vsync false/vsync true/g' ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64config.txt
+			if [ -f ~/"$REPO"/enhancements/60fps*.patch ]; then
+				git apply enhancements/60fps*.patch
+				touch enhancements/60fps
+				if [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64config.txt ]; then
+					sed -i 's/vsync false/vsync true/g' ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64config.txt
+				fi
 			fi
 		fi
 	fi
 	}
 
 dosgi(){
-	if ( ! ([ "$REPO" = "sm64ex" ] && [ "$BRANCH" = "nightly" ])) || [ ! "$BRANCH" = "sm64ex_nightly" ] || [ "$TARGET_WEB" = 1 ]; then 			if(whiptail --title "SGI Model Warning" --yesno "SGI Model Pack V1.3 is unlikely to succeed unless REPO=sm64ex BRANCH=nightly and TARGET_WEB=0." 10 50 --yes-button "Continue Anyway" --no-button "Cancel" --defaultno); then
+	if (!( ([ "$REPO" = "sm64ex" ] && [ "$BRANCH" = "nightly" ]) || [ "$BRANCH" = "sm64ex_nightly" ] || [ "$REPO" = "render96ex" ] )) || [ "$TARGET_WEB" = 1 ]; then
+ 			if(whiptail --title "SGI Model Warning" --yesno "SGI Model Pack V1.3 is unlikely to succeed unless REPO=sm64ex BRANCH=nightly and TARGET_WEB=0." 10 50 --yes-button "Continue Anyway" --no-button "Cancel" --defaultno); then
 			echo WARNING: sgi 1.3 is unlikely to succeed on anything besides sm64ex-nightly
 			echo Proceeding anyway, but it may not be succesful.
 		else
@@ -427,30 +425,36 @@ dosgi(){
 			fi
 		fi
 	fi
-	cd ~/"$REPO"
+	cd ~/"$REPO"/enhancements
 	if [ -d ~/"$REPO"/actors.bak ]; then
-		rm -rf actors
-		cp -r actors.bak actors
+		rm -rf ~/"$REPO"/actors
+		mv ~/"$REPO"/actors.bak ~/"$REPO"/actors
+		rm hd_bowser.rar Old_School_HD_Mario_Model.zip
 	fi
 	if [ -f ~/"$REPO"/enhancements/3d_coin_v2_nightly.patch ]; then
 		git apply -R enhancements/3d_coin_v2_nightly.patch
 		rm enhancements/3d_coin_v2_nightly.patch
-		if [ -f ~/"$REPO"/enhancements/60fps_ex.patch ]; then
-			git apply -R enhancements/60fps_ex.patch
-		elif [ -f ~/"$REPO"/enhancements/60fps.patch ]; then
-			git apply -R enhancements/60fps.patch
-		fi
-		sed -i 's/vsync true/vsync false/g' ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64config.txt
 	fi
-	cd enhancements
-	wget https://cdn.discordapp.com/attachments/727722992137666573/743787700892729364/Old_School_HD_SGI_Base_Models_V1.3_Refresh_11.7z
-	cd ~/"$REPO"
-	if  [ -f ~/"$REPO"/enhancements/CHEATER*.patch ]; then
-		git apply -R enhancements/CHEATER*.patch
-		7z x enhancements/Old_School_HD_SGI_Base_Models_V1.3_Refresh_11.7z -aoa
-		git apply enhancements/CHEATER*.patch
+	if [ -f ~/"$REPO"/enhancements/60fps ]; then
+		git apply -R enhancements/60fps*.patch
+		rm enhancements/60fps
+		if [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64config.txt ]; then
+			sed -i 's/vsync true/vsync false/g' ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64config.txt
+		fi
+	fi
+	if [ "$REPO" = "render96ex" ]; then 
+		wget https://cdn.discordapp.com/attachments/730551213376143431/745046907017232384/RENDER96_V1.4.2_Luigi.7z
+		SGIFILE=RENDER96_V1.4.2_Luigi.7z
 	else
-		7z x enhancements/Old_School_HD_SGI_Base_Models_V1.3_Refresh_11.7z -aoa
+		wget https://cdn.discordapp.com/attachments/727722992137666573/743787700892729364/Old_School_HD_SGI_Base_Models_V1.3_Refresh_11.7z
+		SGIFILE=Old_School_HD_SGI_Base_Models_V1.3_Refresh_11.7z
+	fi
+	if  [ -f ~/"$REPO"/enhancements/CHEATER*.patch ]; then
+		git apply -R CHEATER*.patch
+		7z x "$SGIFILE" -aoa -o ..
+		git apply CHEATER*.patch
+	else
+		7z x "$SGIFILE" -aoa -o ..
 	fi
 	}
 	
@@ -537,6 +541,12 @@ if [ ! -f ${XDG_DATA_HOME:-$HOME/.local/share}/icons/"$REPO".* ]; then
 	elif [ "$REPO" = "sm64nx" ]; then 
 		wget https://cdn.discordapp.com/attachments/711253314855108629/719215654837682226/Super_Mario_64.png
 		mv Super_Mario_64.png ${XDG_DATA_HOME:-$HOME/.local/share}/icons/"$REPO".png
+	elif [ "$REPO" = "render96ex" ]; then 
+		wget https://cdn.discordapp.com/attachments/710334795674288139/745150550382870548/bowser.png
+		mv bowser.png ${XDG_DATA_HOME:-$HOME/.local/share}/icons/"$REPO".png
+	elif [ "$REPO" = "sm64-port" ]; then 
+		wget https://cdn.discordapp.com/attachments/710334795674288139/745156574334550096/staricon.png
+		mv staricon.png ${XDG_DATA_HOME:-$HOME/.local/share}/icons/"$REPO".png
 	elif [ -f ~/"$REPO"/textures/segment2/segment2.05A00.rgba16.png ]; then
 		cp ~/"$REPO"/textures/segment2/segment2.05A00.rgba16.png ${XDG_DATA_HOME:-$HOME/.local/share}/icons/"$REPO".png
 		echo 16x16 image from ROM used.  Reccommend replacing ${XDG_DATA_HOME:-$HOME/.local/share}/icons/"$REPO".png
@@ -850,7 +860,7 @@ if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ] || [ "$1" = "
 	echo
 	echo [4] Applying pre-build modifications...
 	if [ "$UpdateHD" = 1 ]; then
-		printf "\nAdding Community Upscale Enhancements...\n\n"
+		printf "\nUpdating Community Upscale Enhancements...\n\n"
 		dohd
 	fi
 	if [ "$SGI" = 1 ]; then
@@ -1012,7 +1022,7 @@ fi
 echo
 echo [5] Applying Community Enhancements...
 echo
-if [ "$SGI" = 1 ] && [ ! "$REPO" = "render96ex" ]; then
+if [ "$SGI" = 1 ]; then
 	dosgi
 fi
 if [ "$InstallHD" = 1 ]; then 
@@ -1029,6 +1039,7 @@ fi
 
 echo
 echo [6] Compiling...
+echo
 domake
 if [ ! -f ~/"$REPO"/build/"$VERSION"_"$TARGET"/sm64."$VERSION".f3dex2* ]; then
 	echo
