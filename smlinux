@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0818-1140
+# 2020-0818-1147
 
 domake(){
 	#Here We go & music to build to
@@ -455,7 +455,7 @@ dosgi(){
 		fi
 	fi
 	if [ "$REPO" = "render96ex" ] ; then 
-		wget https://cdn.discordapp.com/attachments/730551213376143431/745046907017232384/RENDER96_V1.4.2_Luigi.7z
+		wget https://cdn.discordapp.com/attachments/730551213376143431/745262306325430374/RENDER96_V1.4.2_Luigi.7z
 		SGIFILE=RENDER96_V1.4.2_Luigi.7z
 	else
 		wget https://cdn.discordapp.com/attachments/727722992137666573/743787700892729364/Old_School_HD_SGI_Base_Models_V1.3_Refresh_11.7z
