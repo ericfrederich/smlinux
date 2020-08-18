@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0817-1353
+# 2020-0817-1735
 
 domake(){
 	#Here We go & music to build to
@@ -152,7 +152,7 @@ TEXTSAVES=0
 #[Script] These settings tell script what to do.
 #VERSION supports us jp eu (must correspond to rom version)
 VERSION=us
-#REPO supports sm64pc sm64-port sm64ex sm64nx sm64-port-android-base
+#REPO supports sm64-port sm64ex sm64nx render96ex sm64-port-android-base
 REPO=sm64ex
 Branch=nightly
 AutoUpdate=1
@@ -171,6 +171,25 @@ loadconfig(){
 	source ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinuxcfg.txt
 	if [ "$REPO" = "sm64pc" ] && [ "$Branch" = "nightly" ]; then
 		REPO=sm64ex
+	fi
+	if [ "$REPO" = "sm64-port-android-base" ]; then
+		REPO="sm64-port-android-base/app/jni/src"
+		ANDROID=1
+		if [ "$Branch" = "nightly" ] || [ "$Branch" = "sm64ex-nightly" ] || [ "$Branch" = "sm64exnightly" ]; then
+			Branch=sm64ex_nightly
+		fi
+	fi
+	if [ "$REPO" = "sm64nx" ]; then
+		EXTERNAL_DATA=0
+		Branch=master
+	fi
+	if [ "$REPO" = "Render96ex" ] || [ "$REPO" = "render96" ] || [ "$REPO" = "Render96" ]; then
+		REPO=render96ex
+	fi
+	if [ "$REPO" = "render96ex" ]; then
+		EXTERNAL_DATA=1
+		TEXTSAVES=1
+		SGI=1
 	fi
 	if [ "$JOBS" = "-j" ]; then
 		if [ "$REPO" = "sm64nx" ]; then 
@@ -194,17 +213,6 @@ loadconfig(){
 		DISCORDRPC=0
 	else
 		TARGET=pc
-	fi
-	if [ "$REPO" = "sm64-port-android-base" ]; then
-		REPO="sm64-port-android-base/app/jni/src"
-		ANDROID=1
-		if [ "$Branch" = "nightly" ] || [ "$Branch" = "sm64ex-nightly" ] || [ "$Branch" = "sm64exnightly" ]; then
-			Branch=sm64ex_nightly
-		fi
-	fi
-	if [ "$REPO" = "sm64nx" ]; then
-		EXTERNAL_DATA=0
-		Branch=master
 	fi
 
 	if [ "$2" = "--updatehd" ] || [ "$3" = "--updatehd" ] ||[ "$4" = "--updatehd" ] ||[ "$5" = "--updatehd" ]; then
@@ -361,12 +369,14 @@ dohd(){
 			fi
 		fi
 		cd ~/"$REPO"
-		if [ `arch` = "x86_64" ] && [ ! "$TARGET_WEB" = 1 ] && [ ! "$SGI" = 1 ] && [ ! "$ANDROID" = 1 ]; then	
+		if [ `arch` = "x86_64" ] && [ ! "$TARGET_WEB" = 1 ] && [ ! "$SGI" = 1 ]; then	
 			if [ -f ~/"$REPO"/enhancements/60fps_ex.patch ]; then
 				git apply enhancements/60fps_ex.patch
-				sed -i 's/vsync false/vsync true/g' ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64config.txt
 			elif [ -f ~/"$REPO"/enhancements/60fps.patch ]; then
 				git apply enhancements/60fps.patch
+				sed -i 's/vsync false/vsync true/g' ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64config.txt
+			fi
+			if [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64config.txt ]; then
 				sed -i 's/vsync false/vsync true/g' ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64config.txt
 			fi
 		fi
@@ -820,7 +830,7 @@ if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ] || [ "$1" = "
 		printf "\nAdding Community Upscale Enhancements...\n\n"
 		dohd
 	fi
-	if [ "$SGI" = 1 ]; then
+	if [ "$SGI" = 1 ] && [ ! "$REPO" = "render96ex" ]; then
 		printf "\nAdding SGI Models...\n\n"
 		dosgi
 	fi
@@ -948,6 +958,8 @@ if [ ! -d ~/"$REPO" ]; then
 		git submodule init
 		git submodule update
 		./getSDL.sh
+	elif [ "$REPO" = "render96ex" ]; then
+		git clone https://github.com/render96/"$REPO" -b "$Branch"
 	else
 		git clone https://github.com/"$REPO"/"$REPO" -b "$Branch"
 	fi
@@ -973,7 +985,7 @@ fi
 echo
 echo [5] Applying Community Enhancements...
 echo
-if [ "$SGI" = 1 ]; then
+if [ "$SGI" = 1 ] && [ ! "$REPO" = "render96ex" ]; then
 	dosgi
 fi
 if [ "$InstallHD" = 1 ]; then 
@@ -981,7 +993,7 @@ if [ "$InstallHD" = 1 ]; then
 else
 	echo "WARNING: InstallHD Disabled in Config File."
 fi
-if ( [ "$REPO" = "sm64ex" ] && [ "$Branch" = "nightly" ] ) || [ "$Branch" = "sm64ex_nightly" ] 
+if  [ "$REPO" = "sm64ex" ] || [ "$Branch" = "sm64ex_nightly" ] || [ "$Branch" = "sm64ex" ] || [ "$REPO" = render96ex ]; then 
 	cd ~/"$REPO"/enhancements
 	wget https://cdn.discordapp.com/attachments/716459185230970880/744989758127865876/CHEATERv4.zip
 	unzip -j CHEATERv4 CHEATERv4/CHEATERv4.patch -d ./
