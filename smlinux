@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0818-1224
+# 2020-0818-1415
 
 domake(){
 	#Here We go & music to build to
@@ -194,19 +194,18 @@ loadconfig(){
 	fi
 	if [ "$REPO" = "sm64pc" ] && [ "$BRANCH" = "nightly" ]; then
 		REPO=sm64ex
-	fi
-	if [ "$REPO" = "sm64-port-android-base" ]; then
+	elif [ "$REPO" = "sm64-port" ]; then
+		EXTERNAL_DATA=0
+	elif [ "$REPO" = "sm64-port-android-base" ]; then
 		REPO="sm64-port-android-base/app/jni/src"
 		ANDROID=1
 		if [ "$BRANCH" = "nightly" ] || [ "$BRANCH" = "sm64ex-nightly" ] || [ "$BRANCH" = "sm64exnightly" ]; then
 			Branch=sm64ex_nightly
 		fi
-	fi
-	if [ "$REPO" = "sm64nx" ]; then
+	elif [ "$REPO" = "sm64nx" ]; then
 		EXTERNAL_DATA=0
 		Branch=master
-	fi
-	if [ "$REPO" = "Render96ex" ] || [ "$REPO" = "render96" ] || [ "$REPO" = "Render96" ]; then
+	elif [ "$REPO" = "Render96ex" ] || [ "$REPO" = "render96" ] || [ "$REPO" = "Render96" ]; then
 		REPO=render96ex
 	fi
 	if [ "$REPO" = "render96ex" ]; then
@@ -392,14 +391,14 @@ dohd(){
 				git apply enhancements/3d_coin_v2_nightly.patch --ignore-whitespace
 			fi
 		fi
-		cd ~/"$REPO"
-		if [ `arch` = "x86_64" ] && [ ! "$TARGET_WEB" = 1 ] && [ ! "$SGI" = 1 ]; then	
-			if [ -f ~/"$REPO"/enhancements/60fps*.patch ]; then
-				git apply enhancements/60fps*.patch
-				touch enhancements/60fps
-				if [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64config.txt ]; then
-					sed -i 's/vsync false/vsync true/g' ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64config.txt
-				fi
+		if [ `arch` = "x86_64" ] && [ ! "$TARGET_WEB" = 1 ] && [ ! "$SGI" = 1 ] && [ -f ~/"$REPO"/enhancements/60fps*.patch ]; then
+			cd ~/"$REPO"/enhancements
+			if [ ! -f ~/"$REPO"/enhancements/60fps ]; then
+				git apply 60fps*.patch
+				touch 60fps
+			fi
+			if [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64config.txt ]; then
+				sed -i 's/vsync false/vsync true/g' ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64config.txt
 			fi
 		fi
 	fi
@@ -443,9 +442,9 @@ dosgi(){
 		mv ~/"$REPO"/actors.bak ~/"$REPO"/actors
 		rm hd_bowser.rar Old_School_HD_Mario_Model.zip
 	fi
-	if [ -f ~/"$REPO"/enhancements/3d_coin_v2_nightly.patch ]; then
-		git apply -R enhancements/3d_coin_v2_nightly.patch
-		rm enhancements/3d_coin_v2_nightly.patch
+	if [ -f ~/"$REPO"/enhancements/3d_coin*.patch ]; then
+		git apply -R enhancements/3d_coin*.patch
+		rm enhancements/3d_coin*.patch
 	fi
 	if [ -f ~/"$REPO"/enhancements/60fps ]; then
 		git apply -R enhancements/60fps*.patch
@@ -838,8 +837,8 @@ if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ] || [ "$1" = "
 	fi
 	if [ "$?" = "1" ]; then
 		cd ~/"$REPO"
-		if [ -f ~/"$REPO"/enhancements/3d_coin_v2_nightly.patch ]; then
-			git apply -R enhancements/3d_coin_v2_nightly.patch
+		if [ -f ~/"$REPO"/enhancements/3d_coin*.patch ]; then
+			git apply -R enhancements/3d_coin*.patch
 		fi
 		if [ -f ~/"$REPO"/enhancements/60fps ]; then
 			git apply -R enhancements/60fps*.patch
@@ -851,8 +850,8 @@ if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ] || [ "$1" = "
 		if [ "$?" = "1" ]; then
 			echo WARNING: Unable to merge source updates from github.
 		fi
-		if [ -f ~/"$REPO"/enhancements/3d_coin_v2_nightly.patch ]; then
-			git apply enhancements/3d_coin_v2_nightly.patch
+		if [ -f ~/"$REPO"/enhancements/3d_coin*.patch ]; then
+			git apply enhancements/3d_coin*.patch
 		fi
 		if [ -f ~/"$REPO"/enhancements/60fps ]; then
 			git apply enhancements/60fps*.patch
@@ -896,23 +895,13 @@ if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ] || [ "$1" = "
 		unzip -j CHEATER* CHEATERv4.2/CHEATERv4.patch -d ./
 		git apply CHEATERv4.patch
 	fi
-	if [ "$InstallHD" = 1 ] && [ "TARGET_WEB" = 1 ] && [ -d ~/"$REPO"/build/"$VERSION"_pc ]; then
-		if [ -f ~/"$REPO"/enhancements/60fps_ex.patch ]; then
-			git apply -R enhancements/60fps_ex.patch
-		elif [ -f ~/"$REPO"/enhancements/60fps.patch ]; then
-			git apply -R enhancements/60fps.patch
-		fi
+	if [ "TARGET_WEB" = 1 ] && [ -f ~/"$REPO"/enhancements/60fps ]; then
+		git apply -R enhancements/60fps*.patch
+		rm enhanements/60fps			
 	fi
 	echo		
 	echo [5] Compiling...
 	domake
-	if [ "$InstallHD" = 1 ] && [ "TARGET_WEB" = 1 ] && [ -d ~/"$REPO"/build/"$VERSION"_pc ] && [ `arch` = "x86_64" ]; then
-		if [ -f ~/"$REPO"/enhancements/60fps_ex.patch ]; then
-			git apply enhancements/60fps_ex.patch
-		elif [ -f ~/"$REPO"/enhancements/60fps.patch ]; then
-			git apply enhancements/60fps.patch
-		fi
-	fi
 	echo
 	if [ ! -f ~/"$REPO"/build/"$VERSION"_"$TARGET"/sm64."$VERSION".f3dex2* ]; then
 		echo "ERROR: Build Failure - output file not found."  
@@ -928,20 +917,10 @@ if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ] || [ "$1" = "
 		exit
 	fi
 	if [ -d ~/"$REPO"/build/"$VERSION"_"$TARGET".old/res ]; then
-		echo [5] Restoring External Resources...
+		echo [6] Restoring External Resources...
 		cp -rpn ~/"$REPO"/build/"$VERSION"_"$TARGET".old/res/. ~/"$REPO"/build/"$VERSION"_"$TARGET"/res
-	fi
-	if [ -d ~/"$REPO"/build/"$VERSION"_"$TARGET"/res/.git ] ; then
-		echo Checking for Cleaner Aesthetics Texture updates on Github...
-		cd ~/"$REPO"/build/"$VERSION"_"$TARGET"/res
-		git pull
-		if [ "$ANDROID" = 1 ] && [ -d ~/"$REPO"/build/"$VERSION"_"$TARGET"/res/gfx ]; then
-			zip -r -0 -f hdbase gfx
-			rm -rf gfx
-		fi
-	fi
-	if [ -d ~/"$REPO"/build/"$VERSION"_"$TARGET".old/romfs ]; then
-		echo "[5] Restoring Savefile, ROM and ROM Filesystem (paks)"
+	elif [ -d ~/"$REPO"/build/"$VERSION"_"$TARGET".old/romfs ]; then
+		echo "[6] Restoring Savefile, ROM and ROM Filesystem (paks)"
 		cp -rpn ~/"$REPO"/build/"$VERSION"_"$TARGET".old/romfs/. ~/"$REPO"/build/"$VERSION"_"$TARGET"/romfs
 		ln -s ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64.sav ~/"$REPO"/build/"$VERSION"_"$TARGET"/sm64.sav 
 		ln -s ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64.log ~/"$REPO"/build/"$VERSION"_"$TARGET"/sm64.log 
@@ -955,6 +934,17 @@ if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ] || [ "$1" = "
 		if [ "$InstallHD" = 1 ]; then
 			dohd
 		fi		
+	else
+		echo [6] No resources found in previous build, skipping restore...
+	fi
+	if [ -d ~/"$REPO"/build/"$VERSION"_"$TARGET"/res/.git ] ; then
+		echo Checking for Cleaner Aesthetics Texture updates on Github...
+		cd ~/"$REPO"/build/"$VERSION"_"$TARGET"/res
+		git pull
+		if [ "$ANDROID" = 1 ] && [ -d ~/"$REPO"/build/"$VERSION"_"$TARGET"/res/gfx ]; then
+			zip -r -0 -f hdbase gfx
+			rm -rf gfx
+		fi
 	fi
 	echo
 	if [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/applications/"$REPO".desktop ] || [ "$TARGET" = "web" ]; then
