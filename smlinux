@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0817-2034
+# 2020-0817-2115
 
 domake(){
 	#Here We go & music to build to
@@ -405,9 +405,8 @@ dohd(){
 	}
 
 dosgi(){
-	if ( [ ! "$REPO" = "sm64ex" ] || [ ! "$REPO" = "sm64-port-android-base" ] ) || [ "$TARGET_WEB" = 1 ]; then
-		if(whiptail --title "SGI Model Warning" --yesno "SGI Models are unlikely to succeed unless REPO=sm64ex Branch=nightly and TARGET_WEB=0." 10 50 --yes-button "Continue Anyway" --no-button "Cancel" --defaultno); then
-			echo WARNING: sgi is unlikely to succeed on anything besides sm64ex-nightly for pc
+	if ( ! ([ "$REPO" = "sm64ex" ] && [ "$BRANCH" = "nightly" ])) || [ ! "$BRANCH" = "sm64ex_nightly" ] || [ "$TARGET_WEB" = 1 ]; then 			if(whiptail --title "SGI Model Warning" --yesno "SGI Model Pack V1.3 is unlikely to succeed unless REPO=sm64ex BRANCH=nightly and TARGET_WEB=0." 10 50 --yes-button "Continue Anyway" --no-button "Cancel" --defaultno); then
+			echo WARNING: sgi 1.3 is unlikely to succeed on anything besides sm64ex-nightly
 			echo Proceeding anyway, but it may not be succesful.
 		else
 			exit
@@ -854,7 +853,7 @@ if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ] || [ "$1" = "
 		printf "\nAdding Community Upscale Enhancements...\n\n"
 		dohd
 	fi
-	if [ "$SGI" = 1 ] && [ ! "$REPO" = "render96ex" ]; then
+	if [ "$SGI" = 1 ]; then
 		printf "\nAdding SGI Models...\n\n"
 		dosgi
 	fi
