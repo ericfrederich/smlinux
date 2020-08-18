@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0817-1735
+# 2020-0817-1842
 
 domake(){
 	#Here We go & music to build to
@@ -345,9 +345,10 @@ dohd(){
 				cp -rpn ~/"$REPO"/build/"$VERSION"_"$TARGET"/res.old/ ~/"$REPO"/build/"$VERSION"_"$TARGET"/res
 			else
 				git clone --single-branch https://github.com/CrashCrod/Cleaner-Aesthetics.git ~/"$REPO"/build/"$VERSION"_"$TARGET"/res
-				cd ~/"$REPO"/build/"$VERSION"_"$TARGET"/res	
+				cd ~/"$REPO"/build/"$VERSION"_"$TARGET"/res
 				wget https://github.com/MapAnon/sm64-pc-hq-sounds/releases/download/5.1/hq_sounds_v5.1.zip
 			fi
+			rm -rf gfx/textures/skyboxes
 		fi
 		if [ ! -f ~/"$REPO"/enhancements/hd_bowser.rar ] && [ ! "$SGI" = 1 ] && [ ! -f ~/"$REPO"/enhancements/Old_School_HD_SGI_Base_Models_V1.3_Refresh_11.7z ]; then
 			cd ~/"$REPO"/enhancements
@@ -520,6 +521,9 @@ if [ ! -f ${XDG_DATA_HOME:-$HOME/.local/share}/icons/"$REPO".* ]; then
 	elif [ -f ~/"$REPO"/textures/segment2/segment2.05A00.rgba16.png ]; then
 		cp ~/"$REPO"/textures/segment2/segment2.05A00.rgba16.png ${XDG_DATA_HOME:-$HOME/.local/share}/icons/"$REPO".png
 		echo 16x16 image from ROM used.  Reccommend replacing ${XDG_DATA_HOME:-$HOME/.local/share}/icons/"$REPO".png
+	else 
+		echo WARNING: No icon found. 
+		echo Reccommend creating ${XDG_DATA_HOME:-$HOME/.local/share}/icons/"$REPO".png
 	fi	
 else
 	echo Icon already exists...
@@ -532,7 +536,7 @@ StartupNotify=false
 Categories=Game;'>${XDG_DATA_HOME:-$HOME/.local/share}/applications/"$REPO".desktop
 echo Icon=${XDG_DATA_HOME:-$HOME/.local/share}/icons/"$REPO".png >>${XDG_DATA_HOME:-$HOME/.local/share}/applications/"$REPO".desktop
 echo Name=Super Mario 64 \("$REPO"\) >>${XDG_DATA_HOME:-$HOME/.local/share}/applications/"$REPO".desktop
-	if [ "$REPO" = "sm64pc" ] || [ "$REPO" = "sm64ex" ]; then
+	if [ "$REPO" = "sm64pc" ] || [ "$REPO" = "sm64ex" ] || [ "$REPO" = "render96ex" ]; then
 		echo Path=~/"$REPO"/build/"$VERSION"_"$TARGET" >>${XDG_DATA_HOME:-$HOME/.local/share}/applications/"$REPO".desktop
 		echo Exec=~/"$REPO"/build/"$VERSION"_"$TARGET"/sm64."$VERSION".f3dex2e --cheats>>${XDG_DATA_HOME:-$HOME/.local/share}/applications/"$REPO".desktop
 	elif [ "$REPO" = "sm64-port" ]; then
@@ -834,14 +838,14 @@ if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ] || [ "$1" = "
 		printf "\nAdding SGI Models...\n\n"
 		dosgi
 	fi
-	if (( [ "$REPO" = "sm64ex" ] && [ "$Branch" = "nightly" ] ) || [ "$Branch" = "sm64ex_nightly" ] ) && [ ! -f ~/"$REPO"/enhancements/CHEATERv4.patch ]; then
+	if (([ "$REPO" = "sm64ex" ] && [ "$Branch" = "nightly" ] ) || [ "$Branch" = "sm64ex_nightly" ] || [ "$REPO" = "render96ex" ] ) && [ ! -f ~/"$REPO"/enhancements/CHEATERv4.1.zip ]; then
 		cd ~/"$REPO"/enhancements
-		if [ -f ~/"$REPO"/enhancements/CHEATERv2.patch ]; then
-			git apply -R CHEATERv2.patch
-			rm CHEATERv2.patch
+		if [ -f ~/"$REPO"/enhancements/CHEATER*.patch ]; then
+			git apply -R CHEATER*.patch
+			rm CHEATER*
 		fi
-		wget https://cdn.discordapp.com/attachments/716459185230970880/744989758127865876/CHEATERv4.zip
-		unzip -j CHEATERv4 CHEATERv4/CHEATERv4.patch -d ./
+		wget https://cdn.discordapp.com/attachments/716459185230970880/745087654370082886/CHEATERv4.1.zip
+		unzip -j CHEATER* CHEATERv4.1/CHEATERv4.patch -d ./
 		git apply CHEATERv4.patch
 	fi
 	if [ "$InstallHD" = 1 ] && [ "TARGET_WEB" = 1 ] && [ -d ~/"$REPO"/build/"$VERSION"_pc ]; then
