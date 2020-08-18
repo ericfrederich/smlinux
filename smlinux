@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0818-0000
+# 2020-0818-0019
 
 domake(){
 	#Here We go & music to build to
@@ -410,11 +410,19 @@ dosgi(){
 			exit
 		fi
 	fi
+	if [ "$REPO" = "render96ex" ] && [ -f "$REPO"/enhancements/RENDER96_V1.4.2_Luigi.7z ] ; then 
+		echo Render96 V1.4.2 Already Installed...
+		return
+	elif [ ! "$REPO" = "render96ex" ] && [ -f "$REPO"/enhancements/Old_School_HD_SGI_Base_Models_V1.3_Refresh_11.7z ] ; then
+		echo Render96 V1.3 Already Installed...
+		return 
+	fi
+	
 	if [ ! -f /usr/bin/7z ]; then 
 		if [ ! -f /bin/7z ]; then
-			echo "This comes as a 7z file but you don't have a tool to extract it."
+			echo "SGI Models comes as a 7z file but you don't have 7z to extract it."
 			if [ -f /usr/bin/apt ]; then
-				echo Please provide your password to install 7z...
+				echo Please provide your password to install...
 				sudo apt install p7zip-full
 			else
 				echo This script checks for /usr/bin/7z.  The ubuntu package is called p7zip.
@@ -442,10 +450,10 @@ dosgi(){
 			sed -i 's/vsync true/vsync false/g' ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64config.txt
 		fi
 	fi
-	if [ "$REPO" = "render96ex" ] && [ ! -f "$REPO"/enhancements/RENDER96_V1.4.2_Luigi.7z ] ; then 
+	if [ "$REPO" = "render96ex" ] ; then 
 		wget https://cdn.discordapp.com/attachments/730551213376143431/745046907017232384/RENDER96_V1.4.2_Luigi.7z
 		SGIFILE=RENDER96_V1.4.2_Luigi.7z
-	elif [ ! -f "$REPO"/enhancements/Old_School_HD_SGI_Base_Models_V1.3_Refresh_11.7z ]; then
+	else
 		wget https://cdn.discordapp.com/attachments/727722992137666573/743787700892729364/Old_School_HD_SGI_Base_Models_V1.3_Refresh_11.7z
 		SGIFILE=Old_School_HD_SGI_Base_Models_V1.3_Refresh_11.7z
 	fi
@@ -565,9 +573,12 @@ StartupNotify=false
 Categories=Game;'>${XDG_DATA_HOME:-$HOME/.local/share}/applications/"$REPO".desktop
 echo Icon=${XDG_DATA_HOME:-$HOME/.local/share}/icons/"$REPO".png >>${XDG_DATA_HOME:-$HOME/.local/share}/applications/"$REPO".desktop
 echo Name=Super Mario 64 \("$REPO"\) >>${XDG_DATA_HOME:-$HOME/.local/share}/applications/"$REPO".desktop
-	if [ "$REPO" = "sm64pc" ] || [ "$REPO" = "sm64ex" ] || [ "$REPO" = "render96ex" ]; then
+	if [ "$REPO" = "sm64pc" ] || [ "$REPO" = "sm64ex" ] ; then
 		echo Path=~/"$REPO"/build/"$VERSION"_"$TARGET" >>${XDG_DATA_HOME:-$HOME/.local/share}/applications/"$REPO".desktop
 		echo Exec=~/"$REPO"/build/"$VERSION"_"$TARGET"/sm64."$VERSION".f3dex2e --cheats>>${XDG_DATA_HOME:-$HOME/.local/share}/applications/"$REPO".desktop
+	elif [ "$REPO" = "render96ex" ]; then
+		echo Path=~/"$REPO"/build/"$VERSION"_"$TARGET" >>${XDG_DATA_HOME:-$HOME/.local/share}/applications/"$REPO".desktop
+		echo Exec=~/"$REPO"/build/"$VERSION"_"$TARGET"/sm64."$VERSION".f3dex2e --cheats --savepath ${XDG_DATA_HOME:-$HOME/.local/share}/render96ex>>${XDG_DATA_HOME:-$HOME/.local/share}/applications/"$REPO".desktop
 	elif [ "$REPO" = "sm64-port" ]; then
 		echo Path=${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO" >>${XDG_DATA_HOME:-$HOME/.local/share}/applications/"$REPO".desktop
 		printf "Exec=sh -c \"" >>${XDG_DATA_HOME:-$HOME/.local/share}/applications/"$REPO".desktop
