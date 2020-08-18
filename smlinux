@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0817-1842
+# 2020-0817-2034
 
 domake(){
 	#Here We go & music to build to
@@ -47,7 +47,7 @@ domake(){
 		git checkout Makefile
 	fi
 	if [ "$REPO" = "sm64-port-android-base/app/jni/src" ]; then
-		if [ "$Branch" = "sm64ex" ] || [ "$Branch" = "sm64ex_nightly" ]; then
+		if [ "$BRANCH" = "sm64ex" ] || [ "$BRANCH" = "sm64ex_nightly" ]; then
 			make BETTERCAMERA=$BETTERCAMERA NODRAWINGDISTANCE=$NODRAWINGDISTANCE TEXTURE_FIX=$TEXTURE_FIX EXTERNAL_DATA=$EXTERNAL_DATA DISCORDRPC=$DISCORDRPC VERSION=$VERSION RENDER_API=$RENDER_API TARGET_WEB=$TARGET_WEB TEXTSAVES=$TEXTSAVES "$JOBS" > ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/buildlog.txt
 		fi
 		cd ~/sm64-port-android-base
@@ -55,11 +55,25 @@ domake(){
 		if [ "$GOTPHONE" = 1 ]; then
 			echo
 			echo Do not disconnect phone until complete...
-			./gradlew installDebug
+			TOUCH_CONTROLS=$TOUCH_CONTROLS BETTERCAMERA=$BETTERCAMERA NODRAWINGDISTANCE=$NODRAWINGDISTANCE TEXTURE_FIX=$TEXTURE_FIX EXTERNAL_DATA=$EXTERNAL_DATA VERSION=$VERSION TEXTSAVES=$TEXTSAVES ./gradlew installDebug
 		else
 			echo Phone not deteced, building apk without installation...
 			killall -q zenity
-			./gradlew assembleDebug
+			TOUCH_CONTROLS=$TOUCH_CONTROLS BETTERCAMERA=$BETTERCAMERA NODRAWINGDISTANCE=$NODRAWINGDISTANCE TEXTURE_FIX=$TEXTURE_FIX EXTERNAL_DATA=$EXTERNAL_DATA VERSION=$VERSION TEXTSAVES=$TEXTSAVES ./gradlew assembleDebug
+		fi
+		rm app/jni/src/Android.mk
+		git checkout app/jni/src/Android.mk
+		cd ~/"$REPO"/build/"$VERSION"_"$TARGET"/res
+		if [ "$EXTERNAL_DATA" = 1 ] && [ "$InstallHD" = 1 ]; then
+			echo Preparing external data for transfer...
+			cd ~/"$REPO"/build/"$VERSION"_"$TARGET"/res
+			unzip hq_sounds_v5.1
+			unzip -n base
+			zip -r -0 hdbase gfx sound
+			ln -s hdbase.zip ~/"$REPO"/../../build/outputs/apk/debug/hdbase.zip
+			rm -rf sound gfx
+		elif [ "$EXTERNAL_DATA" = 1 ]; then
+			ln -s base.zip ~/"$REPO"/../../build/outputs/apk/debug/base.zip
 		fi
 	fi
 	if [ -f /usr/bin/mplayer ]  && [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/File_Select_64_slowed_down.mp3 ]; then
@@ -140,7 +154,7 @@ vettrom(){
 
 
 makeconfig(){
-echo '#[sm64pc/sm64ex] These settings only apply to sm64pc/sm64ex fork.
+echo '# [sm64pc/sm64ex] These settings only apply to sm64pc/sm64ex fork.
 BETTERCAMERA=1
 NODRAWINGDISTANCE=1
 TEXTURE_FIX=1
@@ -149,33 +163,39 @@ DISCORDRPC=1
 #RENDER_API supports GL (2.1+) or GL_LEGACY (1.2-2.0)
 RENDER_API=GL
 TEXTSAVES=0
-#[Script] These settings tell script what to do.
+# [Script] These settings tell script what to do.
 #VERSION supports us jp eu (must correspond to rom version)
 VERSION=us
 #REPO supports sm64-port sm64ex sm64nx render96ex sm64-port-android-base
 REPO=sm64ex
-Branch=nightly
+BRANCH=nightly
 AutoUpdate=1
 InstallHD=1
 UpdateHD=0
 TARGET_WEB=0
 JOBS=-j
 Linux="sudo apt install -y build-essential git python3 libaudiofile-dev libglew-dev libsdl2-dev binutils libusb-1.0-0-dev libzstd-dev python3-pip p7zip-full mplayer"
-CONFIG=0'> ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinuxcfg.txt
+CONFIG=0
+# [sm64-port-android-base]
+TOUCH_CONTROLS=1'> ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinuxcfg.txt
 	}
 
 loadconfig(){
 	REPO=sm64pc
 	TARGET_WEB=0
 	TEXTSAVES=0
+	TOUCH_CONTROLS=1
 	source ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinuxcfg.txt
-	if [ "$REPO" = "sm64pc" ] && [ "$Branch" = "nightly" ]; then
+	if [ -z "$BRANCH" ]; then
+		BRANCH="$Branch"
+	fi
+	if [ "$REPO" = "sm64pc" ] && [ "$BRANCH" = "nightly" ]; then
 		REPO=sm64ex
 	fi
 	if [ "$REPO" = "sm64-port-android-base" ]; then
 		REPO="sm64-port-android-base/app/jni/src"
 		ANDROID=1
-		if [ "$Branch" = "nightly" ] || [ "$Branch" = "sm64ex-nightly" ] || [ "$Branch" = "sm64exnightly" ]; then
+		if [ "$BRANCH" = "nightly" ] || [ "$BRANCH" = "sm64ex-nightly" ] || [ "$BRANCH" = "sm64exnightly" ]; then
 			Branch=sm64ex_nightly
 		fi
 	fi
@@ -788,7 +808,7 @@ if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ] || [ "$1" = "
 	fi
 	echo
 	git fetch
-	git checkout "$Branch"
+	git checkout "$BRANCH"
 	if [ "$(git diff HEAD origin/HEAD)" != "" ]; then
 		 git merge
 	fi
@@ -838,7 +858,7 @@ if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ] || [ "$1" = "
 		printf "\nAdding SGI Models...\n\n"
 		dosgi
 	fi
-	if (([ "$REPO" = "sm64ex" ] && [ "$Branch" = "nightly" ] ) || [ "$Branch" = "sm64ex_nightly" ] || [ "$REPO" = "render96ex" ] ) && [ ! -f ~/"$REPO"/enhancements/CHEATERv4.1.zip ]; then
+	if (([ "$REPO" = "sm64ex" ] && [ "$BRANCH" = "nightly" ] ) || [ "$BRANCH" = "sm64ex_nightly" ] || [ "$REPO" = "render96ex" ] ) && [ ! -f ~/"$REPO"/enhancements/CHEATERv4.1.zip ]; then
 		cd ~/"$REPO"/enhancements
 		if [ -f ~/"$REPO"/enhancements/CHEATER*.patch ]; then
 			git apply -R CHEATER*.patch
@@ -887,6 +907,10 @@ if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ] || [ "$1" = "
 		echo Checking for Cleaner Aesthetics Texture updates on Github...
 		cd ~/"$REPO"/build/"$VERSION"_"$TARGET"/res
 		git pull
+		if [ "$ANDROID" = 1 ] && [ -d ~/"$REPO"/build/"$VERSION"_"$TARGET"/res/gfx ]; then
+			zip -r -0 -f hdbase gfx
+			rm -rf gfx
+		fi
 	fi
 	if [ -d ~/"$REPO"/build/"$VERSION"_"$TARGET".old/romfs ]; then
 		echo "[5] Restoring Savefile, ROM and ROM Filesystem (paks)"
@@ -953,19 +977,19 @@ fi
 if [ ! -d ~/"$REPO" ]; then
 	cd
 	if [ "$REPO" = "sm64nx" ]; then
-		git clone https://github.com/teamsalta/"$REPO" -b "$Branch"
+		git clone https://github.com/teamsalta/"$REPO" -b "$BRANCH"
 	elif [ "$REPO" = "sm64ex" ]; then
-		git clone https://github.com/sm64pc/"$REPO" -b "$Branch"
+		git clone https://github.com/sm64pc/"$REPO" -b "$BRANCH"
 	elif [ "$REPO" = "sm64-port-android-base/app/jni/src" ]; then
-		git clone https://github.com/vdavid003/sm64-port-android-base -b "$Branch"
+		git clone https://github.com/vdavid003/sm64-port-android-base -b "$BRANCH"
 		cd sm64-port-android-base
 		git submodule init
 		git submodule update
 		./getSDL.sh
 	elif [ "$REPO" = "render96ex" ]; then
-		git clone https://github.com/render96/"$REPO" -b "$Branch"
+		git clone https://github.com/render96/"$REPO" -b "$BRANCH"
 	else
-		git clone https://github.com/"$REPO"/"$REPO" -b "$Branch"
+		git clone https://github.com/"$REPO"/"$REPO" -b "$BRANCH"
 	fi
 fi
 if [ ! -d ~/"$REPO" ]; then
@@ -997,7 +1021,7 @@ if [ "$InstallHD" = 1 ]; then
 else
 	echo "WARNING: InstallHD Disabled in Config File."
 fi
-if  [ "$REPO" = "sm64ex" ] || [ "$Branch" = "sm64ex_nightly" ] || [ "$Branch" = "sm64ex" ] || [ "$REPO" = render96ex ]; then 
+if  [ "$REPO" = "sm64ex" ] || [ "$BRANCH" = "sm64ex_nightly" ] || [ "$BRANCH" = "sm64ex" ] || [ "$REPO" = render96ex ]; then 
 	cd ~/"$REPO"/enhancements
 	wget https://cdn.discordapp.com/attachments/716459185230970880/744989758127865876/CHEATERv4.zip
 	unzip -j CHEATERv4 CHEATERv4/CHEATERv4.patch -d ./
