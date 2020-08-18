@@ -81,19 +81,21 @@ For example:
  
 	smlinux update
 	       or
-	smlinux update --hd
+	smlinux update --updatehd
 	       or
 	smlinux update --config
+		or
+	smlinux update --sgi
 
-Updates existing install to latest from github while retaining custom textures and addons.  If updated build fails, keeps previous build.
+Updates existing install to latest from github while retaining custom textures and addons.  If updated source fails to build, restores previous build.
 
 You can also use this option to rebuild after you apply patches or edit your source or source assets like actors manually.
-Note --hd only needs to be applied once, not with every update (unless what's included with hd has changed in new version of script).
+Note --updatehd only needs to be applied if what's included with the InstallHD option has changed/updated since you installed smlinux, or if you wish to add those add-ons to an existing build that doesn't have them.
 
 If you want to save your existing build, rename it (anything) before running the update, for example: 
  
 
-	mv ~/sm64pc/build ~/sm64pc/build-old
+	mv ~/sm64pc/build/us_pc ~/sm64pc/build/firstbuild
 
 ## **How to I configure options like controllers, camera, rumble, etc?**
 *only applies to sm64pc/sm64ex fork*
