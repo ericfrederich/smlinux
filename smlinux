@@ -9,11 +9,11 @@ domake(){
 	#Here We go & music to build to
 	if ( [ -f /usr/bin/mplayer ] || [ -f /bin/mplayer ] )  && [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/File_Select_64_slowed_down.mp3 ]; then
 		if [ -f ~/"$REPO"/sound/samples/sfx_mario/0C.aiff ]; then
-			sh -c 'mplayer -nolirc -really-quiet ~/'"$REPO"'/sound/samples/sfx_mario/0C.aiff;mplayer -nolirc -really-quiet -volume 50 -loop 0 '${XDG_DATA_HOME:-$HOME/.local/share}'/sm64pc/File_Select_64_slowed_down.mp3&'
+			sh -c 'mplayer -nolirc -really-quiet ~/'"$REPO"'/sound/samples/sfx_mario/0C.aiff;mplayer -nolirc -really-quiet -volume 40 -loop 0 '${XDG_DATA_HOME:-$HOME/.local/share}'/sm64pc/File_Select_64_slowed_down.mp3&'
 		elif [ -f ~/sm64ex/sound/samples/sfx_mario/0C.aiff ]; then
-			sh -c 'mplayer -nolirc -really-quiet ~/sm64ex/sound/samples/sfx_mario/0C.aiff;mplayer -nolirc -really-quiet -volume 50 -loop 0 '${XDG_DATA_HOME:-$HOME/.local/share}'/sm64pc/File_Select_64_slowed_down.mp3&'
+			sh -c 'mplayer -nolirc -really-quiet ~/sm64ex/sound/samples/sfx_mario/0C.aiff;mplayer -nolirc -really-quiet -volume 40 -loop 0 '${XDG_DATA_HOME:-$HOME/.local/share}'/sm64pc/File_Select_64_slowed_down.mp3&'
 		else
-			sh -c 'mplayer -nolirc -really-quiet -volume 50 -loop 0 '${XDG_DATA_HOME:-$HOME/.local/share}'/sm64pc/File_Select_64_slowed_down.mp3&'
+			sh -c 'mplayer -nolirc -really-quiet -volume 40 -loop 0 '${XDG_DATA_HOME:-$HOME/.local/share}'/sm64pc/File_Select_64_slowed_down.mp3&'
 		fi
 	fi 
 	if [ "$TARGET_WEB" = 1 ]; then 
@@ -986,6 +986,7 @@ if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ] || [ "$1" = "
 fi
 echo
 echo [3] Downloading "$REPO" source from github... 
+echo
 if [ -d ~/"$REPO"/build/"$VERSION"_"$TARGET" ]; then
 	if [ "$REPO" = "sm64-port-android-base/app/jni/src" ]; then
 		echo WARNING: sm64-port-android-base directory already exists! 
