@@ -3,17 +3,17 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0818-0019
+# 2020-0818-0036
 
 domake(){
 	#Here We go & music to build to
 	if ( [ -f /usr/bin/mplayer ] || [ -f /bin/mplayer ] )  && [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/File_Select_64_slowed_down.mp3 ]; then
 		if [ -f ~/"$REPO"/sound/samples/sfx_mario/0C.aiff ]; then
-			sh -c 'mplayer -nolirc -really-quiet ~/'"$REPO"'/sound/samples/sfx_mario/0C.aiff;mplayer -nolirc -really-quiet -volume 50 '${XDG_DATA_HOME:-$HOME/.local/share}'/sm64pc/File_Select_64_slowed_down.mp3&'
+			sh -c 'mplayer -nolirc -really-quiet ~/'"$REPO"'/sound/samples/sfx_mario/0C.aiff;mplayer -nolirc -really-quiet -volume 50 -loop 0 '${XDG_DATA_HOME:-$HOME/.local/share}'/sm64pc/File_Select_64_slowed_down.mp3&'
 		elif [ -f ~/sm64ex/sound/samples/sfx_mario/0C.aiff ]; then
-			sh -c 'mplayer -nolirc -really-quiet ~/sm64ex/sound/samples/sfx_mario/0C.aiff;mplayer -nolirc -really-quiet -volume 50 '${XDG_DATA_HOME:-$HOME/.local/share}'/sm64pc/File_Select_64_slowed_down.mp3&'
+			sh -c 'mplayer -nolirc -really-quiet ~/sm64ex/sound/samples/sfx_mario/0C.aiff;mplayer -nolirc -really-quiet -volume 50 -loop 0 '${XDG_DATA_HOME:-$HOME/.local/share}'/sm64pc/File_Select_64_slowed_down.mp3&'
 		else
-			sh -c 'mplayer -nolirc -really-quiet -volume 50 '${XDG_DATA_HOME:-$HOME/.local/share}'/sm64pc/File_Select_64_slowed_down.mp3&'
+			sh -c 'mplayer -nolirc -really-quiet -volume 50 -loop 0 '${XDG_DATA_HOME:-$HOME/.local/share}'/sm64pc/File_Select_64_slowed_down.mp3&'
 		fi
 	fi 
 	if [ "$TARGET_WEB" = 1 ]; then 
