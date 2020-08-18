@@ -451,10 +451,10 @@ dosgi(){
 	fi
 	if  [ -f ~/"$REPO"/enhancements/CHEATER*.patch ]; then
 		git apply -R CHEATER*.patch
-		7z x "$SGIFILE" -aoa -o ../
+		7z x "$SGIFILE" -aoa -o..
 		git apply CHEATER*.patch
 	else
-		7z x "$SGIFILE" -aoa -o ../
+		7z x "$SGIFILE" -aoa -o..
 	fi
 	}
 	
