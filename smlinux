@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0817-2343
+# 2020-0818-0000
 
 domake(){
 	#Here We go & music to build to
@@ -442,10 +442,10 @@ dosgi(){
 			sed -i 's/vsync true/vsync false/g' ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64config.txt
 		fi
 	fi
-	if [ "$REPO" = "render96ex" ]; then 
+	if [ "$REPO" = "render96ex" ] && [ ! -f "$REPO"/enhancements/RENDER96_V1.4.2_Luigi.7z ] ; then 
 		wget https://cdn.discordapp.com/attachments/730551213376143431/745046907017232384/RENDER96_V1.4.2_Luigi.7z
 		SGIFILE=RENDER96_V1.4.2_Luigi.7z
-	else
+	elif [ ! -f "$REPO"/enhancements/Old_School_HD_SGI_Base_Models_V1.3_Refresh_11.7z ]; then
 		wget https://cdn.discordapp.com/attachments/727722992137666573/743787700892729364/Old_School_HD_SGI_Base_Models_V1.3_Refresh_11.7z
 		SGIFILE=Old_School_HD_SGI_Base_Models_V1.3_Refresh_11.7z
 	fi
@@ -825,23 +825,27 @@ if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ] || [ "$1" = "
 		cd ~/"$REPO"
 		if [ -f ~/"$REPO"/enhancements/3d_coin_v2_nightly.patch ]; then
 			git apply -R enhancements/3d_coin_v2_nightly.patch
-			if [ -f ~/"$REPO"/enhancements/60fps_ex.patch ]; then
-				git apply -R enhancements/60fps_ex.patch
-			elif [ -f ~/"$REPO"/enhancements/60fps.patch ]; then
-				git apply -R enhancements/60fps.patch
-			fi
+		fi
+		if [ -f ~/"$REPO"/enhancements/60fps ]; then
+			git apply -R enhancements/60fps*.patch
+		fi
+		if [ -f ~/"$REPO"/enhancements/CHEATER*.patch ]; then
+			git apply -R enhancements/CHEATER*.patch
 		fi
 		git merge
 		if [ "$?" = "1" ]; then
 			echo WARNING: Unable to merge source updates from github.
-		elif [ -f ~/"$REPO"/enhancements/3d_coin_v2_nightly.patch ]; then
-			git apply enhancements/3d_coin_v2_nightly.patch
-			if [ -f ~/"$REPO"/enhancements/60fps_ex.patch ] && [ `arch` = "x86_64" ]; then
-				git apply enhancements/60fps_ex.patch
-			elif [ -f ~/"$REPO"/enhancements/60fps.patch ] && [ `arch` = "x86_64" ]; then
-				git apply enhancements/60fps.patch
-			fi
 		fi
+		if [ -f ~/"$REPO"/enhancements/3d_coin_v2_nightly.patch ]; then
+			git apply enhancements/3d_coin_v2_nightly.patch
+		fi
+		if [ -f ~/"$REPO"/enhancements/60fps ]; then
+			git apply enhancements/60fps*.patch
+		fi
+		if [ -f ~/"$REPO"/enhancements/CHEATER*.patch ]; then
+			git apply enhancements/CHEATER*.patch
+		fi
+
 	fi
 	if [ "$REPO" = "sm64-port-android-base/app/jni/src" ]; then
 		git submodule init
