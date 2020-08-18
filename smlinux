@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0818-0038
+# 2020-0818-1105
 
 domake(){
 	#Here We go & music to build to
@@ -882,14 +882,14 @@ if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ] || [ "$1" = "
 		printf "\nAdding SGI Models...\n\n"
 		dosgi
 	fi
-	if (([ "$REPO" = "sm64ex" ] && [ "$BRANCH" = "nightly" ] ) || [ "$BRANCH" = "sm64ex_nightly" ] || [ "$REPO" = "render96ex" ] ) && [ ! -f ~/"$REPO"/enhancements/CHEATERv4.1.zip ]; then
+	if (([ "$REPO" = "sm64ex" ] && [ "$BRANCH" = "nightly" ] ) || [ "$BRANCH" = "sm64ex_nightly" ] || [ "$REPO" = "render96ex" ] ) && [ ! -f ~/"$REPO"/enhancements/CHEATERv4.2.zip ]; then
 		cd ~/"$REPO"/enhancements
 		if [ -f ~/"$REPO"/enhancements/CHEATER*.patch ]; then
 			git apply -R CHEATER*.patch
 			rm CHEATER*
 		fi
-		wget https://cdn.discordapp.com/attachments/716459185230970880/745087654370082886/CHEATERv4.1.zip
-		unzip -j CHEATER* CHEATERv4.1/CHEATERv4.patch -d ./
+		wget https://cdn.discordapp.com/attachments/716459185230970880/745315245500923945/CHEATERv4.2.zip
+		unzip -j CHEATER* CHEATERv4.2/CHEATERv4.patch -d ./
 		git apply CHEATERv4.patch
 	fi
 	if [ "$InstallHD" = 1 ] && [ "TARGET_WEB" = 1 ] && [ -d ~/"$REPO"/build/"$VERSION"_pc ]; then
