@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0822-1350
+# 2020-0822-1658
 
 domake(){
 	#Here We go & music to build to
@@ -418,7 +418,7 @@ dosgi(){
 	if [ "$REPO" = "render96ex" ] && [ -f "$BASEPATH"/"$REPO"/enhancements/RENDER96_V1.4.2_Luigi.7z ] ; then 
 		echo Render96 V1.4.2 Already Installed...
 		return
-	elif [ ! "$REPO" = "render96ex" ] && [ -f "$BASEPATH"/"$REPO"/enhancements/Old_School_HD_SGI_Base_Models_V1.3_Refresh_11.7z ] ; then
+	elif [ ! "$REPO" = "render96ex" ] && ( [ -f "$BASEPATH"/"$REPO"/enhancements/Old_School_HD_SGI_Base_Models_V1.3_Refresh_11.7z ] || [ -f "$BASEPATH"/"$REPO"/enhancements/RENDER96_V1.3.7z ]); then
 		echo Render96 V1.3 Already Installed...
 		return 
 	fi
@@ -459,8 +459,8 @@ dosgi(){
 		wget https://cdn.discordapp.com/attachments/730551213376143431/745382037560492132/RENDER96_V1.4.2_Luigi_Fixed_Sound.zip
 		SGIFILE=RENDER96_V1.4.2_Luigi_Fixed_Sound.zip
 	else
-		wget https://cdn.discordapp.com/attachments/727722992137666573/743787700892729364/Old_School_HD_SGI_Base_Models_V1.3_Refresh_11.7z
-		SGIFILE=Old_School_HD_SGI_Base_Models_V1.3_Refresh_11.7z
+		wget https://cdn.discordapp.com/attachments/727722992137666573/745038574918828112/RENDER96_V1.3.7z
+		SGIFILE=RENDER96_V1.3.7z
 	fi
 	if  [ -f "$BASEPATH"/"$REPO"/enhancements/CHEATER*.patch ]; then
 		git apply -R CHEATER*.patch
