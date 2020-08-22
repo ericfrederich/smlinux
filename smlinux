@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0820-2320
+# 2020-0822-1350
 
 domake(){
 	#Here We go & music to build to
@@ -818,8 +818,8 @@ else
 	exit
 fi
 if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ] || [ "$1" = "up" ]; then
-	echo
 	if [ ! -d "$BASEPATH"/"$REPO" ]; then
+		echo
 		echo ERROR: No "$BASEPATH"/"$REPO" folder to update!
 		echo Specify smlinux build for a fresh build.
 		exit
@@ -887,15 +887,16 @@ if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ] || [ "$1" = "
 		printf "\nAdding SGI Models...\n\n"
 		dosgi
 	fi
-	if (([ "$REPO" = "sm64ex" ] && [ "$BRANCH" = "nightly" ] ) || [ "$BRANCH" = "sm64ex_nightly" ] || [ "$REPO" = "render96ex" ] ) && [ ! -f "$BASEPATH"/"$REPO"/enhancements/CHEATERv4.2.zip ]; then
+	if (([ "$REPO" = "sm64ex" ] && [ "$BRANCH" = "nightly" ] ) || [ "$BRANCH" = "sm64ex_nightly" ] || [ "$REPO" = "render96ex" ] ) && [ ! -f "$BASEPATH"/"$REPO"/enhancements/CHEATER.patch ]; then
 		cd "$BASEPATH"/"$REPO"/enhancements
 		if [ -f "$BASEPATH"/"$REPO"/enhancements/CHEATER*.patch ]; then
 			git apply -R CHEATER*.patch
 			rm CHEATER*
 		fi
-		wget https://cdn.discordapp.com/attachments/716459185230970880/745315245500923945/CHEATERv4.2.zip
-		unzip -j CHEATER* CHEATERv4.2/CHEATERv4.patch -d ./
-		git apply CHEATERv4.patch
+		wget https://cdn.discordapp.com/attachments/716459185230970880/746739805471113306/CHEATER.zip
+		unzip CHEATER*
+		rm CHEATER.zip
+		git apply CHEATER.patch
 	fi
 	if [ "TARGET_WEB" = 1 ] && [ -f "$BASEPATH"/"$REPO"/enhancements/60fps ]; then
 		git apply -R enhancements/60fps*.patch
@@ -1044,9 +1045,10 @@ else
 fi
 if  [ "$REPO" = "sm64ex" ] || [ "$BRANCH" = "sm64ex_nightly" ] || [ "$BRANCH" = "sm64ex" ] || [ "$REPO" = render96ex ]; then 
 	cd "$BASEPATH"/"$REPO"/enhancements
-	wget https://cdn.discordapp.com/attachments/716459185230970880/745315245500923945/CHEATERv4.2.zip
-	unzip -j CHEATER* CHEATERv4.2/CHEATERv4.patch -d ./
-	git apply CHEATERv4.patch
+	wget https://cdn.discordapp.com/attachments/716459185230970880/746739805471113306/CHEATER.zip
+	unzip CHEATER
+	rm CHEATER.zip
+	git apply CHEATER.patch
 fi
 
 echo
