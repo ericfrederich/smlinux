@@ -185,3 +185,7 @@ This also does not restore or remove any prior sm64 folders backed up if you ran
 delete those folders manually from any file manager.
 
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; [Click to View](https://raw.githubusercontent.com/enigma9o7/smlinux/master/smlinux) &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; [Right Click - Save Link As to Download](https://raw.githubusercontent.com/enigma9o7/smlinux/master/smlinux)
+
+## **How do I install to a folder outside home?**
+
+Set BASEPATH=folder to whatever path you like.
