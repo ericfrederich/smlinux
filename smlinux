@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0822-1721
+# 2020-0826-0957
 
 domake(){
 	#Here We go & music to build to
@@ -416,10 +416,10 @@ dosgi(){
 		fi
 	fi
 	if [ "$REPO" = "render96ex" ] && [ -f "$BASEPATH"/"$REPO"/enhancements/RENDER96_V1.4.2_Luigi.7z ] ; then 
-		echo Render96 V1.4.2 Already Installed...
+		echo Render96 V1.4.2 Models Already Installed...
 		return
 	elif [ ! "$REPO" = "render96ex" ] && ( [ -f "$BASEPATH"/"$REPO"/enhancements/Old_School_HD_SGI_Base_Models_V1.3_Refresh_11.7z ] || [ -f "$BASEPATH"/"$REPO"/enhancements/RENDER96_V1.3.7z ]); then
-		echo Render96 V1.3 Already Installed...
+		echo Render96 Models V1.3 Already Installed...
 		return 
 	fi
 	
@@ -793,7 +793,7 @@ else
 	echo "| Installation & First Build: chmod +x smlinux                                |"
 	echo "|                             ./smlinux <romfile> <options>                   |"
 	echo "|  for example:                                                               |"
-	echo "|   ./smlinux "$BASEPATH"/roms/n64/sm64.z64  or  ./smlinux \"Super Mario 64 (U) [!].z64\" |"
+	echo "|   ./smlinux ~/roms/n64/sm64.z64  or  ./smlinux \"Super Mario 64 (U) [!].z64\" |"
 	echo "|                                                                             |"
 	echo "| Normal Usage: smlinux <command> <options>                                   |"
 	echo "|                                                                             |"
@@ -1076,10 +1076,10 @@ elif [ -f "$BASEPATH"/"$REPO"/../../build/outputs/apk/debug/app-debug.apk ]; the
 	mv "$BASEPATH"/"$REPO"/../../build/outputs/apk/debug/app-debug.apk "$BASEPATH"/"$REPO"/../../build/outputs/apk/debug/sm64."$VERSION".f3dex2e.apk
 fi
 echo
-echo [7] Echo Creating Desktop Shortcut and Menu Entry...
 if [ "$TARGET_WEB" = 1 ] || [ "$ANDROID" = 1 ]; then
-	Skipping for non pc version...
+	echo [7] Skipping menu entry for non pc version...
 else
+	echo [7] Echo Creating Desktop Shortcut and Menu Entry...
 	makedesktop
 fi
 
