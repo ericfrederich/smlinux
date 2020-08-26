@@ -184,7 +184,7 @@ This does not remove any packages installed as build tools or dependencies. Remo
 (Development libraries can always safely be removed if you don't plan to build again, and binaries will still run.)
 This also does not restore or remove any prior sm64 folders backed up if you ran full install more that once (versus update);
 delete those folders manually from any file manager.
-## **How do I tell smlinux to download sm64 repositories to a folder othen than home?**
+## **How do I tell smlinux to download sm64 repositories to a folder other than home?**
 
 	smlinux config
 Set BASEPATH= to any existing path that you have permission to write to. 
