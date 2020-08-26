@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0826-1026
+# 2020-0826-1145
 
 domake(){
 	#Here We go & music to build to
@@ -99,12 +99,7 @@ androidsdk(){
 	}
 
 checkphone(){
-	adb devices | while read line
-	do
-		if [ ! "$line" = "" ] && [ `echo $line | awk '{print $2}'` = "device" ]; then
-        		GOTPHONE=1
-		fi
-	done
+	adb get-state 1>/dev/null 2>&1 && GOTPHONE=1
 	}
 
 gcccheck(){
