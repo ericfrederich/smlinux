@@ -174,7 +174,7 @@ Void:
 ## **How do I create my rom file?**
 
 Backup your cartridge to z64 format with a cartridge dumper such as a Retrode2, or buy for Wii U Virtual Console and extract image using homebrew tools.  
- &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; [Dragonbox Store](https://www.dragonbox.de/en/accessories/cartridge-dumper/retrode2-with-all-plugins) &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; [Stoneage Gamer](https://stoneagegamer.com/retrode-2-cart-reader-rom-dumper-for-super-nintendo-genesis-more.html) &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+[Dragonbox Store](https://www.dragonbox.de/en/accessories/cartridge-dumper/retrode2-with-all-plugins) &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; [Stoneage Gamer](https://stoneagegamer.com/retrode-2-cart-reader-rom-dumper-for-super-nintendo-genesis-more.html) &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
 [Nintendo Wii U Store](https://www.nintendo.com/games/detail/super-mario-64-wii-u) &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; [Virtual Console ROM Claim Software]( https://github.com/JanErikGunnar/vcromclaim)
 ## **How do I remove everything the script created during install?**
  
@@ -186,7 +186,7 @@ This also does not restore or remove any prior sm64 folders backed up if you ran
 delete those folders manually from any file manager.
 ## **How do I tell smlinux to download sm64 repositories to a folder othen than home?**
 
-[code]smlinux config[/code]
+	smlinux config
 Set BASEPATH= to any existing path that you have permission to write to. 
 
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; [Click to View](https://raw.githubusercontent.com/enigma9o7/smlinux/master/smlinux) &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; [Right Click - Save Link As to Download](https://raw.githubusercontent.com/enigma9o7/smlinux/master/smlinux)
