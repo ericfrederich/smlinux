@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0826-1145
+# 2020-0826-1558
 
 domake(){
 	#Here We go & music to build to
@@ -30,7 +30,7 @@ domake(){
 		else
 			echo "If you want the app installed to your Android device,"
 			echo "plug it in now via USB and grant it debugging permission."
-			zenity --info --text='\nIf you want the app installed to your Android device,\nplug it in now via USB and grant it debugging permission.\n\nExisting copies must also be removed from device.' --title="Preparing for Android Installation...." --width=440 &disown
+			zenity --info --text='\nIf you want the app installed to your Android device, attach it via USB.\n\nGrant it debugging permission before this window disappears.\n\nExisting copies must also be removed from device.' --title="Preparing for Android Installation...." --width=480 &disown
 			echo
 		fi
 	fi
@@ -42,27 +42,39 @@ domake(){
 	fi
 	cd "$BASEPATH"/"$REPO"
 	time make BETTERCAMERA=$BETTERCAMERA NODRAWINGDISTANCE=$NODRAWINGDISTANCE TEXTURE_FIX=$TEXTURE_FIX EXTERNAL_DATA=$EXTERNAL_DATA DISCORDRPC=$DISCORDRPC VERSION=$VERSION RENDER_API=$RENDER_API TARGET_WEB=$TARGET_WEB TEXTSAVES=$TEXTSAVES "$JOBS" LEGACY_RES=$LEGACY_RES > ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/buildlog.txt
-	if [ "$REPO" = "sm64nx" ] || ( [ "$TARGET_WEB" = 1 ] && [ "$InstallHD" = 1 ] ); then
-		rm Makefile
-		git checkout Makefile
-	fi
 	if [ "$REPO" = "sm64-port-android-base/app/jni/src" ]; then
+		if [ "ARMONLY" = 1 ]; then
+			sed -i "s/v8a', 'x86', 'x86_64'/v8a'/g" $HOME/"$REPO"/../../build.gradle
+		fi
 		if [ "$BRANCH" = "sm64ex" ] || [ "$BRANCH" = "sm64ex_nightly" ]; then
 			make BETTERCAMERA=$BETTERCAMERA NODRAWINGDISTANCE=$NODRAWINGDISTANCE TEXTURE_FIX=$TEXTURE_FIX EXTERNAL_DATA=$EXTERNAL_DATA DISCORDRPC=$DISCORDRPC VERSION=$VERSION RENDER_API=$RENDER_API TARGET_WEB=$TARGET_WEB TEXTSAVES=$TEXTSAVES "$JOBS" LEGACY_RES=$LEGACY_RES > ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/buildlog.txt
+			if [ ! -f "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/sm64."$VERSION".f3dex2* ]; then
+				return
+			else
+				echo
+				echo Native Build Succesful.
+			fi
+			sed -i '/include $(BUILD_SHARED_LIBRARY)/i TEXTURE_FIX ?= 0\nNODRAWINGDISTANCE ?= 0\nBETTERCAMERA ?= 0\nifeq ($(TEXTURE_FIX),1)\n  LOCAL_CFLAGS += -DTEXTURE_FIX\nendif\nifeq ($(NODRAWINGDISTANCE),1)\n  LOCAL_CFLAGS += -DNODRAWINGDISTANCE\nendif\nifeq ($(BETTERCAMERA),1)\n  LOCAL_CFLAGS += -DBETTERCAMERA\nendif\n' "$BASEPATH"/"$REPO"/Android.mk
 		fi
 		cd "$BASEPATH"/sm64-port-android-base
 		checkphone
+		echo Android Package Kit build starting...
+		killall -q zenity
 		if [ "$GOTPHONE" = 1 ]; then
+			echo Do not disconnect phone until complete.
 			echo
-			echo Do not disconnect phone until complete...
-			TOUCH_CONTROLS=$TOUCH_CONTROLS BETTERCAMERA=$BETTERCAMERA NODRAWINGDISTANCE=$NODRAWINGDISTANCE TEXTURE_FIX=$TEXTURE_FIX EXTERNAL_DATA=$EXTERNAL_DATA VERSION=$VERSION TEXTSAVES=$TEXTSAVES ./gradlew installDebug
+			TOUCH_CONTROLS=$TOUCH_CONTROLS BETTERCAMERA=$BETTERCAMERA NODRAWINGDISTANCE=$NODRAWINGDISTANCE TEXTURE_FIX=$TEXTURE_FIX EXTERNAL_DATA=$EXTERNAL_DATA VERSION=$VERSION TEXTSAVES=$TEXTSAVES ./gradlew installDebug -q
 		else
-			echo Phone not deteced, building apk without installation...
-			killall -q zenity
-			TOUCH_CONTROLS=$TOUCH_CONTROLS BETTERCAMERA=$BETTERCAMERA NODRAWINGDISTANCE=$NODRAWINGDISTANCE TEXTURE_FIX=$TEXTURE_FIX EXTERNAL_DATA=$EXTERNAL_DATA VERSION=$VERSION TEXTSAVES=$TEXTSAVES ./gradlew assembleDebug
+			echo WARNING: Phone not deteced, building without installing.
+			echo
+			TOUCH_CONTROLS=$TOUCH_CONTROLS BETTERCAMERA=$BETTERCAMERA NODRAWINGDISTANCE=$NODRAWINGDISTANCE TEXTURE_FIX=$TEXTURE_FIX EXTERNAL_DATA=$EXTERNAL_DATA VERSION=$VERSION TEXTSAVES=$TEXTSAVES ./gradlew assembleDebug -q
 		fi
 		rm app/jni/src/Android.mk
 		git checkout app/jni/src/Android.mk
+		if [ "ARMONLY" = 1 ]; then
+			rm app/build.gradle
+			git checkout app/build.gradle
+		fi
 		cd "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/res
 		if [ "$EXTERNAL_DATA" = 1 ] && [ "$InstallHD" = 1 ]; then
 			echo Preparing external data for transfer...
@@ -70,13 +82,31 @@ domake(){
 			unzip hq_sounds_v5.1
 			unzip -n base
 			zip -r -0 hdbase gfx sound
-			ln -s hdbase.zip "$BASEPATH"/"$REPO"/../../build/outputs/apk/debug/hdbase.zip
+			ln -s "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/res/hdbase.zip "$BASEPATH"/"$REPO"/../../build/outputs/apk/debug/hdbase.zip
 			rm -rf sound gfx
 		elif [ "$EXTERNAL_DATA" = 1 ]; then
-			ln -s base.zip "$BASEPATH"/"$REPO"/../../build/outputs/apk/debug/base.zip
+			ln -s "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/res/base.zip "$BASEPATH"/"$REPO"/../../build/outputs/apk/debug/base.zip
+		fi
+		if [ "$GOTPHONE" = 1 ] && [ "$EXTERNAL_DATA" = 1 ]; then
+			echo
+			echo Pushing external assets to phone...
+			if [[ ! `adb shell ls /sdcard/Android/data/com.vdavid003.sm64port 2> /dev/null` ]]; then
+				adb shell mkdir /sdcard/Android/data/com.vdavid003.sm64port
+				adb shell mkdir /sdcard/Android/data/com.vdavid003.sm64port/files
+			fi
+			if [ -f "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/res/hdbase.zip ]; then
+				adb push "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/res/hdbase.zip /sdcard/Android/data/com.vdavid003.sm64port/files/
+			elif [ "$EXTERNAL_DATA" = 1] && [ -f "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/res/base.zip ]; then
+				adb push "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/res/base.zip /sdcard/Android/data/com.vdavid003.sm64port/files/
+			fi
 		fi
 	fi
-	if [ -f /usr/bin/mplayer ]  && [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/File_Select_64_slowed_down.mp3 ]; then
+	if [ "$REPO" = "sm64nx" ] || ( [ "$TARGET_WEB" = 1 ] && [ "$InstallHD" = 1 ] ); then
+		cd $HOME/"$REPO"
+		rm Makefile
+		git checkout Makefile
+	fi
+	if [ -f /usr/bin/mplayer ] && [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/File_Select_64_slowed_down.mp3 ]; then
 		killall -q -y1h mplayer
 	fi
 	}
@@ -170,6 +200,7 @@ TEXTSAVES=0
 LEGACY_RES=1
 # [sm64-port-android-base]
 TOUCH_CONTROLS=1
+ARMONLY=1
 # Script Settings
 # Linux must be set to command appropriate to your distribution. See FAQ.
 Linux="sudo apt install -y build-essential git python3 libaudiofile-dev libglew-dev libsdl2-dev binutils libusb-1.0-0-dev libzstd-dev python3-pip p7zip-full mplayer"
@@ -185,6 +216,7 @@ loadconfig(){
 	TOUCH_CONTROLS=1
 	LEGACY_RES=1
 	BASEPATH=$HOME
+	ARMONLY=1
 	source ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinuxcfg.txt
 	if [ -z "$BRANCH" ]; then
 		BRANCH="$Branch"
@@ -197,11 +229,11 @@ loadconfig(){
 		REPO="sm64-port-android-base/app/jni/src"
 		ANDROID=1
 		if [ "$BRANCH" = "nightly" ] || [ "$BRANCH" = "sm64ex-nightly" ] || [ "$BRANCH" = "sm64exnightly" ]; then
-			Branch=sm64ex_nightly
+			BRANCH=sm64ex_nightly
 		fi
 	elif [ "$REPO" = "sm64nx" ]; then
 		EXTERNAL_DATA=0
-		Branch=master
+		BRANCH=master
 	elif [ "$REPO" = "Render96ex" ] || [ "$REPO" = "render96" ] || [ "$REPO" = "Render96" ]; then
 		REPO=render96ex
 	fi
@@ -607,6 +639,11 @@ rungame(){
 	elif [ "$ANDROID"  = 1 ] ; then
 		if [ "$GOTPHONE" = 1 ]; then
 			adb shell am start -n com.vdavid003.sm64port/.sm64portActivity
+			if [ "$EXTERNAL_DATA" = 1 ]; then
+				echo 
+				echo When SM64 is launched screen will appear blank while external assets are loaded.
+				echo Just wait...
+			fi
 		fi
 		xdg-open "$BASEPATH"/"$REPO"/../../build/outputs/apk/debug &disown
 	else 
@@ -721,17 +758,25 @@ if [ "$1" = "--purge" ] || [ "$1" = "purge" ]; then
 	rm -rf "$BASEPATH"/sm64ex
 	rm -rf "$BASEPATH"/sm64-port
 	rm -rf "$BASEPATH"/sm64nx
+	rm -rf "$BASEPATH"/render96ex
+	rm -rf "$BASEPATH"/sm64-port-android.base
 	rm -rf "$BASEPATH"/sm64pc.old
 	rm -rf "$BASEPATH"/sm64ex.old
 	rm -rf "$BASEPATH"/sm64-port.old
 	rm -rf "$BASEPATH"/sm64nx.old
+	rm -rf "$BASEPATH"/render96ex.old
+	rm -rf "$BASEPATH"/sm64-port-android.base.old
 	rm -rf ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc
 	rm -rf ${XDG_DATA_HOME:-$HOME/.local/share}/sm64ex	
 	rm -rf ${XDG_DATA_HOME:-$HOME/.local/share}/sm64-port
 	rm -rf ${XDG_DATA_HOME:-$HOME/.local/share}/sm64nx
+	rm -rf ${XDG_DATA_HOME:-$HOME/.local/share}/render96ex
 	rm ${XDG_DATA_HOME:-$HOME/.local/share}/icons/sm64*
+	rm ${XDG_DATA_HOME:-$HOME/.local/share}/icons/render96ex*
 	rm ${XDG_DATA_HOME:-$HOME/.local/share}/applications/sm64*
-	rm ${XDG_DESKTOP_DIR:-$HOME/Desktop}/sm64*
+	rm ${XDG_DATA_HOME:-$HOME/.local/share}/applications/render96ex*
+	rm ${XDG_DESKTOP_DIR:-$HOME/Desktop}/sm64*.desktop
+	rm ${XDG_DESKTOP_DIR:-$HOME/Desktop}/render96ex*.desktop
 	rm "$BASEPATH"/Downloads/smlinux.*
 	echo Note this did not remove any packages installed as build tools or dependencies.
 	echo Remove those with your package manager.  Devel libraries can always safely be removed.
@@ -952,7 +997,7 @@ if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ] || [ "$1" = "
 		echo [7] Update Complete.  Testing Application...
 	elif [ "$ANDROID" = 1 ] && [ ! -f "$BASEPATH"/"$REPO"/../../build/outputs/apk/debug/app-debug.apk ]; then
 		echo
-		echo ERROR: Build Failure.  APK file not found.
+		echo "ERROR: Build Failure.  Android Package Kit (apk) not found."
 		echo "smlinux exiting incomplete.  Contact #help-desk for support."
 		xdg-open https://discord.gg/Ub6YHRm &disown
 		exit
@@ -1043,13 +1088,18 @@ else
 fi
 if  [ "$REPO" = "sm64ex" ] || [ "$BRANCH" = "sm64ex_nightly" ] || [ "$BRANCH" = "sm64ex" ] || [ "$REPO" = render96ex ]; then 
 	cd "$BASEPATH"/"$REPO"/enhancements
+	cp ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/menu-arrows.patch .
 	wget https://cdn.discordapp.com/attachments/716459185230970880/746739805471113306/CHEATER.zip
 	unzip CHEATER
 	rm CHEATER.zip
 	cd ..
 	git apply enhancements/CHEATER.patch
+	git apply enhancements/menu-arrows.patch
 fi
-
+if [ "$BRANCH" = "sm64ex_nightly" ] && [ ! "$TOUCH_CONTROLS" = 1 ]; then
+	cp ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/pro1.patch enhancements
+	git apply enhancements/pro1.patch
+fi
 echo
 echo [6] Compiling...
 echo
@@ -1080,6 +1130,7 @@ fi
 
 echo
 echo [8] Build Succesful!  Testing Application Launch...
+echo
 rungame
 if [ -f "$BASEPATH"/.smlinuxNopath ]; then
 	rm "$BASEPATH"/.smlinuxNopath
