@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0826-1558
+# 2020-0826-1618
 
 domake(){
 	#Here We go & music to build to
@@ -69,13 +69,13 @@ domake(){
 			echo
 			TOUCH_CONTROLS=$TOUCH_CONTROLS BETTERCAMERA=$BETTERCAMERA NODRAWINGDISTANCE=$NODRAWINGDISTANCE TEXTURE_FIX=$TEXTURE_FIX EXTERNAL_DATA=$EXTERNAL_DATA VERSION=$VERSION TEXTSAVES=$TEXTSAVES ./gradlew assembleDebug -q
 		fi
-		rm app/jni/src/Android.mk
-		git checkout app/jni/src/Android.mk
 		if [ "ARMONLY" = 1 ]; then
 			rm app/build.gradle
 			git checkout app/build.gradle
 		fi
-		cd "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/res
+		cd $BASEPATH/"$REPO"
+		rm Android.mk
+		git checkout app/jni/src/Android.mk
 		if [ "$EXTERNAL_DATA" = 1 ] && [ "$InstallHD" = 1 ]; then
 			echo Preparing external data for transfer...
 			cd "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/res
@@ -102,7 +102,7 @@ domake(){
 		fi
 	fi
 	if [ "$REPO" = "sm64nx" ] || ( [ "$TARGET_WEB" = 1 ] && [ "$InstallHD" = 1 ] ); then
-		cd $HOME/"$REPO"
+		cd $BASEPATH/"$REPO"
 		rm Makefile
 		git checkout Makefile
 	fi
