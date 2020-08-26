@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0826-0957
+# 2020-0826-1026
 
 domake(){
 	#Here We go & music to build to
@@ -153,34 +153,34 @@ vettrom(){
 	}
 
 makeconfig(){
-echo '# [sm64pc/sm64ex] These settings only apply to sm64pc/sm64ex fork.
+echo '# VERSION supports us jp eu (must correspond to rom version)
+VERSION=us
+# REPO supports sm64-port sm64ex sm64nx render96ex sm64-port-android-base
+REPO=sm64ex
+BRANCH=nightly
+TARGET_WEB=0
+JOBS=-j
+InstallHD=1
+CONFIG=0
+# [sm64pc/sm64ex/render96ex] 
 BETTERCAMERA=1
 NODRAWINGDISTANCE=1
 TEXTURE_FIX=1
 EXTERNAL_DATA=1
 DISCORDRPC=1
-#RENDER_API supports GL (2.1+) or GL_LEGACY (1.2-2.0)
+# RENDER_API supports GL (2.1+) or GL_LEGACY (1.2+)
 RENDER_API=GL
 TEXTSAVES=0
-# [Script] These settings tell script what to do.
-BASEPATH=$HOME
-#VERSION supports us jp eu (must correspond to rom version)
-VERSION=us
-#REPO supports sm64-port sm64ex sm64nx render96ex sm64-port-android-base
-REPO=sm64ex
-BRANCH=nightly
-AutoUpdate=1
-InstallHD=1
-UpdateHD=0
-TARGET_WEB=0
-JOBS=-j
-Linux="sudo apt install -y build-essential git python3 libaudiofile-dev libglew-dev libsdl2-dev binutils libusb-1.0-0-dev libzstd-dev python3-pip p7zip-full mplayer"
-CONFIG=0
-# [sm64-port-android-base]
-TOUCH_CONTROLS=1
 # [render96ex]
 LEGACY_RES=1
-'> ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinuxcfg.txt
+# [sm64-port-android-base]
+TOUCH_CONTROLS=1
+# Script Settings
+# Linux must be set to command appropriate to your distribution. See FAQ.
+Linux="sudo apt install -y build-essential git python3 libaudiofile-dev libglew-dev libsdl2-dev binutils libusb-1.0-0-dev libzstd-dev python3-pip p7zip-full mplayer"
+BASEPATH=$HOME
+AutoUpdate=1
+UpdateHD=0'> ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinuxcfg.txt
 	}
 
 loadconfig(){
@@ -260,7 +260,7 @@ loadconfig(){
 	}
 
 doconfig(){
-	if(whiptail --title "Build Options" --yesno "$(cat ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinuxcfg.txt)" 28 75 --yes-button "Edit Options" --no-button "Proceed" --defaultno); then
+	if(whiptail --title "Build Options" --yesno "$(cat ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinuxcfg.txt)" 28 77 --yes-button "Edit Options" --no-button "Proceed" --defaultno); then
 		whiptail --title "READ THIS NOW - IT WILL NOT REAPPEAR AUTOMATICALLY" --msgbox "The config file will open in a text editor.\n\nWhen you exit your editor, installation will continue.\n\nFor most people, default options which include community enhancements are reccommended.\n\nIf you mess up the config file, delete\n${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinuxcfg.txt \nand it will be recreated." 16 60
 	editconfig	
 	fi
