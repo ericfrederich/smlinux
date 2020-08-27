@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0826-1618
+# 2020-0826-1722
 
 domake(){
 	#Here We go & music to build to
@@ -79,7 +79,11 @@ domake(){
 		if [ "$EXTERNAL_DATA" = 1 ] && [ "$InstallHD" = 1 ]; then
 			echo Preparing external data for transfer...
 			cd "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/res
-			unzip hq_sounds_v5.1
+			if [ -f "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET".old/res/hdbase.zip ]; then
+				mv "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET".old/res/hdbase.zip "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/res
+			else
+				unzip hq_sounds_v5.1
+			fi
 			unzip -n base
 			zip -r -0 hdbase gfx sound
 			ln -s "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/res/hdbase.zip "$BASEPATH"/"$REPO"/../../build/outputs/apk/debug/hdbase.zip
@@ -87,6 +91,7 @@ domake(){
 		elif [ "$EXTERNAL_DATA" = 1 ]; then
 			ln -s "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/res/base.zip "$BASEPATH"/"$REPO"/../../build/outputs/apk/debug/base.zip
 		fi
+		checkphone
 		if [ "$GOTPHONE" = 1 ] && [ "$EXTERNAL_DATA" = 1 ]; then
 			echo
 			echo Pushing external assets to phone...
@@ -407,17 +412,15 @@ dohd(){
 			wget https://cdn.discordapp.com/attachments/716459185230970880/718990046442684456/hd_bowser.rar	
 			if [ "$REPO" = "sm64pc" ] || ([ "$REPO" = "sm64ex" ] && [ "$BRANCH" = "master" ]); then
 				wget https://cdn.discordapp.com/attachments/716459185230970880/718674249631662120/3d_coin_v2.patch
-			else
+			elif [ "$TOUCH_CONTROLS" = 1 ]; then
 				wget https://cdn.discordapp.com/attachments/721806706547490868/725041183700680807/3d_coin_v2_nightly.patch
 			fi
 			cd ..	
 			cp -Rn actors actors.bak
 			unzip -o enhancements/Old_School_HD_Mario_Model 
 			unrar x -o+ enhancements/hd_bowser
- 			if [ "$REPO" = "sm64pc" ]; then
-				git apply enhancements/3d_coin_v2.patch --ignore-whitespace
-			else 
-				git apply enhancements/3d_coin_v2_nightly.patch --ignore-whitespace
+			if [ -f "$BASEPATH"/"$REPO"/enhancements/3d_coin_v2*.patch ]; then
+ 				git apply enhancements/3d_coin_v2*.patch
 			fi
 		fi
 		if [ `arch` = "x86_64" ] && [ ! "$TARGET_WEB" = 1 ] && [ ! "$SGI" = 1 ] && [ -f "$BASEPATH"/"$REPO"/enhancements/60fps*.patch ]; then
