@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0826-1722
+# 2020-0830-0905
 
 domake(){
 	#Here We go & music to build to
@@ -520,10 +520,10 @@ if [ ! -f "$BASEPATH"/.smlinuxUpdate ]; then
 		touch "$BASEPATH"/.smlinuxUpdate
 		mv ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinux "${MAPFILE[0]}"/
 		if [ ! -f "${MAPFILE[0]}"/smlinux ]; then
-			echo WARNING: Could not write to first path directory.  Creating "$BASEPATH"/bin.
+			echo WARNING: Could not write to first path directory.  Creating $HOME/bin.
 			touch "$BASEPATH"/.smlinuxNopath
-			mkdir "$BASEPATH"/bin
-			export PATH="$BASEPATH"/bin:$PATH
+			mkdir $HOME/bin
+			export PATH=$HOME/bin:$PATH
 			mapfile -t -d: <<<"$PATH"
 			mv -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinux "${MAPFILE[0]}"/
 			if [ ! -f "${MAPFILE[0]}"/smlinux ]; then
@@ -546,10 +546,10 @@ if [ ! -f "$BASEPATH"/.smlinuxUpdate ]; then
 				echo 'mapfile -t -d: <<<"$PATH"
 				mv -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinux "${MAPFILE[0]}"/
 				if [ ! -f "${MAPFILE[0]}"/smlinux ]; then
-					echo WARNING: Could not write to first path directory.  Creating "$BASEPATH"/bin.
+					echo WARNING: Could not write to first path directory.  Creating $HOME/bin.
 					touch "$BASEPATH"/.smlinuxNopath
-					mkdir "$BASEPATH"/bin
-					export PATH="$BASEPATH"/bin:$PATH
+					mkdir $HOME/bin
+					export PATH=$HOME/bin:$PATH
 					mapfile -t -d: <<<"$PATH"
 					mv -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinux "${MAPFILE[0]}"/
 					if [ ! -f "${MAPFILE[0]}"/smlinux ]; then
@@ -1137,8 +1137,8 @@ echo
 rungame
 if [ -f "$BASEPATH"/.smlinuxNopath ]; then
 	rm "$BASEPATH"/.smlinuxNopath
-	zenity --info --text='You did not have a home folder in your path so "$BASEPATH"/bin was created.\n\nReboot or type \n\n    PATH="$BASEPATH"/bin:$PATH\n\nbefore running smlinux again.' --title="Your installation is complete." --width=450	
-	printf '\nYou did not have a home folder in your path so "$BASEPATH"/bin was created.\n\nReboot or type \n\n      PATH="$BASEPATH"/bin:$PATH\n\nbefore running smlinux again.\n\n'
+	zenity --info --text='You did not have a home folder in your path so $HOME/bin was created.\n\nReboot or type \n\n    PATH=$HOME/bin:$PATH\n\nbefore running smlinux again.' --title="Your installation is complete." --width=450	
+	printf '\nYou did not have a home folder in your path so $HOME/bin was created.\n\nReboot or type \n\n      PATH=$HOME/bin:$PATH\n\nbefore running smlinux again.\n\n'
 else	
 	sleep 10
 fi
