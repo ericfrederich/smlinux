@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0830-0905
+# 2020-0830-1413
 
 domake(){
 	#Here We go & music to build to
@@ -938,7 +938,7 @@ if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ] || [ "$1" = "
 			rm enhancements/CHEATER*
 		fi
 		cd enhancements
-		wget https://cdn.discordapp.com/attachments/716459185230970880/746739805471113306/CHEATER.zip
+		wget https://cdn.discordapp.com/attachments/716459185230970880/748767846183600158/CHEATER.zip
 		unzip CHEATER*
 		rm CHEATER.zip
 		cd ..
@@ -1092,7 +1092,7 @@ fi
 if  [ "$REPO" = "sm64ex" ] || [ "$BRANCH" = "sm64ex_nightly" ] || [ "$BRANCH" = "sm64ex" ] || [ "$REPO" = render96ex ]; then 
 	cd "$BASEPATH"/"$REPO"/enhancements
 	cp ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/menu-arrows.patch .
-	wget https://cdn.discordapp.com/attachments/716459185230970880/746739805471113306/CHEATER.zip
+	wget https://cdn.discordapp.com/attachments/716459185230970880/748767846183600158/CHEATER.zip
 	unzip CHEATER
 	rm CHEATER.zip
 	cd ..
