@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0830-1533
+# 2020-0830-1608
 
 domake(){
 	#Here We go & music to build to
@@ -260,7 +260,7 @@ loadconfig(){
 			fi
 		fi
 	fi
-	if [ ! `arch` = "x86_64" ] || [ ! "$VERSION" = "us" ]; then
+	if [ ! `uname -m` = "x86_64" ] || [ ! "$VERSION" = "us" ]; then
 		DISCORDRPC=0
 	fi
 	if [ "$TARGET_WEB" = 1 ]; then 
@@ -429,7 +429,7 @@ dohd(){
  				git apply enhancements/3d_coin_v2*.patch
 			fi
 		fi
-		if [ `arch` = "x86_64" ] && [ ! "$TARGET_WEB" = 1 ] && [ ! "$SGI" = 1 ] && [ -f "$BASEPATH"/"$REPO"/enhancements/60fps*.patch ]; then
+		if [ `uname -m` = "x86_64" ] && [ ! "$TARGET_WEB" = 1 ] && [ ! "$SGI" = 1 ] && [ -f "$BASEPATH"/"$REPO"/enhancements/60fps*.patch ]; then
 			cd "$BASEPATH"/"$REPO"
 			if [ ! -f "$BASEPATH"/"$REPO"/enhancements/60fps ]; then
 				git apply enhancements/60fps*.patch
