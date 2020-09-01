@@ -1,7 +1,7 @@
 #!/bin/bash
 # This is a temporary launcher for sm64ex-coop until network configuration is added in-game, 
 # primary intended for use when sm64ex-coop was installed with smlinux.
-# 2020-0901-1255
+# 2020-0901-1301
 
 getip(){
 	IP=`zenity --entry --text="XXX.XXX.XXX.XXX XXXX" --title "Host Address" --width 211`
@@ -15,7 +15,7 @@ getip(){
 
 getport(){
 	PORT=`zenity --entry --text="Enter Port Number" --title "Host Port" --width 211`
-	if [ -z $IP ]; then 
+	if [ -z $PORT ]; then 
 		zenity --error --text "Nothing entered!  Try again with a 4-digit port number." --width 211
 		exit
 	else 
