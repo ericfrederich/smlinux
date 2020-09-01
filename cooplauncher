@@ -1,0 +1,53 @@
+#!/bin/bash
+# This is a temporary launcher for sm64ex-coop until network configuration is added in-game, 
+# primary intended for use when sm64ex-coop was installed with smlinux.
+# 2020-0901-1255
+
+getip(){
+	IP=`zenity --entry --text="XXX.XXX.XXX.XXX XXXX" --title "Host Address" --width 211`
+	if [ -z $IP ]; then 
+		zenity --error --text "Nothing entered!  Try again with a full ip address and port number." --width 211
+		exit
+	else 
+		echo $IP > ${XDG_DATA_HOME:-$HOME/.local/share}/sm64ex-coop/hostip.txt
+	fi 
+	}
+
+getport(){
+	PORT=`zenity --entry --text="Enter Port Number" --title "Host Port" --width 211`
+	if [ -z $IP ]; then 
+		zenity --error --text "Nothing entered!  Try again with a 4-digit port number." --width 211
+		exit
+	else 
+		echo $PORT > ${XDG_DATA_HOME:-$HOME/.local/share}/sm64ex-coop/hostport.txt
+	fi 
+	}
+
+exec 2> >(grep -v GtkDialog >&2) # Supress GTK Dialog Warnings
+
+if zenity --question --text="Player 1 (Mario) Host Server\n\nPlayer 2 (Luigi) Client" --title "Player Selection" --ok-label="Client" --cancel-label="Server" --width 211; then
+	if [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64ex-coop/hostip.txt ]; then
+		if zenity --question --text="Reconnect to\n`cat ${XDG_DATA_HOME:-$HOME/.local/share}/sm64ex-coop/hostip.txt`?" --title "Host Address" --width 211; then
+			IP=`cat ${XDG_DATA_HOME:-$HOME/.local/share}/sm64ex-coop/hostip.txt`
+		else 	
+			getip
+		fi
+	else	
+		getip	
+	fi
+	./sm64.us.f3dex2e --client $IP --cheats --savepath ${XDG_DATA_HOME:-$HOME/.local/share}/sm64ex-coop --skip-intro
+else
+	if [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64ex-coop/hostport.txt ]; then
+		if zenity --question --text="Serve on Port `cat ${XDG_DATA_HOME:-$HOME/.local/share}/sm64ex-coop/hostport.txt`?" --title "Host Port" --width 211; then
+			PORT=`cat ${XDG_DATA_HOME:-$HOME/.local/share}/sm64ex-coop/hostport.txt`
+		fi
+	fi
+	if [ -z $PORT ]; then
+		if zenity --question --text="Serve on Port 7777?" --title "Host Port" --width 211; then
+			PORT=7777
+		else
+			getport
+		fi
+	fi
+	./sm64.us.f3dex2e --server $PORT --cheats --savepath ${XDG_DATA_HOME:-$HOME/.local/share}/sm64ex-coop --skip-intro
+fi
