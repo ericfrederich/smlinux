@@ -65,7 +65,7 @@ If you want to build for **Android** then set repo=sm64-port-android-base
 
 ## **What branch should I use?**
 
-All repos offer master as primary.  sm6ex also offers nightly which is under constant development.  If nightly works for you, I'd reccommend it as it is the most updated, but if a recent change causes build failure or other problems, use the more stable master.  
+All repos offer master as primary.  sm6ex also offers nightly which is under constant development.  If nightly works for you, I'd reccommend it as it is the most updated, but if a recent change causes build failure or other problems, use the more stable master.  For sm64ex-coop, use BRANCH=coop.  For sm64-port-android-base, I reccommend BRANCH=sm64ex_nightly. 
 
 ## **When to use RENDER_API=GL_LEGACY?** 
 *only applies to sm64pc/sm64ex fork*
