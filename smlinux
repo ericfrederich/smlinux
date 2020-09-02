@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0902-1308
+# 2020-0902-1336
 
 domake(){
 	#Here We go & music to build to
@@ -82,7 +82,7 @@ domake(){
 				unzip hq_sounds_v5.1
 			fi
 			unzip -n base
-			zip -r -0 hdbase gfx sound
+			zip -r -0 -u hdbase gfx sound
 			ln -s "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/res/hdbase.zip "$BASEPATH"/"$REPO"/../../build/outputs/apk/debug/hdbase.zip
 			rm -rf sound gfx
 		elif [ "$EXTERNAL_DATA" = 1 ]; then
