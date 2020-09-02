@@ -38,7 +38,7 @@ You must provide your own legally backed up rom file in Z64 (Big Endian) format.
 
 If for some reason the make pauses or hangs, perhaps on single core cpu or system with low memory, then set JOBS=-j1. Without the 1, this switch makes make run multiple jobs at once which speeds up the build process on PCs with multiple cores and plenty of memory, but occasionally causes issues on under-powered systems (that can still run the game just fine).
 
-Note the script installs itself as 'smlinux' to the first directory in your path, usually something like ~/bin or ~/Applications/.bin. After first running what you download, you can delete it, and just type 'smlinux update' from anywhere when you're ready to rebuild or update.
+Note the script installs itself as 'smlinux' to the first directory in your path, usually something like ~/bin or ~/Applications/.bin. After first running what you download, you can delete it, and just type 'smlinux update' without dot-slash from any folder when you're ready to build or update.
 
 # Frequently Asked Questions
 
@@ -81,12 +81,12 @@ If 1.1-2.0, you must use the legacy renderer.  For 2.1 or greater, standard GL r
 
 This will modify your source with the repo-provided 60fps patch and from #modding-releases HD Mario (Old School V2) and HD Bowser, and on both sm64-port and sm64pc/sm6ex the 3D Coin Patch (V2) will also be applied.
   
-Additionally, on the sm64pc/sm64ex fork upscaled textures will be added to your build from the Cleaner Aesthetics github repo, and hq sounds from MapnAnon's github release.
+Additionally, on the sm64pc/sm64ex fork upscaled textures will be added to your build from the Cleaner Aesthetics github repo, and hq sounds from MapAnon's github release.
 *Note that precaching these textures will make the game use more memory and increase initial startup time, but may be necessary for some computers.*
 
 On the sm64nx fork only, 60fps is already default, and with InstallHD in addition to the models and textures mentioned above, a few other add-ons are obtained which can be enabled from the in-game menu if you prefer, including SGI models and HD Luigi.
 
-Some of these addons require files remaining available in discord or github, so not gauranteed to work.  I may periodically add or change what's included with this option as new mods are released.  
+Some of these addons require files remaining available in discord or github, so not gauranteed to work.  What is included with this option may periodically change as new mods are released.  
 
 
 ## **How to update, rebuild, or change build options later?**
