@@ -45,7 +45,7 @@ Note the script installs itself as 'smlinux' to the first directory in your path
 * [<strong>What repository should I use?</strong>](#what-repository-should-i-use)
 * [<strong>What branch should I use?</strong>](#what-branch-should-i-use)
 * [<strong>When to use RENDER_API=GL_LEGACY?</strong>](#when-to-use-render_apigl_legacy)
-* [<strong>What does the InstallHD=1 Script option do?</strong>](#what-does-the-installhd1-script-option-do)
+* [<strong>What does the InstallHD=1 option do?</strong>](#what-does-the-installhd1-option-do)
 * [<strong>How to update, rebuild, or change build options later?</strong>](#how-to-update-rebuild-or-change-build-options-later)
 * [<strong>How to I configure options like controllers, camera, rumble, etc?</strong>](#how-to-i-configure-options-like-controllers-camera-rumble-etc)
 * [<strong>Where are my configuration files and saved games stored?</strong>](#where-are-my-configuration-files-and-saved-games-stored)
@@ -55,7 +55,7 @@ Note the script installs itself as 'smlinux' to the first directory in your path
 * [<strong>How to remove a patch?</strong>](#how-to-remove-a-patch)
 * [<strong>What about distros other than Ubuntu/Debian?</strong>](#what-about-distros-other-than-ubuntudebian)
 * [<strong>How do I create my rom file?</strong>](#how-do-i-create-my-rom-file)
-* [<strong>How do I remove everything the script created during install?</strong>](#how-do-i-remove-everything-the-script-created-during-install)
+* [<strong>How do I remove everything smlinux created during install?</strong>](#how-do-i-remove-everything-smlinux-created-during-install)
 * [<strong>How do I tell smlinux to download sm64 repositories to a folder other than home?</strong>](#how-do-i-tell-smlinux-to-download-sm64-repositories-to-a-folder-other-than-home)
 
 ## **What repository should I use?**
@@ -77,7 +77,7 @@ For old video cards that support OpenGL 1.1 but not 2.1 (from year 200X).  Check
 If 1.1-2.0, you must use the legacy renderer.  For 2.1 or greater, standard GL renderer is reccommended, although some old computers that do support 2.1 may perform better with the legacy renderer.
   
 
-## **What does the InstallHD=1 Script option do?**
+## **What does the InstallHD=1 option do?**
 
 This will modify your source with the repo-provided 60fps patch and from #modding-releases HD Mario (Old School V2) and HD Bowser, and on both sm64-port and sm64pc/sm6ex the 3D Coin Patch (V2) will also be applied.
   
@@ -196,7 +196,7 @@ Void:
 Backup your cartridge to z64 format with a cartridge dumper such as a Retrode2, or buy for Wii U Virtual Console and extract image using homebrew tools.  
  &nbsp; &nbsp; [Dragonbox Store](https://www.dragonbox.de/en/accessories/cartridge-dumper/retrode2-with-all-plugins) &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; [Stoneage Gamer](https://stoneagegamer.com/retrode-2-cart-reader-rom-dumper-for-super-nintendo-genesis-more.html) &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
 [Nintendo Wii U Store](https://www.nintendo.com/games/detail/super-mario-64-wii-u) &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; [Virtual Console ROM Claim Software]( https://github.com/JanErikGunnar/vcromclaim)
-## **How do I remove everything the script created during install?**
+## **How do I remove everything smlinux created during install?**
  
 	smlinux purge
 This erases everything created running smlinux including automatically created game saves and config files.
