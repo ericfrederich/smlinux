@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0901-1354
+# 2020-0901-1738
 
 domake(){
 	#Here We go & music to build to
@@ -122,7 +122,7 @@ androidsdk(){
 	fi
 	if [ ! -d "$BASEPATH"/android-sdk/tools/sdkmanager ]; then
 		cd "$BASEPATH"
-		wget https://dl.google.com/android/repository/commandlinetools-linux-6609375_latest.zip
+		wget -q https://dl.google.com/android/repository/commandlinetools-linux-6609375_latest.zip
 		unzip -o commandlinetools-linux-6609375_latest -d android-sdk
 		rm commandlinetools-linux-6609375_latest.zip
 	fi
@@ -363,6 +363,7 @@ prepnx(){
 		echo 
 		echo Unable to extract and pak ROM.
 		echo "smlinux exiting incomplete.  Contact #help-desk for support."
+		echo
 		xdg-open https://discord.gg/Ub6YHRm &disown
 		exit
 	fi
@@ -378,22 +379,22 @@ dohd(){
 		fi
 		mkdir "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/romfs/"Cleaner Aesthetics"
 		cd "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/romfs/"Cleaner Aesthetics"
-		wget https://cdn.discordapp.com/attachments/730416836780490752/730430152957362191/cleaner.pak
+		wget -q https://cdn.discordapp.com/attachments/730416836780490752/730430152957362191/cleaner.pak
 		mkdir "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/romfs/"HD Mario . Bowser"
 		cd "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/romfs/"HD Mario . Bowser"
-		wget https://cdn.discordapp.com/attachments/730416836780490752/730425308989227158/arredondo.pak
+		wget -q https://cdn.discordapp.com/attachments/730416836780490752/730425308989227158/arredondo.pak
 		mkdir "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/romfs/"~SGI Models"
 		cd "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/romfs/"~SGI Models"
-		wget https://cdn.discordapp.com/attachments/730416836780490752/730645970693652591/sgi1.2.pak
+		wget -q https://cdn.discordapp.com/attachments/730416836780490752/730645970693652591/sgi1.2.pak
 		mkdir "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/romfs/"~OWO Mod"
 		cd "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/romfs/"~OWO Mod"
-		wget https://cdn.discordapp.com/attachments/730416836780490752/730420038024036362/owo.pak
+		wget -q https://cdn.discordapp.com/attachments/730416836780490752/730420038024036362/owo.pak
 		mkdir "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/romfs/"~HD Luigi"
 		cd "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/romfs/"~HD Luigi"
-		wget https://cdn.discordapp.com/attachments/730416836780490752/730425786452017222/luigi.pak
+		wget -q https://cdn.discordapp.com/attachments/730416836780490752/730425786452017222/luigi.pak
 		mkdir "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/romfs/"~NES Retro"
 		cd "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/romfs/"~NES Retro"
-		wget https://cdn.discordapp.com/attachments/730416836780490752/730431589749620736/nes.pak
+		wget -q https://cdn.discordapp.com/attachments/730416836780490752/730431589749620736/nes.pak
 	else
 		if [ "$EXTERNAL_DATA" = 1 ] ; then
 			if [ ! -d "$BASEPATH"/"$REPO"/build ] ; then 
@@ -407,7 +408,7 @@ dohd(){
 				git fetch
 				git reset --hard origin
 			elif [  -d "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/res ] ; then
-				mv "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/res.old
+				mv "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/res "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/res.old
 				git clone --single-branch https://github.com/CrashCrod/Cleaner-Aesthetics.git "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/res
 				mv -n "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/res.old/* "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/res
 			elif [  ! -d "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/res ] ; then
@@ -418,27 +419,31 @@ dohd(){
 			fi
 			if [ ! -f "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/res/hq_sounds_v5.1.zip ]; then
 				cd "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/res	
-				wget https://github.com/MapAnon/sm64-pc-hq-sounds/releases/download/5.1/hq_sounds_v5.1.zip
+				wget -q https://github.com/MapAnon/sm64-pc-hq-sounds/releases/download/5.1/hq_sounds_v5.1.zip
 			fi
 		fi
-		if [ ! -f "$BASEPATH"/"$REPO"/enhancements/hd_bowser.rar ] && [ ! "$SGI" = 1 ] && ([ ! -f "$BASEPATH"/"$REPO"/enhancements/Old_School_HD_SGI_Base_Models_V1.3_Refresh_11.7z ] || [ ! -f "$BASEPATH"/"$REPO"/enhancements/RENDER96_V1.3.7z ]) ; then
-			cd "$BASEPATH"/"$REPO"/enhancements
-			wget https://cdn.discordapp.com/attachments/716459185230970880/719758031990030427/Old_School_HD_Mario_Model.zip 
-			wget https://cdn.discordapp.com/attachments/716459185230970880/718990046442684456/hd_bowser.rar	
-			if [ "$REPO" = "sm64pc" ] || ([ "$REPO" = "sm64ex" ] && [ "$BRANCH" = "master" ]); then
-				wget https://cdn.discordapp.com/attachments/716459185230970880/718674249631662120/3d_coin_v2.patch
-			elif [ "$TOUCH_CONTROLS" = 1 ]; then
-				wget https://cdn.discordapp.com/attachments/721806706547490868/725041183700680807/3d_coin_v2_nightly.patch
+		if  [ ! "$SGI" = 1 ] && ([ ! -f "$BASEPATH"/"$REPO"/enhancements/Old_School_HD_SGI_Base_Models_V1.3_Refresh_11.7z ] || [ ! -f "$BASEPATH"/"$REPO"/enhancements/RENDER96_V1.3.7z ]); then
+			if [ ! -f "$BASEPATH"/"$REPO"/enhancements/hd_bowser.rar ] && [ ! "$REPO" = "sm64ex-coop" ]; then
+				cd "$BASEPATH"/"$REPO"/enhancements
+				wget -q https://cdn.discordapp.com/attachments/716459185230970880/719758031990030427/Old_School_HD_Mario_Model.zip 
+				wget -q https://cdn.discordapp.com/attachments/716459185230970880/718990046442684456/hd_bowser.rar	
+				cd "$BASEPATH"/"$REPO"	
+				cp -Rn actors actors.bak
+				unzip -o enhancements/Old_School_HD_Mario_Model 
+				unrar x -o+ enhancements/hd_bowser
 			fi
-			cd ..	
-			cp -Rn actors actors.bak
-			unzip -o enhancements/Old_School_HD_Mario_Model 
-			unrar x -o+ enhancements/hd_bowser
-			if [ -f "$BASEPATH"/"$REPO"/enhancements/3d_coin_v2*.patch ]; then
- 				git apply enhancements/3d_coin_v2*.patch
+			if [ ! -f "$BASEPATH"/"$REPO"/enhancements/3d_coin_v2*.patch ]; then
+				if [ "$REPO" = "sm64pc" ] || ([ "$REPO" = "sm64ex" ] && [ "$BRANCH" = "master" ]); then
+					wget -q https://cdn.discordapp.com/attachments/716459185230970880/718674249631662120/3d_coin_v2.patch
+				elif [ "$TOUCH_CONTROLS" = 1 ] || [ "$REPO" = "sm64ex" ] || [ "$REPO" = "sm64-port" ] || [ "$REPO" = "sm64-coop" ]; then
+					wget -q https://cdn.discordapp.com/attachments/721806706547490868/725041183700680807/3d_coin_v2_nightly.patch
+				fi
+				if [ -f "$BASEPATH"/"$REPO"/enhancements/3d_coin_v2*.patch ]; then
+ 					git apply enhancements/3d_coin_v2*.patch
+				fi
 			fi
 		fi
-		if [ `uname -m` = "x86_64" ] && [ ! "$TARGET_WEB" = 1 ] && [ ! "$SGI" = 1 ] && [ -f "$BASEPATH"/"$REPO"/enhancements/60fps*.patch ]; then
+		if [ `uname -m` = "x86_64" ] && [ -f "$BASEPATH"/"$REPO"/enhancements/60fps*.patch ] && (!( [ "$TARGET_WEB" = 1 ] || [ ! "$SGI" = 1 ] || [ "REPO" = "sm64ex-coop" ] )); then
 			cd "$BASEPATH"/"$REPO"
 			if [ ! -f "$BASEPATH"/"$REPO"/enhancements/60fps ]; then
 				git apply enhancements/60fps*.patch
@@ -504,11 +509,11 @@ dosgi(){
 	fi
 	if [ "$REPO" = "render96ex" ] ; then
 		cd "$BASEPATH"/"$REPO"/enhancements 
-		wget https://cdn.discordapp.com/attachments/730551213376143431/745382037560492132/RENDER96_V1.4.2_Luigi_Fixed_Sound.zip
+		wget -q https://cdn.discordapp.com/attachments/730551213376143431/745382037560492132/RENDER96_V1.4.2_Luigi_Fixed_Sound.zip
 		SGIFILE=RENDER96_V1.4.2_Luigi_Fixed_Sound.zip
 	else
 		cd "$BASEPATH"/"$REPO"/enhancements
-		wget https://cdn.discordapp.com/attachments/727722992137666573/745038574918828112/RENDER96_V1.3.7z
+		wget -q https://cdn.discordapp.com/attachments/727722992137666573/745038574918828112/RENDER96_V1.3.7z
 		SGIFILE=RENDER96_V1.3.7z
 	fi
 	if  [ -f "$BASEPATH"/"$REPO"/enhancements/CHEATER*.patch ]; then
@@ -600,19 +605,19 @@ makedesktop(){
 if [ ! -f ${XDG_DATA_HOME:-$HOME/.local/share}/icons/"$REPO".* ]; then
 	echo Getting Icon...
 	if [ "$REPO" = "sm64ex" ]; then
-		wget https://cdn.discordapp.com/attachments/711253314855108629/712146686834638890/sm64.png
+		wget -q https://cdn.discordapp.com/attachments/711253314855108629/712146686834638890/sm64.png
 		mv sm64.png ${XDG_DATA_HOME:-$HOME/.local/share}/icons/"$REPO".png
 	elif [ "$REPO" = "sm64nx" ]; then 
-		wget https://cdn.discordapp.com/attachments/711253314855108629/719215654837682226/Super_Mario_64.png
+		wget -q https://cdn.discordapp.com/attachments/711253314855108629/719215654837682226/Super_Mario_64.png
 		mv Super_Mario_64.png ${XDG_DATA_HOME:-$HOME/.local/share}/icons/"$REPO".png
 	elif [ "$REPO" = "render96ex" ]; then 
-		wget https://cdn.discordapp.com/attachments/710334795674288139/745150550382870548/bowser.png
+		wget -q https://cdn.discordapp.com/attachments/710334795674288139/745150550382870548/bowser.png
 		mv bowser.png ${XDG_DATA_HOME:-$HOME/.local/share}/icons/"$REPO".png
 	elif [ "$REPO" = "sm64-port" ]; then 
-		wget https://cdn.discordapp.com/attachments/710334795674288139/745156574334550096/staricon.png
+		wget -q https://cdn.discordapp.com/attachments/710334795674288139/745156574334550096/staricon.png
 		mv staricon.png ${XDG_DATA_HOME:-$HOME/.local/share}/icons/"$REPO".png
 	elif [ "$REPO" = "sm64ex-coop" ]; then 
-		wget https://cdn.discordapp.com/attachments/710334795674288139/741732375074963556/luigihudicon.png
+		wget -q https://cdn.discordapp.com/attachments/710334795674288139/741732375074963556/luigihudicon.png
 		mv luigihudicon.png ${XDG_DATA_HOME:-$HOME/.local/share}/icons/"$REPO".png
 	elif [ -f "$BASEPATH"/"$REPO"/textures/segment2/segment2.05A00.rgba16.png ]; then
 		cp "$BASEPATH"/"$REPO"/textures/segment2/segment2.05A00.rgba16.png ${XDG_DATA_HOME:-$HOME/.local/share}/icons/"$REPO".png
@@ -962,7 +967,7 @@ if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ] || [ "$1" = "
 			rm enhancements/CHEATER*
 		fi
 		cd enhancements
-		wget https://cdn.discordapp.com/attachments/716459185230970880/748767846183600158/CHEATER.zip
+		wget -q https://cdn.discordapp.com/attachments/716459185230970880/748767846183600158/CHEATER.zip
 		unzip CHEATER*
 		rm CHEATER.zip
 		cd ..
@@ -1124,7 +1129,7 @@ fi
 if  [ "$REPO" = "sm64ex" ] || [ "$BRANCH" = "sm64ex_nightly" ] || [ "$BRANCH" = "sm64ex" ] || [ "$REPO" = render96ex ]; then 
 	cd "$BASEPATH"/"$REPO"/enhancements
 	cp ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/menu-arrows.patch .
-	wget https://cdn.discordapp.com/attachments/716459185230970880/748767846183600158/CHEATER.zip
+	wget -q https://cdn.discordapp.com/attachments/716459185230970880/748767846183600158/CHEATER.zip
 	unzip CHEATER
 	rm CHEATER.zip
 	cd ..
