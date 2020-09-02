@@ -105,7 +105,8 @@ For example:
 Updates existing install to latest from github while retaining custom textures and addons.  If updated source fails to build, restores previous build.
 
 You can also use this option to rebuild after you apply patches or edit your source or source assets like actors manually.
-Note --updatehd only needs to be applied if what's included with the InstallHD option has changed/updated since you installed smlinux, or if you wish to add those add-ons to an existing build that doesn't have them.
+
+Note --updatehd only needs to be applied if UpdateHD=0 in config file, and what was initally installed with the InstallHD option has changed/updated since you last built, or if you wish to add HD add-ons to an existing build that doesn't have them.
 
 If you want to save your existing build, rename it (anything) before running the update, for example: 
  
