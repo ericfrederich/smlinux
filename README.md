@@ -121,13 +121,15 @@ You can also just edit the configuration file with a text editor.
 
 ## **Where are my configuration files and saved games stored?**
 
-~/.local/share/sm64pc smlinux and sm64pc master  
-~/.local/share/sm64ex  sm64ex    
+~/.local/share/sm64pc smlinux and sm64pc/ex master  
+~/.local/share/sm64ex sm64ex nightly
+~/.local/share/render96ex Render96ex
+~/.local/share/sm64ex-coop sm64ex-coop
 ~/.local/share/sm64-port sm64-port *only if launched with shortcut*    
 ~/.local/share/sm64nx sm64nx *script creates links to game dir*  
 
 ## **Are there any cheats?**
-*only applies to sm64pc/sm64ex and sm64nx forks*
+*only applies to sm64pc/sm64ex and sm64nx based builds*
 
 Cheats are built in and enabled automatically if launched from shortcut and available in options menu.
 
