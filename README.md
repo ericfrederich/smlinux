@@ -106,12 +106,15 @@ Updates existing install to latest from github while retaining custom textures a
 
 You can also use this option to rebuild after you apply patches or edit your source or source assets like actors manually.
 
+Note --config is only needed if CONFIG=0 in your config file, otherwise it will come up automatically.
+
 Note --updatehd only needs to be applied if UpdateHD=0 in config file, and what was initally installed with the InstallHD option has changed/updated since you last built, or if you wish to add HD add-ons to an existing build that doesn't have them.
 
 If you want to save your existing build, rename it (anything) before running the update, for example: 
  
-
 	mv ~/sm64pc/build/us_pc ~/sm64pc/build/firstbuild
+
+Note smlinux automatically stores one previous build by adding the suffix .old to its foldername (and restores it if your update fails to build.
 
 ## **How to I configure options like controllers, camera, rumble, etc?**
 *only applies to sm64pc/sm64ex fork*
