@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0901-1738
+# 2020-0901-2001
 
 domake(){
 	#Here We go & music to build to
@@ -16,14 +16,10 @@ domake(){
 			sh -c 'mplayer -nolirc -really-quiet -volume 40 -loop 0 '${XDG_DATA_HOME:-$HOME/.local/share}'/sm64pc/File_Select_64_slowed_down.mp3&'
 		fi
 	fi 
-	if [ "$TARGET_WEB" = 1 ]; then 
-		if [ "$InstallHD" = 1 ]; then
-			sed -i 's/TOTAL_MEMORY=20MB/TOTAL_MEMORY=28MB/g' "$BASEPATH"/"$REPO"/Makefile
-		fi
-		loademsdk
+	if [ "$TARGET_WEB" = 1 ] && [ "$InstallHD" = 1 ]; then
+		sed -i 's/TOTAL_MEMORY=20MB/TOTAL_MEMORY=28MB/g' "$BASEPATH"/"$REPO"/Makefile
 	fi
 	if [ "$ANDROID" = 1 ]; then
-		export ANDROID_HOME="$BASEPATH"/android-sdk
 		checkphone
 		if [ "$GOTPHONE" = 1 ]; then
 			zenity --info --text='\nPhone Detected.  Be sure to grant it debugging permission.\n\nExisting copies must also be removed from device.' --title="Preparing for Android Installation...." --width=440 &disown
@@ -117,10 +113,10 @@ domake(){
 	}
 
 androidsdk(){
-	if [ -f /usr/bin/apt ]; then
+	if [ -f /usr/bin/apt ] && [ -d /usr/lib/android-sdk ]; then
 		sudo apt install android-sdk -y
 	fi
-	if [ ! -d "$BASEPATH"/android-sdk/tools/sdkmanager ]; then
+	if [ ! -f "$BASEPATH"/android-sdk/tools/bin/sdkmanager ]; then
 		cd "$BASEPATH"
 		wget -q https://dl.google.com/android/repository/commandlinetools-linux-6609375_latest.zip
 		unzip -o commandlinetools-linux-6609375_latest -d android-sdk
@@ -129,8 +125,12 @@ androidsdk(){
 	PATH="$BASEPATH"/android-sdk/tools/bin:$PATH
 	export PATH="$BASEPATH"/android-sdk/tools/bin:$PATH
 	export ANDROID_HOME="$BASEPATH"/android-sdk
-	yes | sdkmanager --sdk_root=${ANDROID_HOME} --licenses
-	sdkmanager --install --sdk_root=${ANDROID_HOME} ndk-bundle
+	if [ ! -d "$BASEPATH"/android-sdk/licenses ]; then
+		yes | sdkmanager --sdk_root=${ANDROID_HOME} --licenses
+	fi
+	if [ ! -d "$BASEPATH"/android-sdk/ndk-bundle ]; then
+		sdkmanager --install --sdk_root=${ANDROID_HOME} ndk-bundle
+	fi
 	}
 
 checkphone(){
@@ -689,8 +689,6 @@ rungame(){
 
 ####################################### The Beginning ########################################
 
-# Supress GTK Dialog Warnings
-exec 2> >(grep -v GtkDialog >&2)
 # Make sure folders and installer config file exist, if not create them.
 
 LAUNCH_DIR=$(pwd)
@@ -841,22 +839,24 @@ if [ -f "$1" ] || [ -f "$LAUNCH_DIR"/"$1" ] || ( [ -f ${XDG_DATA_HOME:-$HOME/.lo
 			if [ "$ANDROID" = 1 ]; then
 				androidsdk
 			fi
-						
-		elif [ "$REPO" = "sm64nx" ] && [ ! -d "$BASEPATH"/"$REPO" ]; then
+			if [ "$TARGET_WEB" = 1 ]; then
+				loademsdk
+			fi
+		elif [ "$REPO" = "sm64nx" ] && [ ! -d "$BASEPATH"/"$REPO/build" ]; then
 			echo "[1] Installing required build tools for nx..."
 			pip3 install pillow zstandard tqdm xxhash
 			gcccheck
-		elif [ "$REPO" = "sm64nx" ]; then
-			echo "[1] Confirming gcc version good enough for nx..."
-			gcccheck
-		elif [ "$ANDROID" = 1 ] && [ ! -f "$BASEPATH"/android-sdk/tools/bin/sdkmanager ]; then
-			echo "[1] Installing required build tools for Android..."
+		elif [ "$ANDROID" = 1 ]; then
+			echo "[1] Loading Android SDK Environment..."
 			androidsdk
+		elif [ "$TARGET_WEB" = 1 ]; then
+			echo "[1] Loading Enscriptem for Web Target..."
+			loademsdk
 		else
-			echo "[1] This is not first install, skipping dependencies..."
+			echo "[1] This is not first build, skipping dependencies..."
 		fi
 		echo
-		echo [2] Checking for Script Updates from Github...
+		echo [2] Checking Github for smlinux updates....
 		if [ "$AutoUpdate" = 1 ]; then
 			scriptUpdate "$@"
 		else
