@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0902-1428
+# 2020-0902-1435
 
 domake(){
 	#Here We go & music to build to
@@ -624,6 +624,7 @@ if [ ! -f ${XDG_DATA_HOME:-$HOME/.local/share}/icons/"$REPO".* ]; then
 	elif [ "$REPO" = "sm64ex-coop" ]; then 
 		wget -q https://cdn.discordapp.com/attachments/710334795674288139/741732375074963556/luigihudicon.png
 		mv luigihudicon.png ${XDG_DATA_HOME:-$HOME/.local/share}/icons/"$REPO".png
+		chmod +x ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/cooplauncher
 	elif [ -f "$BASEPATH"/"$REPO"/textures/segment2/segment2.05A00.rgba16.png ]; then
 		cp "$BASEPATH"/"$REPO"/textures/segment2/segment2.05A00.rgba16.png ${XDG_DATA_HOME:-$HOME/.local/share}/icons/"$REPO".png
 		echo 16x16 image from ROM used.  Reccommend replacing ${XDG_DATA_HOME:-$HOME/.local/share}/icons/"$REPO".png
