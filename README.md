@@ -42,6 +42,26 @@ Note the script installs itself as 'smlinux' to the first directory in your path
 
 # Frequently Asked Questions
 
+   * [          Super  Mario  Linux  Build  Install  Update](#-----super--mario--linux--build--install--update)
+   * [Frequently Asked Questions](#frequently-asked-questions)
+      * [<strong>What repository should I use?</strong>](#what-repository-should-i-use)
+      * [<strong>What branch should I use?</strong>](#what-branch-should-i-use)
+      * [<strong>When to use RENDER_API=GL_LEGACY?</strong>](#when-to-use-render_apigl_legacy)
+      * [<strong>What does the InstallHD=1 Script option do?</strong>](#what-does-the-installhd1-script-option-do)
+      * [<strong>How to update, rebuild, or change build options later?</strong>](#how-to-update-rebuild-or-change-build-options-later)
+      * [<strong>How to I configure options like controllers, camera, rumble, etc?</strong>](#how-to-i-configure-options-like-controllers-camera-rumble-etc)
+      * [<strong>Where are my configuration files and saved games stored?</strong>](#where-are-my-configuration-files-and-saved-games-stored)
+      * [<strong>Are there any cheats?</strong>](#are-there-any-cheats)
+      * [<strong>How do I apply external textures?</strong>](#how-do-i-apply-external-textures)
+      * [<strong>How to apply a patch?</strong>](#how-to-apply-a-patch)
+      * [<strong>How to remove a patch?</strong>](#how-to-remove-a-patch)
+      * [<strong>What about distros other than Ubuntu/Debian?</strong>](#what-about-distros-other-than-ubuntudebian)
+      * [<strong>How do I create my rom file?</strong>](#how-do-i-create-my-rom-file)
+      * [<strong>How do I remove everything the script created during install?</strong>](#how-do-i-remove-everything-the-script-created-during-install)
+      * [<strong>How do I tell smlinux to download sm64 repositories to a folder other than home?</strong>](#how-do-i-tell-smlinux-to-download-sm64-repositories-to-a-folder-other-than-home)
+
+
+
 ## **What repository should I use?**
 If you want to build for PC, the official repo, sm64-port/sm64-port, offers the cleanest code and duplication of N64, with currently very few add-ons available.  The unofficial forks, sm64ex and sm64nx, include enhancements and support for many add-ons (which are optional on sm64ex).  sm64ex offers the most flexibility, but you are encouraged to build more than one and try for yourself.
 
