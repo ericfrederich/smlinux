@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0901-2001
+# 2020-0902-1226
 
 domake(){
 	#Here We go & music to build to
@@ -20,6 +20,7 @@ domake(){
 		sed -i 's/TOTAL_MEMORY=20MB/TOTAL_MEMORY=28MB/g' "$BASEPATH"/"$REPO"/Makefile
 	fi
 	if [ "$ANDROID" = 1 ]; then
+		exec 2> >(grep -v GtkDialog >&2) # Supress GTK Dialog Warnings
 		checkphone
 		if [ "$GOTPHONE" = 1 ]; then
 			zenity --info --text='\nPhone Detected.  Be sure to grant it debugging permission.\n\nExisting copies must also be removed from device.' --title="Preparing for Android Installation...." --width=440 &disown
@@ -465,7 +466,7 @@ dosgi(){
 			exit
 		fi
 	fi
-	if [ "$REPO" = "render96ex" ] && [ -f "$BASEPATH"/"$REPO"/enhancements/RENDER96_V1.4.2_Luigi.7z ] ; then 
+	if [ "$REPO" = "render96ex" ] && [ -f "$BASEPATH"/"$REPO"/enhancements/RENDER96_V1.4.2_Luigi* ] ; then 
 		echo Render96 V1.4.2 Models Already Installed...
 		return
 	elif [ ! "$REPO" = "render96ex" ] && ( [ -f "$BASEPATH"/"$REPO"/enhancements/Old_School_HD_SGI_Base_Models_V1.3_Refresh_11.7z ] || [ -f "$BASEPATH"/"$REPO"/enhancements/RENDER96_V1.3.7z ]); then
@@ -767,6 +768,7 @@ if [ ! -f "$BASEPATH"/.smlinuxUpdate ]; then
 		elif [ -f "$1" ]; then
 			xdg-open https://hack64.net/tools/swapper.php &disown
 			sleep 1
+			exec 2> >(grep -v GtkDialog >&2) # Supress GTK Dialog Warnings
 			zenity --error --text='ERROR: Your ROM is not valid.\n\nAn original Super Mario 64 ROM in z64 (big endian) format is required to build.\nIf your rom is backed up in v64 or n64 format, try this online converter then run smlinux again.' --title="Your installation is incomplete." --width=640 &disown	
 			sleep 1			
 			echo
@@ -1174,6 +1176,7 @@ echo
 rungame
 if [ -f "$BASEPATH"/.smlinuxNopath ]; then
 	rm "$BASEPATH"/.smlinuxNopath
+	exec 2> >(grep -v GtkDialog >&2) # Supress GTK Dialog Warnings
 	zenity --info --text='You did not have a home folder in your path so $HOME/bin was created.\n\nReboot or type \n\n    PATH=$HOME/bin:$PATH\n\nbefore running smlinux again.' --title="Your installation is complete." --width=450	
 	printf '\nYou did not have a home folder in your path so $HOME/bin was created.\n\nReboot or type \n\n      PATH=$HOME/bin:$PATH\n\nbefore running smlinux again.\n\n'
 else	
