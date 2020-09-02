@@ -42,8 +42,6 @@ Note the script installs itself as 'smlinux' to the first directory in your path
 
 # Frequently Asked Questions
 
-   * [          Super  Mario  Linux  Build  Install  Update](#-----super--mario--linux--build--install--update)
-   * [Frequently Asked Questions](#frequently-asked-questions)
       * [<strong>What repository should I use?</strong>](#what-repository-should-i-use)
       * [<strong>What branch should I use?</strong>](#what-branch-should-i-use)
       * [<strong>When to use RENDER_API=GL_LEGACY?</strong>](#when-to-use-render_apigl_legacy)
