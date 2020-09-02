@@ -130,7 +130,7 @@ You can also just edit the configuration file with a text editor.
 ~/.local/share/render96ex render96ex *only if launched with shortcut*  
 ~/.local/share/sm64ex-coop sm64ex-coop *only if launched with shortcut*   
 ~/.local/share/sm64-port sm64-port *only if launched with shortcut*    
-~/.local/share/sm64nx sm64nx *script creates links from game dir*  
+~/.local/share/sm64nx sm64nx *smlinux creates links in game dir*  
 
 ## **Are there any cheats?**
 *only applies to sm64pc/sm64ex and sm64nx based builds*
