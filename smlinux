@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0902-1359
+# 2020-0902-1428
 
 domake(){
 	#Here We go & music to build to
@@ -184,17 +184,14 @@ vettrom(){
 	}
 
 makeconfig(){
-echo '# VERSION supports us jp eu (must correspond to rom version)
-VERSION=us
-# REPO supports sm64-port sm64ex sm64nx render96ex sm64-port-android-base
+echo '# REPO supports sm64-port sm64ex sm64nx render96ex sm64-port-android-base
 # REPO also supports sm64ex-coop (also set BRANCH=coop)
 REPO=sm64ex
 BRANCH=nightly
-TARGET_WEB=0
-JOBS=-j
 InstallHD=1
-CONFIG=0
-# [sm64pc/sm64ex/render96ex] 
+JOBS=-j
+# [ sm64ex and its forks ] 
+TARGET_WEB=0
 BETTERCAMERA=1
 NODRAWINGDISTANCE=1
 TEXTURE_FIX=1
@@ -203,23 +200,27 @@ DISCORDRPC=1
 # RENDER_API supports GL (2.1+) or GL_LEGACY (1.1+)
 RENDER_API=GL
 TEXTSAVES=0
-DEBUG=0
-# [sm64ex-coop]
+# [ sm64ex-coop ]
 IMMEDIATELOAD=1
-# [render96ex]
+# [ render96ex ]
 LEGACY_RES=1
-# [sm64-port-android-base]
+# [ sm64-port-android-base ]
 TOUCH_CONTROLS=1
 ARMONLY=1
-# Script Settings
-# Linux must be set to command appropriate to your distribution. See FAQ.
-Linux="sudo apt install -y build-essential git python3 libaudiofile-dev libglew-dev libsdl2-dev binutils libusb-1.0-0-dev libzstd-dev python3-pip p7zip-full mplayer"
+# [ Advanced Settings ]
+# VERSION supports us jp eu (must correspond to rom version)
+VERSION=us
+DEBUG=0
+# Set CONFIG=0 If you do not want to be automatically prompted before building.
+CONFIG=1
 # BASEPATH must exist and is where folders for each repo will be placed
 BASEPATH=$HOME
-# Autopdate should really only be set to 0 if you are modifying script
+# Set AutoUpdate=0 to prevent smlinux updating itself automatically when ran
 AutoUpdate=1
-# UpdateHD only set to 0 if you dont want smlinux up update addons
-UpdateHD=1'> ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinuxcfg.txt
+# Set UpdateHD=0 if you dont want smlinux up update addons when rebuilding
+UpdateHD=1
+# Linux must be set to command appropriate to your distribution. See FAQ.
+Linux="sudo apt install -y build-essential git python3 libaudiofile-dev libglew-dev libsdl2-dev binutils libusb-1.0-0-dev libzstd-dev python3-pip p7zip-full mplayer"'> ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinuxcfg.txt
 	}
 
 loadconfig(){
@@ -239,7 +240,10 @@ loadconfig(){
 	fi
 	if [ "$REPO" = "sm64pc" ] && [ "$BRANCH" = "nightly" ]; then
 		REPO=sm64ex
-	elif [ "$REPO" = "sm64-port" ]; then
+	elif [ "$REPO" = "Render96ex" ] || [ "$REPO" = "render96" ] || [ "$REPO" = "Render96" ]; then
+		REPO=render96ex
+	fi
+	if [ "$REPO" = "sm64-port" ]; then
 		EXTERNAL_DATA=0
 	elif [ "$REPO" = "sm64-port-android-base" ]; then
 		REPO="sm64-port-android-base/app/jni/src"
@@ -250,13 +254,12 @@ loadconfig(){
 	elif [ "$REPO" = "sm64nx" ]; then
 		EXTERNAL_DATA=0
 		BRANCH=master
-	elif [ "$REPO" = "Render96ex" ] || [ "$REPO" = "render96" ] || [ "$REPO" = "Render96" ]; then
-		REPO=render96ex
-	fi
-	if [ "$REPO" = "render96ex" ]; then
+	elif [ "$REPO" = "render96ex" ]; then
 		EXTERNAL_DATA=1
 		TEXTSAVES=1
 		SGI=1
+	elif [ "$REPO" = "sm64ex-coop" ]; then
+		NODRAWINGDISTANCE=1
 	fi
 	if [ "$JOBS" = "-j" ]; then
 		if [ "$REPO" = "sm64nx" ]; then 
