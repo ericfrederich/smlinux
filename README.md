@@ -70,14 +70,12 @@ All repos offer master as primary.  sm6ex also offers nightly which is under con
 ## **When to use RENDER_API=GL_LEGACY?** 
 *only applies to sm64pc/sm64ex fork*
 
-For old video cards with OpenGL 1.2 or 1.3 but no 2.1 support (from year 200X).  Check your OpenGL version with the following command: 
+For old video cards with OpenGL 1.1 but no 2.1 support (from year 200X).  Check your OpenGL version with the following command: 
 	
 	glxinfo | grep "OpenGL version"
  
-2.1 or higher, do not use this option.  
-2.0 Does this version even exist in the wild? If so, try normal, then legacy, report back!  
-1.2/1.3/1.4 This build option was made for you! Remove the # commenting that option in smlinuxcfg.txt.  
-1.0/1.1 Sorry.  
+If 1.1-2.0, you must use the legacy renderer.  For 2.1 or greater, standard GL renderer is reccommended, although some old computers that do support 2.1 may perform better with legacy renderer.
+  
 
 ## **What does the InstallHD=1 Script option do?**
 
