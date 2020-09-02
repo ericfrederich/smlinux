@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0902-1336
+# 2020-0902-1359
 
 domake(){
 	#Here We go & music to build to
@@ -416,7 +416,7 @@ dohd(){
 			elif [  ! -d "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/res ] ; then
 				git clone --single-branch https://github.com/CrashCrod/Cleaner-Aesthetics.git "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/res
 			fi
-			if [ -d "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/res/gfx/skyboxes ]; then
+			if [ -d "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/res/gfx/textures/skyboxes ]; then
 				rm -rf "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/res/gfx/textures/skyboxes
 			fi
 			if [ ! -f "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/res/hq_sounds_v5.1.zip ]; then
