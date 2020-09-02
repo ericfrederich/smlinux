@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0902-1226
+# 2020-0902-1308
 
 domake(){
 	#Here We go & music to build to
@@ -186,7 +186,8 @@ vettrom(){
 makeconfig(){
 echo '# VERSION supports us jp eu (must correspond to rom version)
 VERSION=us
-# REPO supports sm64-port sm64ex sm64nx render96ex sm64ex-coop sm64-port-android-base
+# REPO supports sm64-port sm64ex sm64nx render96ex sm64-port-android-base
+# REPO also supports sm64ex-coop (also set BRANCH=coop)
 REPO=sm64ex
 BRANCH=nightly
 TARGET_WEB=0
@@ -199,7 +200,7 @@ NODRAWINGDISTANCE=1
 TEXTURE_FIX=1
 EXTERNAL_DATA=1
 DISCORDRPC=1
-# RENDER_API supports GL (2.1+) or GL_LEGACY (1.2+)
+# RENDER_API supports GL (2.1+) or GL_LEGACY (1.1+)
 RENDER_API=GL
 TEXTSAVES=0
 DEBUG=0
@@ -217,7 +218,7 @@ Linux="sudo apt install -y build-essential git python3 libaudiofile-dev libglew-
 BASEPATH=$HOME
 # Autopdate should really only be set to 0 if you are modifying script
 AutoUpdate=1
-# UpdateHD should be set to 0 if you dont want smlinux up update addons
+# UpdateHD only set to 0 if you dont want smlinux up update addons
 UpdateHD=1'> ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinuxcfg.txt
 	}
 
@@ -1023,14 +1024,10 @@ if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ] || [ "$1" = "
 	else
 		echo [6] No resources found in previous build, skipping restore...
 	fi
-	if [ -d "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/res/.git ] ; then
-		echo Checking for Cleaner Aesthetics Texture updates on Github...
+	if [ "$ANDROID" = 1 ] && [ -d "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/res/gfx ]; then
 		cd "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/res
-		git pull
-		if [ "$ANDROID" = 1 ] && [ -d "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/res/gfx ]; then
-			zip -r -0 -f hdbase gfx
-			rm -rf gfx
-		fi
+		zip -r -0 -u hdbase gfx
+		rm -rf gfx
 	fi
 	echo
 	if [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/applications/"$REPO".desktop ] || [ "$TARGET" = "web" ]; then
