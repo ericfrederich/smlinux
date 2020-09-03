@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0902-2024
+# 2020-0902-2139
 
 domake(){
 	#Here We go & music to build to
@@ -451,11 +451,14 @@ dohd(){
 			fi
 			if [ ! -f "$BASEPATH"/"$REPO"/enhancements/3d_coin_v2*.patch ]; then
 				if [ "$REPO" = "sm64pc" ] || ([ "$REPO" = "sm64ex" ] && [ "$BRANCH" = "master" ]); then
+					cd "$BASEPATH"/"$REPO"/enhancements
 					wget -q https://cdn.discordapp.com/attachments/716459185230970880/718674249631662120/3d_coin_v2.patch
 				elif [ "$TOUCH_CONTROLS" = 1 ] || [ "$REPO" = "sm64ex" ] || [ "$REPO" = "sm64-port" ] || [ "$REPO" = "sm64-coop" ]; then
+					cd "$BASEPATH"/"$REPO"/enhancements
 					wget -q https://cdn.discordapp.com/attachments/721806706547490868/725041183700680807/3d_coin_v2_nightly.patch
 				fi
 				if [ -f "$BASEPATH"/"$REPO"/enhancements/3d_coin_v2*.patch ]; then
+					cd "$BASEPATH"/"$REPO"
  					git apply enhancements/3d_coin_v2*.patch
 				fi
 			fi
