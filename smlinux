@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0903-1525
+# 2020-0903-1611
 
 domake(){
 	#Here We go & music to build to
@@ -1155,7 +1155,64 @@ else
 	cd "$BASEPATH"/"$REPO"
 	./extract_assets.py "$VERSION"
 fi
-
+echo
+echo "Checking for exisiting configuration and save files..."
+if [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64config.txt ] || [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/CHEATERex_config.txt ]; then
+	echo Configuration file already exists from previous build.
+elif [ "$REPO" = "sm64-port" ] || [ "$REPO" = "sm64nx" ] || [ ! -d ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO" ]; then
+	echo No compatible config files for this version, game will create one.
+elif [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64ex/sm64config.txt ]; then
+	cp ${XDG_DATA_HOME:-$HOME/.local/share}/sm64ex/sm64config.txt ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"
+	echo Copied configuration from sm64ex.
+elif [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/sm64config.txt ]; then
+	cp ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/sm64config.txt ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"
+	echo Copied configuration from sm64pc.
+elif [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/render96ex/sm64config.txt ]; then
+	cp ${XDG_DATA_HOME:-$HOME/.local/share}/render96ex/sm64config.txt ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"
+	echo Copied configuration from render96ex
+elif [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64ex-coop/sm64config.txt ]; then
+	cp ${XDG_DATA_HOME:-$HOME/.local/share}/sm64ex-coop/sm64config.txt ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"
+	echo Copied configuration from sm64ex-coop
+elif [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/cheaterex/CHEATERex_config.txt ]; then
+	cp ${XDG_DATA_HOME:-$HOME/.local/share}/cheaterex/CHEATERex_config.txt ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64config.txt
+	echo Copied configuration from CHEATERex
+else
+	echo No compatible configuration file found, game will create one.
+fi
+if [ "$REPO" = "cheaterex" ] && [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64config.txt ]; then
+	mv ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64config.txt ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/CHEATERex_config.txt
+fi
+if [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64_save_file.bin ] || [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/CHEATERex_save_file.bin ] || [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64.sav ]; then
+	echo Save file already exists from previous build.
+elif [ ! -d ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO" ] || [ "TEXTSAVES" = 1 ]; then
+	echo No compatible save files for this version.
+elif [ "$REPO" = "sm64-port" ] && [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64nx/sm64.sav ]; then
+	cp ${XDG_DATA_HOME:-$HOME/.local/share}/sm64nx/sm64.sav ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64_save_file.bin
+	echo Copied save file from sm64nx.
+elif [ "$REPO" = "sm64nx" ] && [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64-port/sm64_save_file.bin ]; then
+	cp ${XDG_DATA_HOME:-$HOME/.local/share}/sm64-port/sm64_save_file.bin ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64.sav
+	echo Copied save file from sm64-port.
+elif [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64ex/sm64_save_file.bin ]; then
+	cp ${XDG_DATA_HOME:-$HOME/.local/share}/sm64ex/sm64_save_file.bin ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"
+	echo Copied save file from sm64ex.
+elif [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64-port/sm64_save_file.bin ]; then
+	cp ${XDG_DATA_HOME:-$HOME/.local/share}/sm64-port/sm64_save_file.bin ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"
+	echo Copied save file from sm64-port.
+elif [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/sm64_save_file.bin ]; then
+	cp ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/sm64_save_file.bin ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"
+	echo Copied save file from sm64pc.
+elif [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/cheaterex/CHEATERex_save_file.bin ]; then
+	cp ${XDG_DATA_HOME:-$HOME/.local/share}/cheaterex/CHEATERex_save_file.bin ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64_save_file.bin
+	echo Copied save file from cheaterex
+elif [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64nx/sm64.sav ]; then
+	cp ${XDG_DATA_HOME:-$HOME/.local/share}/sm64nx/sm64.sav ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64_save_file.bin
+	echo Copied save file from sm64nx.
+else
+	No compatible save file found.
+fi
+if [ "$REPO" = "cheaterex" ] && [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64_save_file.bin ]; then
+	mv ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64_save_file.bin ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/CHEATERex_save_file.bin
+fi
 echo
 echo [5] Applying Community Enhancements...
 echo
@@ -1200,58 +1257,6 @@ if [ "$ANDROID" = 1 ] && [ ! -f "$BASEPATH"/"$REPO"/../../build/outputs/apk/debu
 	exit
 elif [ -f "$BASEPATH"/"$REPO"/../../build/outputs/apk/debug/app-debug.apk ]; then
 	mv "$BASEPATH"/"$REPO"/../../build/outputs/apk/debug/app-debug.apk "$BASEPATH"/"$REPO"/../../build/outputs/apk/debug/sm64."$VERSION".f3dex2e.apk
-fi
-echo Checking for exisiting compatible config or savefiles...
-if (!( [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64config.txt ] || [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/CHEATERex_config.txt ] )) && [ -d ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO" ] && [ ! "$REPO" = "sm64-port" ] && [ ! "$REPO" = "sm64nx" ]; then
-	if [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64ex/sm64config.txt ]; then
-		cp ${XDG_DATA_HOME:-$HOME/.local/share}/sm64ex/sm64config.txt ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"
-	elif [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/sm64config.txt ]; then
-		cp ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/sm64config.txt ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"
-	elif [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/render96ex/sm64config.txt ]; then
-		cp ${XDG_DATA_HOME:-$HOME/.local/share}/render96ex/sm64config.txt ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"
-	elif [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/cheaterex/sm64config.txt ]; then
-		cp ${XDG_DATA_HOME:-$HOME/.local/share}/render96ex/sm64config.txt ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"
-	elif [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64ex-coop/sm64config.txt ]; then
-		cp ${XDG_DATA_HOME:-$HOME/.local/share}/sm64ex-coop/sm64config.txt ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"
-	else
-		echo No compatible configuration file found, game will make new one.
-	fi
-	if [ "$REPO" = "cheaterex" ] && [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64config.txt ]; then
-		mv ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64config.txt ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/CHEATERex_config.txt
-	fi
-	if [ "TEXTSAVES" = 0 ] && (!( [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64_save_file.bin ] || [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/CHEATERex_save_file.bin ] )); then
-		if [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64ex/sm64_save_file.bin ]; then
-			cp ${XDG_DATA_HOME:-$HOME/.local/share}/sm64ex/sm64_save_file.bin ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"
-			echo Save File copied from sm64ex.
-		elif [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64-port/sm64_save_file.bin ]; then
-			cp ${XDG_DATA_HOME:-$HOME/.local/share}/sm64-port/sm64_save_file.bin ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"
-			echo Save File copied from sm64-port.
-		elif [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/sm64_save_file.bin ]; then
-			cp ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/sm64_save_file.bin ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"
-			echo Save File copied from sm64pc.
-		elif [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/cheaterex/CHEATERex_save_file.bin ]; then
-			cp ${XDG_DATA_HOME:-$HOME/.local/share}/cheaterex/CHEATERex_save_file.bin ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64_save_file.bin
-			echo Save File copied from cheaterex
-		elif [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64nx/sm64.sav ]; then
-			cp ${XDG_DATA_HOME:-$HOME/.local/share}/sm64nx/sm64.sav ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64_save_file.bin
-			echo Save File copied from sm64nx.
-		else
-			No compatible save file found. Starting new game.
-		fi
-		if [ "$REPO" = "cheaterex" ] && [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64_save_file.bin ]; then
-			mv ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64_save_file.bin ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/CHEATERex_save_file.bin
-		fi
-	fi
-elif [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64config.txt ] || [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/CHEATERex_config.txt ]; then
-	echo Config file already exists from previous build.
-elif [ ! -f ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64config.txt ] && [ -d ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO" ] && [ "$REPO" = "sm64-port" ] && [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64nx/sm64.sav ]; then
-	cp ${XDG_DATA_HOME:-$HOME/.local/share}/sm64nx/sm64.sav ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64_save_file.bin
-	echo Save File copied from sm64nx.
-elif [ ! -f ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64config.txt ] && [ -d ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO" ] && [ "$REPO" = "sm64nx" ] && [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64-port/sm64_save_file.bin ]; then
-	cp ${XDG_DATA_HOME:-$HOME/.local/share}/sm64-port/sm64_save_file.bin ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64.sav
-	echo Save File copied from sm64-port.
-else
-	echo No compatible save file found.  Starting new game.
 fi
 echo
 if [ "$TARGET_WEB" = 1 ] || [ "$ANDROID" = 1 ]; then
