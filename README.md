@@ -1,8 +1,6 @@
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; [Click Here to View](https://raw.githubusercontent.com/enigma9o7/smlinux/master/smlinux) &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; [Right Click Here - Save Link As to Download](https://raw.githubusercontent.com/enigma9o7/smlinux/master/smlinux) 
 
 <img src=https://github.com/enigma9o7/smlinux/raw/screenshot/MarioPC-small.png>
-<img src=https://github.com/enigma9o7/smlinux/raw/screenshot/screenshot.jpg>
-<img src=https://github.com/enigma9o7/smlinux/raw/screenshot/screenshot1.jpg>
 
 # &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Super  Mario  Linux  Build  Install  Update
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; [Click Here to View](https://raw.githubusercontent.com/enigma9o7/smlinux/master/smlinux) &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; [Right Click Here - Save Link As to Download](https://raw.githubusercontent.com/enigma9o7/smlinux/master/smlinux) 
@@ -34,12 +32,13 @@ That's Everything. That's all you have to do..
 You'll be asked sudo password to install build tools at the beginning, then it will update and intsall itself to the first directory in your path (or create ~/bin if nothing available), and prompt you to approve (or change) the reccommended options before your build starts, then will run as user unattended and before the time you finish reading the FAQ you will hear "It's me, Mario!".  
 (**Do not run smlinux as root; you will be prompted for sudo password automatically if needed.**)
 
-You must provide your own legally backed up rom file in Z64 (Big Endian) format. 
+You must provide your own legally backed up rom file in Z64 (Big Endian) format for first install. 
+
+smlinux will install itself as 'smlinux' to the first directory in your path, usually something like ~/bin or ~/Applications/.bin. After first running what you save from here, you can delete it, and just type 'smlinux update' without dot-slash from any folder when you're ready to build or update again
 
 If for some reason the make pauses or hangs, perhaps on single core cpu or system with low memory, then set JOBS=-j1. Without the 1, this switch makes make run multiple jobs at once which speeds up the build process on PCs with multiple cores and plenty of memory, but occasionally causes issues on under-powered systems (that can still run the game just fine).
-
-smlinux will install itself as 'smlinux' to the first directory in your path, usually something like ~/bin or ~/Applications/.bin. After first running what you download from github, you can delete it, and just type 'smlinux update' without dot-slash from any folder when you're ready to build or update again.
-
+.<img src=https://github.com/enigma9o7/smlinux/raw/screenshot/screenshot.jpg>
+<img src=https://github.com/enigma9o7/smlinux/raw/screenshot/screenshot1.jpg>
 # Frequently Asked Questions
 
 * [<strong>What repository should I use?</strong>](#what-repository-should-i-use)
