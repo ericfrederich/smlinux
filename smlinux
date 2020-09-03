@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0903-1129
+# 2020-0903-1404
 
 domake(){
 	#Here We go & music to build to
@@ -1199,6 +1199,51 @@ if [ "$ANDROID" = 1 ] && [ ! -f "$BASEPATH"/"$REPO"/../../build/outputs/apk/debu
 elif [ -f "$BASEPATH"/"$REPO"/../../build/outputs/apk/debug/app-debug.apk ]; then
 	mv "$BASEPATH"/"$REPO"/../../build/outputs/apk/debug/app-debug.apk "$BASEPATH"/"$REPO"/../../build/outputs/apk/debug/sm64."$VERSION".f3dex2e.apk
 fi
+echo Checking for exisiting compatible config or savefiles...
+if [ ! -f ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64config.txt ] && [ ! -d ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO" ] && [ ! "$REPO" = sm64-port ] && [ ! "REPO" = "sm64nx" ]; then
+	if [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64ex/sm64config.txt ]; then
+		cp ${XDG_DATA_HOME:-$HOME/.local/share}/sm64ex/sm64config.txt ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"
+	elif [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/sm64config.txt ]; then
+		cp ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/sm64config.txt ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"
+	elif [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/render96ex/sm64config.txt ]; then
+		cp ${XDG_DATA_HOME:-$HOME/.local/share}/render96ex/sm64config.txt ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"
+	elif [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/cheaterex/sm64config.txt ]; then
+		cp ${XDG_DATA_HOME:-$HOME/.local/share}/render96ex/sm64config.txt ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"
+	elif [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64ex-coop/sm64config.txt ]; then
+		cp ${XDG_DATA_HOME:-$HOME/.local/share}/sm64ex-coop/sm64config.txt ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"
+	else
+		echo No compatible configuration file found, game will make new one.
+	fi
+	if [ "TEXT_SAVES" = 0 ] && [ ! -f ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64_save_file.bin ]; then
+		if [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64ex/sm64_save_file.bin ]; then
+			cp ${XDG_DATA_HOME:-$HOME/.local/share}/sm64ex/sm64_save_file.bin ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"
+			echo Save File copied from sm64ex.
+		elif [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64-port/sm64_save_file.bin ]; then
+			cp ${XDG_DATA_HOME:-$HOME/.local/share}/sm64-port/sm64_save_file.bin ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"
+			echo Save File copied from sm64-port.
+		elif [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/sm64_save_file.bin ]; then
+			cp ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/sm64_save_file.bin ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"
+			echo Save File copied from sm64pc.
+		elif [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/render96ex/sm64_save_file.bin ]; then
+			cp ${XDG_DATA_HOME:-$HOME/.local/share}/render96ex/sm64_save_file.bin ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"
+			echo Save File copied from render96ex.
+		elif [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/cheaterex/sm64_save_file.bin ]; then
+			cp ${XDG_DATA_HOME:-$HOME/.local/share}/cheaterex/sm64_save_file.bin ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"
+			echo Save File copied from cheaterex
+		elif [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64nx/sm64.sav ]; then
+			cp ${XDG_DATA_HOME:-$HOME/.local/share}/sm64nx/sm64.sav ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64_save_file.bin
+			echo Save File copied from sm64nx.
+		fi
+	fi
+elif [ ! -f ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64config.txt ] && [ ! -d ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO" ] && [ "$REPO" = "sm64-port" ] && [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64nx/sm64.sav ]; then
+	cp ${XDG_DATA_HOME:-$HOME/.local/share}/sm64nx/sm64.sav ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64_save_file.bin
+	echo Save File copied from sm64nx.
+elif [ ! -f ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64config.txt ] && [ ! -d ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO" ] && [ "$REPO" = "sm64nx" ] && [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64-port/sm64_save_file.bin ]; then
+	cp ${XDG_DATA_HOME:-$HOME/.local/share}/sm64-port/sm64_save_file.bin  ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64.sav
+	echo Save File copied from sm64-port.
+else
+	echo No compatible save file found.  You'll have a clean start.
+fi
 echo
 if [ "$TARGET_WEB" = 1 ] || [ "$ANDROID" = 1 ]; then
 	echo [7] Skipping menu entry for non pc version...
@@ -1206,7 +1251,6 @@ else
 	echo [7] Echo Creating Desktop Shortcut and Menu Entry...
 	makedesktop
 fi
-
 echo
 echo [8] Build Succesful!  Testing Application Launch...
 echo
