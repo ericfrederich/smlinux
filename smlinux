@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0902-2139
+# 2020-0903-1019
 
 domake(){
 	#Here We go & music to build to
@@ -539,12 +539,10 @@ dosgi(){
 	if  [ -f "$BASEPATH"/"$REPO"/enhancements/CHEATER*.patch ]; then
 		cd "$BASEPATH"/"$REPO"
 		git apply -R enhancements/CHEATER*.patch
-		7z x enhancements/"$SGIFILE" -aoa 
-		git apply enhancements/CHEATER*.patch
-	else
-		cd "$BASEPATH"/"$REPO"
-		7z x enhancements/"$SGIFILE" -aoa -o..
+		rm enhancements/CHEATER*
 	fi
+	cd "$BASEPATH"/"$REPO"
+	7z x enhancements/"$SGIFILE" -aoa 
 	}
 	
 scriptUpdate(){
