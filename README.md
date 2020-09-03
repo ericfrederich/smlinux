@@ -1,10 +1,8 @@
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; [Click Here to View](https://raw.githubusercontent.com/enigma9o7/smlinux/master/smlinux) &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; [Right Click Here - Save Link As to Download](https://raw.githubusercontent.com/enigma9o7/smlinux/master/smlinux) 
-
 <img src=https://github.com/enigma9o7/smlinux/raw/screenshot/MarioPC-small.png>
 
-# &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Super  Mario  Linux  Build  Install  Update
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; [Click Here to View](https://raw.githubusercontent.com/enigma9o7/smlinux/master/smlinux) &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; [Right Click Here - Save Link As to Download](https://raw.githubusercontent.com/enigma9o7/smlinux/master/smlinux) 
 
+# &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Super  Mario  Linux  Build  Install  Update
 # 
 1. Installs Required Packages (build tools & dependencies)
 2. Installs latest version of itself to user path 
