@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0902-1822
+# 2020-0902-1916
 
 domake(){
 	#Here We go & music to build to
@@ -700,6 +700,9 @@ rungame(){
 			fi
 		fi
 		xdg-open "$BASEPATH"/"$REPO"/../../build/outputs/apk/debug &disown
+	elif [ "$REPO"  = "sm64ex-coop" ] ; then
+		cd "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"
+		${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/cooplauncher local &disown
 	else 
 		gtk-launch "$REPO"&disown
 	fi
