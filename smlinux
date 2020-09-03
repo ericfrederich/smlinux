@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0902-1714
+# 2020-0902-1822
 
 domake(){
 	#Here We go & music to build to
@@ -382,24 +382,36 @@ dohd(){
 		fi
 		if [ ! -d "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/romfs ] ; then mkdir "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/romfs
 		fi
-		mkdir "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/romfs/"Cleaner Aesthetics"
-		cd "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/romfs/"Cleaner Aesthetics"
-		wget -q https://cdn.discordapp.com/attachments/730416836780490752/730430152957362191/cleaner.pak
-		mkdir "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/romfs/"HD Mario . Bowser"
-		cd "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/romfs/"HD Mario . Bowser"
-		wget -q https://cdn.discordapp.com/attachments/730416836780490752/730425308989227158/arredondo.pak
-		mkdir "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/romfs/"~SGI Models"
-		cd "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/romfs/"~SGI Models"
-		wget -q https://cdn.discordapp.com/attachments/730416836780490752/730645970693652591/sgi1.2.pak
-		mkdir "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/romfs/"~OWO Mod"
-		cd "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/romfs/"~OWO Mod"
-		wget -q https://cdn.discordapp.com/attachments/730416836780490752/730420038024036362/owo.pak
-		mkdir "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/romfs/"~HD Luigi"
-		cd "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/romfs/"~HD Luigi"
-		wget -q https://cdn.discordapp.com/attachments/730416836780490752/730425786452017222/luigi.pak
-		mkdir "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/romfs/"~NES Retro"
-		cd "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/romfs/"~NES Retro"
-		wget -q https://cdn.discordapp.com/attachments/730416836780490752/730431589749620736/nes.pak
+		if [ ! -d "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/romfs/"Cleaner Aesthetics" ]; then
+			mkdir "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/romfs/"Cleaner Aesthetics"
+			cd "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/romfs/"Cleaner Aesthetics"
+			wget -q https://cdn.discordapp.com/attachments/730416836780490752/730430152957362191/cleaner.pak
+		fi
+		if [ ! -d "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/romfs/"HD Mario . Bowser" ]; then
+			mkdir "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/romfs/"HD Mario . Bowser"
+			cd "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/romfs/"HD Mario . Bowser"
+			wget -q https://cdn.discordapp.com/attachments/730416836780490752/730425308989227158/arredondo.pak
+		fi
+		if [ ! -d "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/romfs/"~SGI Models" ]; then
+			mkdir "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/romfs/"~SGI Models"
+			cd "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/romfs/"~SGI Models"
+			wget -q https://cdn.discordapp.com/attachments/730416836780490752/730645970693652591/sgi1.2.pak
+		fi
+		if [ ! -d "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/romfs/"~OWO Mod" ]; then
+			mkdir "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/romfs/"~OWO Mod"
+			cd "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/romfs/"~OWO Mod"
+			wget -q https://cdn.discordapp.com/attachments/730416836780490752/730420038024036362/owo.pak
+		fi
+		if [ ! -d "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/romfs/"~HD Luigi" ]; then
+			mkdir "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/romfs/"~HD Luigi"
+			cd "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/romfs/"~HD Luigi"
+			wget -q https://cdn.discordapp.com/attachments/730416836780490752/730425786452017222/luigi.pak
+		fi
+		if [ ! -d "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/romfs/"~NES Retro" ]; then
+			mkdir "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/romfs/"~NES Retro"
+			cd "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/romfs/"~NES Retro"
+			wget -q https://cdn.discordapp.com/attachments/730416836780490752/730431589749620736/nes.pak
+		fi
 	else
 		if [ "$EXTERNAL_DATA" = 1 ] ; then
 			if [ ! -d "$BASEPATH"/"$REPO"/build ] ; then 
