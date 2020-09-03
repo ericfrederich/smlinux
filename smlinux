@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0903-1047
+# 2020-0903-1129
 
 domake(){
 	#Here We go & music to build to
@@ -184,8 +184,8 @@ vettrom(){
 	}
 
 makeconfig(){
-echo '# REPO supports sm64-port sm64ex sm64nx render96ex sm64-port-android-base
-# REPO also supports sm64ex-coop (also set BRANCH=coop)
+echo '# REPO supports sm64-port sm64ex sm64nx render96ex cheaterex
+# also sm64-port-android-base & sm64ex-coop (also set BRANCH=coop)
 REPO=sm64ex
 BRANCH=nightly
 InstallHD=1
@@ -242,6 +242,8 @@ loadconfig(){
 		REPO=sm64ex
 	elif [ "$REPO" = "Render96ex" ] || [ "$REPO" = "render96" ] || [ "$REPO" = "Render96" ]; then
 		REPO=render96ex
+	elif [ "$REPO" = "CHEATERex" ] || [ "$REPO" = "CHEATEREX" ]; then
+		REPO=cheaterex
 	fi
 	if [ "$REPO" = "sm64-port" ]; then
 		EXTERNAL_DATA=0
@@ -635,6 +637,8 @@ if [ ! -f ${XDG_DATA_HOME:-$HOME/.local/share}/icons/"$REPO".* ]; then
 		wget -q https://cdn.discordapp.com/attachments/711253314855108629/719215654837682226/Super_Mario_64.png
 		mv Super_Mario_64.png ${XDG_DATA_HOME:-$HOME/.local/share}/icons/"$REPO".png
 	elif [ "$REPO" = "render96ex" ]; then 
+		mv ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/r96-icon.png ${XDG_DATA_HOME:-$HOME/.local/share}/icons/"$REPO".png
+	elif [ "$REPO" = "cheaterex" ]; then 
 		wget -q https://cdn.discordapp.com/attachments/710334795674288139/745150550382870548/bowser.png
 		mv bowser.png ${XDG_DATA_HOME:-$HOME/.local/share}/icons/"$REPO".png
 	elif [ "$REPO" = "sm64-port" ]; then 
@@ -1126,6 +1130,8 @@ if [ ! -d "$BASEPATH"/"$REPO" ]; then
 		git clone https://github.com/render96/"$REPO" -b "$BRANCH"
 	elif [ "$REPO" = "sm64ex-coop" ]; then
 		git clone https://github.com/djoslin0/sm64ex-coop -b "$BRANCH"
+	elif [ "$REPO" = "cheaterex" ]; then
+		git clone https://github.com/s4Ys369/cheaterex -b "$BRANCH"
 	else
 		git clone https://github.com/"$REPO"/"$REPO" -b "$BRANCH"
 	fi
