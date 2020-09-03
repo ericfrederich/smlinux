@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0902-1435
+# 2020-0902-1714
 
 domake(){
 	#Here We go & music to build to
@@ -427,7 +427,7 @@ dohd(){
 				wget -q https://github.com/MapAnon/sm64-pc-hq-sounds/releases/download/5.1/hq_sounds_v5.1.zip
 			fi
 		fi
-		if  [ ! "$SGI" = 1 ] && ([ ! -f "$BASEPATH"/"$REPO"/enhancements/Old_School_HD_SGI_Base_Models_V1.3_Refresh_11.7z ] || [ ! -f "$BASEPATH"/"$REPO"/enhancements/RENDER96_V1.3.7z ]); then
+		if  [ ! "$SGI" = 1 ] && ([ ! -f "$BASEPATH"/"$REPO"/enhancements/Old_School_HD_SGI_Base_Models_V1.3_Refresh_11.7z ] || [ ! -f "$BASEPATH"/"$REPO"/enhancements/RENDER96_V1.3.7z ] ); then
 			if [ ! -f "$BASEPATH"/"$REPO"/enhancements/hd_bowser.rar ] && [ ! "$REPO" = "sm64ex-coop" ]; then
 				cd "$BASEPATH"/"$REPO"/enhancements
 				wget -q https://cdn.discordapp.com/attachments/716459185230970880/719758031990030427/Old_School_HD_Mario_Model.zip 
@@ -710,6 +710,11 @@ fi
 if [ ! -d ${XDG_DATA_HOME:-$HOME/.local/share}/applications ]; then mkdir ${XDG_DATA_HOME:-$HOME/.local/share}/applications
 fi
 if [ ! -f "$BASEPATH"/.smlinuxUpdate ]; then
+	if [ "$1" = "config" ]; then
+		editconfig
+		echo
+		exit
+	fi
 	#Play a sound clip for no reason - thank you for playing my game.
 	if [ -f /usr/bin/mplayer ] || [ -f /bin/mplayer ]; then
 		if [ -f "$BASEPATH"/sm64pc/sound/samples/sfx_mario_peach/0D.aiff ]; then
@@ -721,23 +726,18 @@ if [ ! -f "$BASEPATH"/.smlinuxUpdate ]; then
 		fi
 	fi
 	echo Loading ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinuxcfg.txt...
+	
 	if [ ! -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinuxcfg.txt ]; then
 		echo File not found, so making a new one...
 		makeconfig
-		if [ ! "$1" = "config" ]; then
+		doconfig
+	else
+		loadconfig "$@"
+		if [ "$CONFIG" = 1 ] && (!( [ "$1" = "--help" ] || [ "$1" = "-help" ] || [ "$1" = "help" ] )); then
 			doconfig
 		fi
 	fi
-	if [ "$1" = "config" ]; then
-		editconfig
-		echo
-		exit
-	fi
 	loadconfig "$@"
-	if [ "$CONFIG" = 1 ]; then
-		doconfig
-		loadconfig "$@"
-	fi
 	if [ ! -d ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO" ] && [ ! "$ANDROID" = 1 ]; then
 		echo Creating ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO" folder for game save and configuration.
 		mkdir ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"
@@ -934,6 +934,9 @@ if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ] || [ "$1" = "
 		if [ -f "$BASEPATH"/"$REPO"/enhancements/CHEATER*.patch ]; then
 			git apply -R enhancements/CHEATER*.patch
 		fi
+		if [ -f "$BASEPATH"/"$REPO"/enhancements/menu-arrows.patch ]; then
+			git apply -R enhancements/menu-arrows.patch
+		fi
 		git merge
 		if [ "$?" = "1" ]; then
 			echo WARNING: Unable to merge source updates from github.
@@ -947,7 +950,9 @@ if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ] || [ "$1" = "
 		if [ -f "$BASEPATH"/"$REPO"/enhancements/CHEATER*.patch ]; then
 			git apply enhancements/CHEATER*.patch
 		fi
-
+		if [ -f "$BASEPATH"/"$REPO"/enhancements/menu-arrows.patch ]; then
+			git apply enhancements/menu-arrows.patch
+		fi
 	fi
 	if [ "$REPO" = "sm64-port-android-base/app/jni/src" ]; then
 		git submodule init
@@ -967,18 +972,22 @@ if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ] || [ "$1" = "
 		printf "\nAdding SGI Models...\n\n"
 		dosgi
 	fi
-	if (([ "$REPO" = "sm64ex" ] && [ "$BRANCH" = "nightly" ] ) || [ "$BRANCH" = "sm64ex_nightly" ] || [ "$REPO" = "render96ex" ] ) && [ ! -f "$BASEPATH"/"$REPO"/enhancements/CHEATER.patch ]; then
+	if ([ "$REPO" = "sm64ex" ] && [ "$BRANCH" = "nightly" ] ) || [ "$BRANCH" = "sm64ex_nightly" ] || [ "$REPO" = "render96ex" ] ; then
 		cd "$BASEPATH"/"$REPO"
 		if [ -f "$BASEPATH"/"$REPO"/enhancements/CHEATER*.patch ]; then
 			git apply -R enhancements/CHEATER*.patch
 			rm enhancements/CHEATER*
 		fi
 		cd enhancements
-		wget -q https://cdn.discordapp.com/attachments/716459185230970880/748767846183600158/CHEATER.zip
+		wget -q https://cdn.discordapp.com/attachments/716459185230970880/750380998373671012/CHEATER.zip
 		unzip CHEATER*
 		rm CHEATER.zip
 		cd ..
 		git apply enhancements/CHEATER.patch
+		if [ ! -f "$BASEPATH"/"$REPO"/enhancements/menu-arrows.patch ]; then
+			cp ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/menu-arrows.patch enhancements
+			git apply enhancements/menu-arrows.patch
+		fi
 	fi
 	if [ "TARGET_WEB" = 1 ] && [ -f "$BASEPATH"/"$REPO"/enhancements/60fps ]; then
 		git apply -R enhancements/60fps*.patch
@@ -1132,7 +1141,7 @@ fi
 if  [ "$REPO" = "sm64ex" ] || [ "$BRANCH" = "sm64ex_nightly" ] || [ "$BRANCH" = "sm64ex" ] || [ "$REPO" = render96ex ]; then 
 	cd "$BASEPATH"/"$REPO"/enhancements
 	cp ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/menu-arrows.patch .
-	wget -q https://cdn.discordapp.com/attachments/716459185230970880/748767846183600158/CHEATER.zip
+	wget -q https://cdn.discordapp.com/attachments/716459185230970880/750380998373671012/CHEATER.zip
 	unzip CHEATER
 	rm CHEATER.zip
 	cd ..
