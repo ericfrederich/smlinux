@@ -38,7 +38,7 @@ If for some reason the make pauses or hangs, perhaps on single core cpu or syste
 
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; [Click Here to View](https://raw.githubusercontent.com/enigma9o7/smlinux/master/smlinux) &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; [Right Click Here - Save Link As to Download](https://raw.githubusercontent.com/enigma9o7/smlinux/master/smlinux)
 
-.<img src=https://github.com/enigma9o7/smlinux/raw/screenshot/screenshot.jpg>
+<img src=https://github.com/enigma9o7/smlinux/raw/screenshot/screenshot.jpg>
 
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; [Click Here to View](https://raw.githubusercontent.com/enigma9o7/smlinux/master/smlinux) &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; [Right Click Here - Save Link As to Download](https://raw.githubusercontent.com/enigma9o7/smlinux/master/smlinux) 
 
