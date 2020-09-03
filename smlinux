@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0903-1404
+# 2020-0903-1410
 
 domake(){
 	#Here We go & music to build to
@@ -1239,10 +1239,10 @@ elif [ ! -f ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64config.txt ] && [ !
 	cp ${XDG_DATA_HOME:-$HOME/.local/share}/sm64nx/sm64.sav ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64_save_file.bin
 	echo Save File copied from sm64nx.
 elif [ ! -f ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64config.txt ] && [ ! -d ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO" ] && [ "$REPO" = "sm64nx" ] && [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64-port/sm64_save_file.bin ]; then
-	cp ${XDG_DATA_HOME:-$HOME/.local/share}/sm64-port/sm64_save_file.bin  ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64.sav
+	cp ${XDG_DATA_HOME:-$HOME/.local/share}/sm64-port/sm64_save_file.bin ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64.sav
 	echo Save File copied from sm64-port.
 else
-	echo No compatible save file found.  You'll have a clean start.
+	echo No compatible save file found.  You will have a clean start.
 fi
 echo
 if [ "$TARGET_WEB" = 1 ] || [ "$ANDROID" = 1 ]; then
