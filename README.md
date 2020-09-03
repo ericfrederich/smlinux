@@ -32,7 +32,7 @@ You'll be asked sudo password to install build tools at the beginning, then it w
 
 You must provide your own legally backed up rom file in Z64 (Big Endian) format for first install. 
 
-smlinux will install itself as 'smlinux' to the first directory in your path, usually something like ~/bin or ~/Applications/.bin. After first running what you save from here, you can delete it, and just type 'smlinux update' without dot-slash from any folder when you're ready to build or update again
+smlinux will install itself as 'smlinux' to the first directory in your path, usually something like ~/bin or ~/Applications/.bin. After first running what you save from here, you can delete it, and just type 'smlinux update' without dot-slash from any folder when you want to build or update again.
 
 If for some reason the make pauses or hangs, perhaps on single core cpu or system with low memory, then set JOBS=-j1. Without the 1, this switch makes make run multiple jobs at once which speeds up the build process on PCs with multiple cores and plenty of memory, but occasionally causes issues on under-powered systems (that can still run the game just fine).
 
