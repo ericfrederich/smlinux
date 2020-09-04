@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0903-1750
+# 2020-0904-1436
 
 domake(){
 	#Here We go & music to build to
@@ -469,9 +469,10 @@ dohd(){
 				fi
 			fi
 		fi
-		if [ `uname -m` = "x86_64" ] && [ -f "$BASEPATH"/"$REPO"/enhancements/60fps*.patch ] && (!( [ "$TARGET_WEB" = 1 ] || [ ! "$SGI" = 1 ] || [ "REPO" = "sm64ex-coop" ] )); then
+		if [ `uname -m` = "x86_64" ] && [ -f "$BASEPATH"/"$REPO"/enhancements/60fps*.patch ] && (!( [ "$TARGET_WEB" = 1 ] || [ "$SGI" = 1 ] || [ "REPO" = "sm64ex-coop" ] )); then
 			cd "$BASEPATH"/"$REPO"
 			if [ ! -f "$BASEPATH"/"$REPO"/enhancements/60fps ]; then
+				echo Applying 60fps patch...
 				git apply enhancements/60fps*.patch
 				touch enhancements/60fps
 			fi
@@ -515,12 +516,14 @@ dosgi(){
 		fi
 	fi
 	if [ -d "$BASEPATH"/"$REPO"/actors.bak ]; then
+		echo Restoring default actors...
 		cd "$BASEPATH"/"$REPO"/enhancements
 		rm -rf "$BASEPATH"/"$REPO"/actors
 		mv "$BASEPATH"/"$REPO"/actors.bak "$BASEPATH"/"$REPO"/actors
 		rm hd_bowser.rar Old_School_HD_Mario_Model.zip
 	fi
 	if [ -f "$BASEPATH"/"$REPO"/enhancements/3d_coin*.patch ]; then
+		echo Removing 3D coins...
 		cd "$BASEPATH"/"$REPO"
 		git apply -R enhancements/3d_coin*.patch
 		rm enhancements/3d_coin*.patch
@@ -543,6 +546,7 @@ dosgi(){
 		SGIFILE=RENDER96_V1.3.7z
 	fi
 	if  [ -f "$BASEPATH"/"$REPO"/enhancements/CHEATER*.patch ]; then
+		cd echo Removing cheater...
 		cd "$BASEPATH"/"$REPO"
 		git apply -R enhancements/CHEATER*.patch
 		rm enhancements/CHEATER*
@@ -1221,9 +1225,11 @@ echo
 echo [5] Applying Community Enhancements...
 echo
 if [ "$SGI" = 1 ]; then
+	echo Installing SGI Models...
 	dosgi
 fi
 if [ "$InstallHD" = 1 ]; then 
+	echo Install HD Enhancements...
 	dohd
 else
 	echo "WARNING: InstallHD Disabled in Config File."
