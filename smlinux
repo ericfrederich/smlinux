@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0903-1611
+# 2020-0903-1750
 
 domake(){
 	#Here We go & music to build to
@@ -140,7 +140,7 @@ checkphone(){
 
 gcccheck(){
 	if [ -f /usr/bin/gcc ] || [ -f /bin/gcc ]; then
-		if [ `gcc -dumpversion` \> 7.99 ]; then
+		if [ `gcc -dumpfullversion -dumpversion` \> 7.99 ]; then
 			echo gcc 8 or higher confirmed
 			return
 		fi
@@ -163,11 +163,15 @@ gcccheck(){
 			fi
 		fi			
 	fi
-	echo WARNING: Your C compiler is not new enough for sm64nx. 
-	echo gcc --version must report 8 or higher.  
-	echo Please install it then rerun smlinux, or use another repo.
+	echo "ERROR: smlinux doesn't think your C compiler is not new enough for sm64nx."
+	echo "gcc -dumpfullversion must report 8 or higher."
+	echo "Please install it then rerun smlinux, or use another repo."
+	echo "Sometimes its wrong - if you have gcc 8/9/10 and wish to continue, do so."
 	echo
-	exit		
+	exec 2> >(grep -v GtkDialog >&2) # Supress GTK Dialog Warnings
+	if zenity --question --text="sm64nx requires gcc 8 or newer and was not detected.\nDo you wish to continue anyway incase smlinux is reading gcc -dumpversion wrong,\nor abort so you can install it then run smlinux again?" --title "GCC 8 or newer not detected" --ok-label="Abort" --cancel-label="Continue" --width 550; then
+		exit
+	fi
 	}
 
 vettrom(){
