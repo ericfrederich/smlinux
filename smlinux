@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0904-1907
+# 2020-0905-0128
 
 domake(){
 	#Here We go & music to build to
@@ -270,12 +270,12 @@ loadconfig(){
 	if [ "$JOBS" = "-j" ]; then
 		if [ "$REPO" = "sm64nx" ]; then 
 			JOBS=-j$(($(nproc) - 1))
-			if [ ! -f "$BASEPATH"/.smlinuxUpdate ]; then
+			if [ ! -f ~/.smlinuxUpdate ]; then
 				echo WARNING: Jobs set to -j$(($(nproc) - 1)) because nuz nx has problems with unlimited.
 			fi
 		elif [ "$TARGET_WEB" = "1" ]; then
 			JOBS=-j`nproc`
-			if [ ! -f "$BASEPATH"/.smlinuxUpdate ]; then
+			if [ ! -f ~/.smlinuxUpdate ]; then
 				echo WARNING: Jobs set to -j`nproc` because nuz emsdk has problems with unlimited. 
 			fi
 		fi
@@ -556,7 +556,7 @@ dosgi(){
 	}
 	
 scriptUpdate(){
-if [ ! -f "$BASEPATH"/.smlinuxUpdate ]; then 
+if [ ! -f ~/.smlinuxUpdate ]; then 
 	if [ ! -f "${MAPFILE[0]}"/smlinux ] || [ ! -d ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/.git] ; then
 		echo Installing Script... 		
 		if [ -d ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc ]; then
@@ -575,7 +575,7 @@ if [ ! -f "$BASEPATH"/.smlinuxUpdate ]; then
 			echo smlinux exiting incomplete.
 			exit
 		fi
-		touch "$BASEPATH"/.smlinuxUpdate
+		touch ~/.smlinuxUpdate
 		mv ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinux "${MAPFILE[0]}"/
 		if [ ! -f "${MAPFILE[0]}"/smlinux ]; then
 			echo WARNING: Could not write to first path directory.  Creating $HOME/bin.
@@ -623,10 +623,10 @@ if [ ! -f "$BASEPATH"/.smlinuxUpdate ]; then
 				fi
 				if [ -f "$BASEPATH"/Downloads/smlinux.txt ]; then mv -f "$BASEPATH"/Downloads/smlinux.txt "$BASEPATH"/Downloads/smlinux.old.backup
 				fi	
-				exec smlinux "$@"' > "$BASEPATH"/.smlinuxUpdate
-				chmod +x "$BASEPATH"/.smlinuxUpdate
+				exec smlinux "$@"' > ~/.smlinuxUpdate
+				chmod +x ~/.smlinuxUpdate
 				cd "$LAUNCH_DIR"
-				exec "$BASEPATH"/.smlinuxUpdate "$@"
+				exec ~/.smlinuxUpdate "$@"
 			fi
 		else    
 			echo Already up to date.
@@ -735,9 +735,11 @@ rungame(){
 
 LAUNCH_DIR=$(pwd)
 mapfile -t -d: <<<"$PATH"
-if [ ! -d $HOME/.local ]; then mkdir $HOME/.local
+if [ ! -d $HOME/.local ]; then 
+	mkdir $HOME/.local
 fi
-if [ ! -d ${XDG_DATA_HOME:-$HOME/.local/share} ]; then mkdir ${XDG_DATA_HOME:-$HOME/.local/share}
+if [ ! -d ${XDG_DATA_HOME:-$HOME/.local/share} ]; then 
+	mkdir ${XDG_DATA_HOME:-$HOME/.local/share}
 fi
 if [ ! -d ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc ]; then mkdir ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc
 fi
@@ -745,22 +747,13 @@ if [ ! -d ${XDG_DATA_HOME:-$HOME/.local/share}/icons ]; then mkdir ${XDG_DATA_HO
 fi
 if [ ! -d ${XDG_DATA_HOME:-$HOME/.local/share}/applications ]; then mkdir ${XDG_DATA_HOME:-$HOME/.local/share}/applications
 fi
-if [ ! -f "$BASEPATH"/.smlinuxUpdate ]; then
+if [ ! -f ~/.smlinuxUpdate ]; then
 	if [ "$1" = "config" ]; then
 		editconfig
 		echo
 		exit
 	fi
-	#Play a sound clip for no reason - thank you for playing my game.
-	if [ -f /usr/bin/mplayer ] || [ -f /bin/mplayer ]; then
-		if [ -f "$BASEPATH"/sm64pc/sound/samples/sfx_mario_peach/0D.aiff ]; then
-			sh -c 'mplayer -nolirc -really-quiet "$BASEPATH"/sm64pc/sound/samples/sfx_mario_peach/0D.aiff&'
-		elif [ -f "$BASEPATH"/sm64ex/sound/samples/sfx_mario_peach/0D.aiff ]; then
-			sh -c 'mplayer -nolirc -really-quiet "$BASEPATH"/sm64ex/sound/samples/sfx_mario_peach/0D.aiff&'
-		elif [ -f "$BASEPATH"/sm64-port/sound/samples/sfx_mario_peach/0D.aiff ]; then
-			sh -c 'mplayer -nolirc -really-quiet "$BASEPATH"/sm64-port/sound/samples/sfx_mario_peach/0D.aiff&'
-		fi
-	fi
+	
 	echo Loading ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinuxcfg.txt...
 	if [ ! -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinuxcfg.txt ]; then
 		echo File not found, so making a new one...
@@ -773,6 +766,16 @@ if [ ! -f "$BASEPATH"/.smlinuxUpdate ]; then
 		fi
 	fi
 	loadconfig "$@"
+	#Play a sound clip for no reason - thank you for playing my game.
+	if [ -f /usr/bin/mplayer ] || [ -f /bin/mplayer ]; then
+		if [ -f "$BASEPATH"/sm64pc/sound/samples/sfx_mario_peach/0D.aiff ]; then
+			sh -c 'mplayer -nolirc -really-quiet "$BASEPATH"/sm64pc/sound/samples/sfx_mario_peach/0D.aiff&'
+		elif [ -f "$BASEPATH"/sm64ex/sound/samples/sfx_mario_peach/0D.aiff ]; then
+			sh -c 'mplayer -nolirc -really-quiet "$BASEPATH"/sm64ex/sound/samples/sfx_mario_peach/0D.aiff&'
+		elif [ -f "$BASEPATH"/sm64-port/sound/samples/sfx_mario_peach/0D.aiff ]; then
+			sh -c 'mplayer -nolirc -really-quiet "$BASEPATH"/sm64-port/sound/samples/sfx_mario_peach/0D.aiff&'
+		fi
+	fi
 	if [ ! -d ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO" ] && [ ! "$ANDROID" = 1 ]; then
 		echo Creating ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO" folder for game save and configuration.
 		mkdir ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"
@@ -864,8 +867,8 @@ fi
 
 if [ -f "$1" ] || [ -f "$LAUNCH_DIR"/"$1" ] || ( [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/baserom."$VERSION".z64 ] && ( [ "$1" = "build" ] || [ "$1" = "update" ]  )); then
 	echo
-	if [ -f "$BASEPATH"/.smlinuxUpdate ]; then 
-		rm "$BASEPATH"/.smlinuxUpdate
+	if [ -f ~/.smlinuxUpdate ]; then 
+		rm ~/.smlinuxUpdate
 		echo Script Update Complete.
 	else	# Fresh Build
 		if [ ! -d ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/.git ] || [ "$DEPENDS" = 1 ]; then
