@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0904-1436
+# 2020-0904-1907
 
 domake(){
 	#Here We go & music to build to
@@ -114,7 +114,7 @@ domake(){
 	}
 
 androidsdk(){
-	if [ -f /usr/bin/apt ] && [ -d /usr/lib/android-sdk ]; then
+	if [ -f /usr/bin/apt ] && [ ! -d /usr/lib/android-sdk ]; then
 		sudo apt install android-sdk -y
 	fi
 	if [ ! -f "$BASEPATH"/android-sdk/tools/bin/sdkmanager ]; then
@@ -269,9 +269,9 @@ loadconfig(){
 	fi
 	if [ "$JOBS" = "-j" ]; then
 		if [ "$REPO" = "sm64nx" ]; then 
-			JOBS=-j`nproc`
+			JOBS=-j$(($(nproc) - 1))
 			if [ ! -f "$BASEPATH"/.smlinuxUpdate ]; then
-				echo WARNING: Jobs set to -j`nproc` because nuz nx has problems with unlimited.
+				echo WARNING: Jobs set to -j$(($(nproc) - 1)) because nuz nx has problems with unlimited.
 			fi
 		elif [ "$TARGET_WEB" = "1" ]; then
 			JOBS=-j`nproc`
