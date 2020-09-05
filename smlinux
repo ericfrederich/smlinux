@@ -3,191 +3,194 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0905-0128
+# 2020-0905-0202
 
 domake(){
-	#Here We go & music to build to
-	if ( [ -f /usr/bin/mplayer ] || [ -f /bin/mplayer ] )  && [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/File_Select_64_slowed_down.mp3 ]; then
-		if [ -f "$BASEPATH"/"$REPO"/sound/samples/sfx_mario/0C.aiff ]; then
-			sh -c 'mplayer -nolirc -really-quiet '"$BASEPATH"/"$REPO"'/sound/samples/sfx_mario/0C.aiff;mplayer -nolirc -really-quiet -volume 40 -loop 0 '${XDG_DATA_HOME:-$HOME/.local/share}'/sm64pc/File_Select_64_slowed_down.mp3&'
-		elif [ -f "$BASEPATH"/sm64ex/sound/samples/sfx_mario/0C.aiff ]; then
-			sh -c 'mplayer -nolirc -really-quiet '"$BASEPATH"'/sm64ex/sound/samples/sfx_mario/0C.aiff;mplayer -nolirc -really-quiet -volume 40 -loop 0 '${XDG_DATA_HOME:-$HOME/.local/share}'/sm64pc/File_Select_64_slowed_down.mp3&'
+#Here We go & music to build to
+if ( [ -f /usr/bin/mplayer ] || [ -f /bin/mplayer ] )  && [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/File_Select_64_slowed_down.mp3 ]; then
+	if [ -f "$BASEPATH"/"$REPO"/sound/samples/sfx_mario/0C.aiff ]; then
+		sh -c 'mplayer -nolirc -really-quiet '"$BASEPATH"/"$REPO"'/sound/samples/sfx_mario/0C.aiff;mplayer -nolirc -really-quiet -volume 40 -loop 0 '${XDG_DATA_HOME:-$HOME/.local/share}'/sm64pc/File_Select_64_slowed_down.mp3&'
+	elif [ -f "$BASEPATH"/sm64ex/sound/samples/sfx_mario/0C.aiff ]; then
+		sh -c 'mplayer -nolirc -really-quiet '"$BASEPATH"'/sm64ex/sound/samples/sfx_mario/0C.aiff;mplayer -nolirc -really-quiet -volume 40 -loop 0 '${XDG_DATA_HOME:-$HOME/.local/share}'/sm64pc/File_Select_64_slowed_down.mp3&'
+	else
+		sh -c 'mplayer -nolirc -really-quiet -volume 40 -loop 0 '${XDG_DATA_HOME:-$HOME/.local/share}'/sm64pc/File_Select_64_slowed_down.mp3&'
+	fi
+fi 
+if [ "$TARGET_WEB" = 1 ] && [ "$InstallHD" = 1 ]; then
+	sed -i 's/TOTAL_MEMORY=20MB/TOTAL_MEMORY=28MB/g' "$BASEPATH"/"$REPO"/Makefile
+fi
+if [ "$ANDROID" = 1 ]; then
+	exec 2> >(grep -v GtkDialog >&2) # Supress GTK Dialog Warnings
+	checkphone
+	if [ "$GOTPHONE" = 1 ]; then
+		zenity --info --text='\nPhone Detected.  Be sure to grant it debugging permission.\n\nExisting copies must also be removed from device.' --title="Preparing for Android Installation...." --width=440 &disown
+	else
+		echo "If you want the app installed to your Android device,"
+		echo "plug it in now via USB and grant it debugging permission."
+		zenity --info --text='\nIf you want the app installed to your Android device, attach it via USB.\n\nGrant it debugging permission before this window disappears.\n\nExisting copies must also be removed from device.' --title="Preparing for Android Installation...." --width=480 &disown
+		echo
+	fi
+fi
+if [ "$REPO" = "sm64nx" ]; then
+	sed -i 's/-no-pie -lpthread -lzstd/-no-pie -lpthread -lzstd -lstdc++fs/g' "$BASEPATH"/"$REPO"/Makefile
+fi
+if [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/buildlog.txt ]; then
+	mv -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/buildlog.txt ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/buildlog.old
+fi
+cd "$BASEPATH"/"$REPO"
+time make BETTERCAMERA=$BETTERCAMERA NODRAWINGDISTANCE=$NODRAWINGDISTANCE TEXTURE_FIX=$TEXTURE_FIX EXTERNAL_DATA=$EXTERNAL_DATA DISCORDRPC=$DISCORDRPC VERSION=$VERSION RENDER_API=$RENDER_API TARGET_WEB=$TARGET_WEB TEXTSAVES=$TEXTSAVES "$JOBS" LEGACY_RES=$LEGACY_RES DEBUG=$DEBUG IMMEDIATELOAD=$IMMEDIATELOAD > ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/buildlog.txt
+if [ "$REPO" = "sm64-port-android-base/app/jni/src" ]; then
+	if [ "ARMONLY" = 1 ]; then
+		sed -i "s/v8a', 'x86', 'x86_64'/v8a'/g" $HOME/"$REPO"/../../build.gradle
+	fi
+	if [ "$BRANCH" = "sm64ex" ] || [ "$BRANCH" = "sm64ex_nightly" ]; then
+		make BETTERCAMERA=$BETTERCAMERA NODRAWINGDISTANCE=$NODRAWINGDISTANCE TEXTURE_FIX=$TEXTURE_FIX EXTERNAL_DATA=$EXTERNAL_DATA DISCORDRPC=$DISCORDRPC VERSION=$VERSION RENDER_API=$RENDER_API TARGET_WEB=$TARGET_WEB TEXTSAVES=$TEXTSAVES "$JOBS" LEGACY_RES=$LEGACY_RES DEBUG=$DEBUG IMMEDIATELOAD=$IMMEDIATELOAD > ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/buildlog.txt
+		if [ ! -f "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/sm64."$VERSION".f3dex2* ]; then
+			return
 		else
-			sh -c 'mplayer -nolirc -really-quiet -volume 40 -loop 0 '${XDG_DATA_HOME:-$HOME/.local/share}'/sm64pc/File_Select_64_slowed_down.mp3&'
+			echo
+			echo Native Build Succesful.
 		fi
-	fi 
-	if [ "$TARGET_WEB" = 1 ] && [ "$InstallHD" = 1 ]; then
-		sed -i 's/TOTAL_MEMORY=20MB/TOTAL_MEMORY=28MB/g' "$BASEPATH"/"$REPO"/Makefile
+		sed -i '/include $(BUILD_SHARED_LIBRARY)/i TEXTURE_FIX ?= 0\nNODRAWINGDISTANCE ?= 0\nBETTERCAMERA ?= 0\nifeq ($(TEXTURE_FIX),1)\n  LOCAL_CFLAGS += -DTEXTURE_FIX\nendif\nifeq ($(NODRAWINGDISTANCE),1)\n  LOCAL_CFLAGS += -DNODRAWINGDISTANCE\nendif\nifeq ($(BETTERCAMERA),1)\n  LOCAL_CFLAGS += -DBETTERCAMERA\nendif\n' "$BASEPATH"/"$REPO"/Android.mk
 	fi
-	if [ "$ANDROID" = 1 ]; then
-		exec 2> >(grep -v GtkDialog >&2) # Supress GTK Dialog Warnings
-		checkphone
-		if [ "$GOTPHONE" = 1 ]; then
-			zenity --info --text='\nPhone Detected.  Be sure to grant it debugging permission.\n\nExisting copies must also be removed from device.' --title="Preparing for Android Installation...." --width=440 &disown
+	cd "$BASEPATH"/sm64-port-android-base
+	checkphone
+	echo Android Package Kit build starting...
+	killall -q zenity
+	if [ "$GOTPHONE" = 1 ]; then
+		echo Do not disconnect phone until complete.
+		echo
+		TOUCH_CONTROLS=$TOUCH_CONTROLS BETTERCAMERA=$BETTERCAMERA NODRAWINGDISTANCE=$NODRAWINGDISTANCE TEXTURE_FIX=$TEXTURE_FIX EXTERNAL_DATA=$EXTERNAL_DATA VERSION=$VERSION TEXTSAVES=$TEXTSAVES ./gradlew installDebug -q
+	else
+		echo WARNING: Phone not deteced, building without installing.
+		echo
+		TOUCH_CONTROLS=$TOUCH_CONTROLS BETTERCAMERA=$BETTERCAMERA NODRAWINGDISTANCE=$NODRAWINGDISTANCE TEXTURE_FIX=$TEXTURE_FIX EXTERNAL_DATA=$EXTERNAL_DATA VERSION=$VERSION TEXTSAVES=$TEXTSAVES ./gradlew assembleDebug -q
+	fi
+	if [ "ARMONLY" = 1 ]; then
+		rm app/build.gradle
+		git checkout app/build.gradle
+	fi
+	cd $BASEPATH/"$REPO"
+	rm Android.mk
+	git checkout Android.mk
+	if [ "$EXTERNAL_DATA" = 1 ] && [ "$InstallHD" = 1 ]; then
+		echo Preparing external data for transfer...
+		cd "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/res
+		if [ -f "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET".old/res/hdbase.zip ]; then
+			mv "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET".old/res/hdbase.zip "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/res
 		else
-			echo "If you want the app installed to your Android device,"
-			echo "plug it in now via USB and grant it debugging permission."
-			zenity --info --text='\nIf you want the app installed to your Android device, attach it via USB.\n\nGrant it debugging permission before this window disappears.\n\nExisting copies must also be removed from device.' --title="Preparing for Android Installation...." --width=480 &disown
-			echo
+			unzip hq_sounds_v5.1
+		fi
+		unzip -n base
+		zip -r -0 -u hdbase gfx sound
+		ln -s "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/res/hdbase.zip "$BASEPATH"/"$REPO"/../../build/outputs/apk/debug/hdbase.zip
+		rm -rf sound gfx
+	elif [ "$EXTERNAL_DATA" = 1 ]; then
+		ln -s "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/res/base.zip "$BASEPATH"/"$REPO"/../../build/outputs/apk/debug/base.zip
+	fi
+	checkphone
+	if [ "$GOTPHONE" = 1 ] && [ "$EXTERNAL_DATA" = 1 ]; then
+		echo
+		echo Pushing external assets to phone...
+		if [[ ! `adb shell ls /sdcard/Android/data/com.vdavid003.sm64port 2> /dev/null` ]]; then
+			adb shell mkdir /sdcard/Android/data/com.vdavid003.sm64port
+			adb shell mkdir /sdcard/Android/data/com.vdavid003.sm64port/files
+		fi
+		if [ -f "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/res/hdbase.zip ]; then
+			adb push "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/res/hdbase.zip /sdcard/Android/data/com.vdavid003.sm64port/files/
+		elif [ "$EXTERNAL_DATA" = 1] && [ -f "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/res/base.zip ]; then
+			adb push "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/res/base.zip /sdcard/Android/data/com.vdavid003.sm64port/files/
 		fi
 	fi
-	if [ "$REPO" = "sm64nx" ]; then
-		sed -i 's/-no-pie -lpthread -lzstd/-no-pie -lpthread -lzstd -lstdc++fs/g' "$BASEPATH"/"$REPO"/Makefile
-	fi
-	if [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/buildlog.txt ]; then
-		mv -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/buildlog.txt ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/buildlog.old
-	fi
-	cd "$BASEPATH"/"$REPO"
-	time make BETTERCAMERA=$BETTERCAMERA NODRAWINGDISTANCE=$NODRAWINGDISTANCE TEXTURE_FIX=$TEXTURE_FIX EXTERNAL_DATA=$EXTERNAL_DATA DISCORDRPC=$DISCORDRPC VERSION=$VERSION RENDER_API=$RENDER_API TARGET_WEB=$TARGET_WEB TEXTSAVES=$TEXTSAVES "$JOBS" LEGACY_RES=$LEGACY_RES DEBUG=$DEBUG IMMEDIATELOAD=$IMMEDIATELOAD > ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/buildlog.txt
-	if [ "$REPO" = "sm64-port-android-base/app/jni/src" ]; then
-		if [ "ARMONLY" = 1 ]; then
-			sed -i "s/v8a', 'x86', 'x86_64'/v8a'/g" $HOME/"$REPO"/../../build.gradle
-		fi
-		if [ "$BRANCH" = "sm64ex" ] || [ "$BRANCH" = "sm64ex_nightly" ]; then
-			make BETTERCAMERA=$BETTERCAMERA NODRAWINGDISTANCE=$NODRAWINGDISTANCE TEXTURE_FIX=$TEXTURE_FIX EXTERNAL_DATA=$EXTERNAL_DATA DISCORDRPC=$DISCORDRPC VERSION=$VERSION RENDER_API=$RENDER_API TARGET_WEB=$TARGET_WEB TEXTSAVES=$TEXTSAVES "$JOBS" LEGACY_RES=$LEGACY_RES DEBUG=$DEBUG IMMEDIATELOAD=$IMMEDIATELOAD > ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/buildlog.txt
-			if [ ! -f "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/sm64."$VERSION".f3dex2* ]; then
-				return
-			else
-				echo
-				echo Native Build Succesful.
-			fi
-			sed -i '/include $(BUILD_SHARED_LIBRARY)/i TEXTURE_FIX ?= 0\nNODRAWINGDISTANCE ?= 0\nBETTERCAMERA ?= 0\nifeq ($(TEXTURE_FIX),1)\n  LOCAL_CFLAGS += -DTEXTURE_FIX\nendif\nifeq ($(NODRAWINGDISTANCE),1)\n  LOCAL_CFLAGS += -DNODRAWINGDISTANCE\nendif\nifeq ($(BETTERCAMERA),1)\n  LOCAL_CFLAGS += -DBETTERCAMERA\nendif\n' "$BASEPATH"/"$REPO"/Android.mk
-		fi
-		cd "$BASEPATH"/sm64-port-android-base
-		checkphone
-		echo Android Package Kit build starting...
-		killall -q zenity
-		if [ "$GOTPHONE" = 1 ]; then
-			echo Do not disconnect phone until complete.
-			echo
-			TOUCH_CONTROLS=$TOUCH_CONTROLS BETTERCAMERA=$BETTERCAMERA NODRAWINGDISTANCE=$NODRAWINGDISTANCE TEXTURE_FIX=$TEXTURE_FIX EXTERNAL_DATA=$EXTERNAL_DATA VERSION=$VERSION TEXTSAVES=$TEXTSAVES ./gradlew installDebug -q
-		else
-			echo WARNING: Phone not deteced, building without installing.
-			echo
-			TOUCH_CONTROLS=$TOUCH_CONTROLS BETTERCAMERA=$BETTERCAMERA NODRAWINGDISTANCE=$NODRAWINGDISTANCE TEXTURE_FIX=$TEXTURE_FIX EXTERNAL_DATA=$EXTERNAL_DATA VERSION=$VERSION TEXTSAVES=$TEXTSAVES ./gradlew assembleDebug -q
-		fi
-		if [ "ARMONLY" = 1 ]; then
-			rm app/build.gradle
-			git checkout app/build.gradle
-		fi
-		cd $BASEPATH/"$REPO"
-		rm Android.mk
-		git checkout Android.mk
-		if [ "$EXTERNAL_DATA" = 1 ] && [ "$InstallHD" = 1 ]; then
-			echo Preparing external data for transfer...
-			cd "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/res
-			if [ -f "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET".old/res/hdbase.zip ]; then
-				mv "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET".old/res/hdbase.zip "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/res
-			else
-				unzip hq_sounds_v5.1
-			fi
-			unzip -n base
-			zip -r -0 -u hdbase gfx sound
-			ln -s "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/res/hdbase.zip "$BASEPATH"/"$REPO"/../../build/outputs/apk/debug/hdbase.zip
-			rm -rf sound gfx
-		elif [ "$EXTERNAL_DATA" = 1 ]; then
-			ln -s "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/res/base.zip "$BASEPATH"/"$REPO"/../../build/outputs/apk/debug/base.zip
-		fi
-		checkphone
-		if [ "$GOTPHONE" = 1 ] && [ "$EXTERNAL_DATA" = 1 ]; then
-			echo
-			echo Pushing external assets to phone...
-			if [[ ! `adb shell ls /sdcard/Android/data/com.vdavid003.sm64port 2> /dev/null` ]]; then
-				adb shell mkdir /sdcard/Android/data/com.vdavid003.sm64port
-				adb shell mkdir /sdcard/Android/data/com.vdavid003.sm64port/files
-			fi
-			if [ -f "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/res/hdbase.zip ]; then
-				adb push "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/res/hdbase.zip /sdcard/Android/data/com.vdavid003.sm64port/files/
-			elif [ "$EXTERNAL_DATA" = 1] && [ -f "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/res/base.zip ]; then
-				adb push "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/res/base.zip /sdcard/Android/data/com.vdavid003.sm64port/files/
-			fi
-		fi
-	fi
-	if [ "$REPO" = "sm64nx" ] || ( [ "$TARGET_WEB" = 1 ] && [ "$InstallHD" = 1 ] ); then
-		cd $BASEPATH/"$REPO"
-		rm Makefile
-		git checkout Makefile
-	fi
-	if [ -f /usr/bin/mplayer ] && [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/File_Select_64_slowed_down.mp3 ]; then
-		killall -q -y1h mplayer
-	fi
-	}
+fi
+if [ "$REPO" = "sm64nx" ] || ( [ "$TARGET_WEB" = 1 ] && [ "$InstallHD" = 1 ] ); then
+	cd $BASEPATH/"$REPO"
+	rm Makefile
+	git checkout Makefile
+fi
+if [ -f /usr/bin/mplayer ] && [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/File_Select_64_slowed_down.mp3 ]; then
+	killall -q -y1h mplayer
+fi
+}
 
 androidsdk(){
-	if [ -f /usr/bin/apt ] && [ ! -d /usr/lib/android-sdk ]; then
-		sudo apt install android-sdk -y
-	fi
-	if [ ! -f "$BASEPATH"/android-sdk/tools/bin/sdkmanager ]; then
-		cd "$BASEPATH"
-		wget -q https://dl.google.com/android/repository/commandlinetools-linux-6609375_latest.zip
-		unzip -o commandlinetools-linux-6609375_latest -d android-sdk
-		rm commandlinetools-linux-6609375_latest.zip
-	fi
-	PATH="$BASEPATH"/android-sdk/tools/bin:$PATH
-	export PATH="$BASEPATH"/android-sdk/tools/bin:$PATH
-	export ANDROID_HOME="$BASEPATH"/android-sdk
-	if [ ! -d "$BASEPATH"/android-sdk/licenses ]; then
-		yes | sdkmanager --sdk_root=${ANDROID_HOME} --licenses
-	fi
-	if [ ! -d "$BASEPATH"/android-sdk/ndk-bundle ]; then
-		sdkmanager --install --sdk_root=${ANDROID_HOME} ndk-bundle
-	fi
-	}
+if [ -f /usr/bin/apt ] && [ ! -d /usr/lib/android-sdk ]; then
+	sudo apt install android-sdk -y
+fi
+if [ ! -f "$BASEPATH"/android-sdk/tools/bin/sdkmanager ]; then
+	cd "$BASEPATH"
+	wget -q https://dl.google.com/android/repository/commandlinetools-linux-6609375_latest.zip
+	unzip -o commandlinetools-linux-6609375_latest -d android-sdk
+	rm commandlinetools-linux-6609375_latest.zip
+fi
+PATH="$BASEPATH"/android-sdk/tools/bin:$PATH
+export PATH="$BASEPATH"/android-sdk/tools/bin:$PATH
+export ANDROID_HOME="$BASEPATH"/android-sdk
+if [ ! -d "$BASEPATH"/android-sdk/licenses ]; then
+	yes | sdkmanager --sdk_root=${ANDROID_HOME} --licenses
+fi
+if [ ! -d "$BASEPATH"/android-sdk/ndk-bundle ]; then
+	sdkmanager --install --sdk_root=${ANDROID_HOME} ndk-bundle
+fi
+}
 
 checkphone(){
-	adb get-state 1>/dev/null 2>&1 && GOTPHONE=1
-	}
+adb get-state 1>/dev/null 2>&1 && GOTPHONE=1
+}
 
 gcccheck(){
-	if [ -f /usr/bin/gcc ] || [ -f /bin/gcc ]; then
-		if [ `gcc -dumpfullversion -dumpversion` \> 7.99 ]; then
-			echo gcc 8 or higher confirmed
+if [ -f /usr/bin/gcc ] || [ -f /bin/gcc ]; then
+	if [ `gcc -dumpfullversion -dumpversion` \> 7.99 ]; then
+		echo gcc 8 or higher confirmed
+		return
+	fi
+fi 
+if [ -f /usr/bin/apt ] || [ -f /bin/apt ]; then		
+	echo Attempting to install gcc 9.
+	echo | sudo add-apt-repository ppa:ubuntu-toolchain-r/test
+	sudo apt install -y g++-9
+	sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 80 --slave /usr/bin/g++ g++ /usr/bin/g++-9 --slave /usr/bin/gcov gcov /usr/bin/gcov-9
+	if [ `gcc -dumpversion` \> 8.99 ]; then
+		echo gcc 9 succesfully installed
+		return
+	else
+		echo Attempting to install gcc 8.
+		sudo apt install -y g++-8
+		sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-8 80 --slave /usr/bin/g++ g++ /usr/bin/g++-8 --slave /usr/bin/gcov gcov /usr/bin/gcov-8
+		if [ `gcc -dumpversion` \> 7.99 ]; then
+			echo gcc 8 succesfully installed
 			return
 		fi
-	fi 
-	if [ -f /usr/bin/apt ] || [ -f /bin/apt ]; then		
-		echo Attempting to install gcc 9.
-		echo | sudo add-apt-repository ppa:ubuntu-toolchain-r/test
-		sudo apt install -y g++-9
-		sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 80 --slave /usr/bin/g++ g++ /usr/bin/g++-9 --slave /usr/bin/gcov gcov /usr/bin/gcov-9
-		if [ `gcc -dumpversion` \> 8.99 ]; then
-			echo gcc 9 succesfully installed
-			return
-		else
-			echo Attempting to install gcc 8.
-			sudo apt install -y g++-8
-			sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-8 80 --slave /usr/bin/g++ g++ /usr/bin/g++-8 --slave /usr/bin/gcov gcov /usr/bin/gcov-8
-			if [ `gcc -dumpversion` \> 7.99 ]; then
-				echo gcc 8 succesfully installed
-				return
-			fi
-		fi			
-	fi
-	echo "ERROR: smlinux doesn't think your C compiler is not new enough for sm64nx."
-	echo "gcc -dumpfullversion must report 8 or higher."
-	echo "Please install it then rerun smlinux, or use another repo."
-	echo "Sometimes its wrong - if you have gcc 8/9/10 and wish to continue, do so."
-	echo
-	exec 2> >(grep -v GtkDialog >&2) # Supress GTK Dialog Warnings
-	if zenity --question --text="sm64nx requires gcc 8 or newer and was not detected.\nDo you wish to continue anyway incase smlinux is reading gcc -dumpversion wrong,\nor abort so you can install it then run smlinux again?" --title "GCC 8 or newer not detected" --ok-label="Abort" --cancel-label="Continue" --width 550; then
-		exit
-	fi
-	}
+	fi			
+fi
+echo "ERROR: smlinux doesn't think your C compiler is not new enough for sm64nx."
+echo "gcc -dumpfullversion must report 8 or higher."
+echo "Please install it then rerun smlinux, or use another repo."
+echo "Sometimes its wrong - if you have gcc 8/9/10 and wish to continue, do so."
+echo
+exec 2> >(grep -v GtkDialog >&2) # Supress GTK Dialog Warnings
+if zenity --question --text="sm64nx requires gcc 8 or newer and was not detected.\nDo you wish to continue anyway incase smlinux is reading gcc -dumpversion wrong,\nor abort so you can install it then run smlinux again?" --title "GCC 8 or newer not detected" --ok-label="Abort" --cancel-label="Continue" --width 550; then
+	exit
+fi
+}
 
 vettrom(){
-	if [ "$VERSION" = "us" ]; then
-		HASH=`sha1sum ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/baserom."$VERSION".z64 | grep 9bef1128717f958171a4afac3ed78ee2bb4e86ce`
-	elif [ "$VERSION" = "jp" ]; then
-		HASH=`sha1sum ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/baserom."$VERSION".z64 | grep 8a20a5c83d6ceb0f0506cfc9fa20d8f438cafe51`
-	elif [ "$VERSION" = "eu" ]; then
-		HASH=`sha1sum ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/baserom."$VERSION".z64 | grep 4ac5721683d0e0b6bbb561b58a71740845dceea9`
-	fi
-	if [ "$HASH" = "" ]; then
-		rm ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/baserom."$VERSION".z64
-	fi
-	}
+if [ "$VERSION" = "us" ]; then
+	HASH=`sha1sum ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/baserom."$VERSION".z64 | grep 9bef1128717f958171a4afac3ed78ee2bb4e86ce`
+elif [ "$VERSION" = "jp" ]; then
+	HASH=`sha1sum ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/baserom."$VERSION".z64 | grep 8a20a5c83d6ceb0f0506cfc9fa20d8f438cafe51`
+elif [ "$VERSION" = "eu" ]; then
+	HASH=`sha1sum ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/baserom."$VERSION".z64 | grep 4ac5721683d0e0b6bbb561b58a71740845dceea9`
+fi
+if [ "$HASH" = "" ]; then
+	rm ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/baserom."$VERSION".z64
+fi
+}
 
 makeconfig(){
+if [ ! -d ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc ]; then
+	mkdir ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc
+fi
 echo '# REPO supports sm64-port sm64ex sm64nx render96ex cheaterex
 # also sm64-port-android-base & sm64ex-coop (also set BRANCH=coop)
 REPO=sm64ex
@@ -225,263 +228,262 @@ AutoUpdate=1
 UpdateHD=1
 # Linux must be set to command appropriate to your distribution. See FAQ.
 Linux="sudo apt install -y build-essential git python3 libaudiofile-dev libglew-dev libsdl2-dev binutils libusb-1.0-0-dev libzstd-dev python3-pip p7zip-full mplayer"'> ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinuxcfg.txt
-	}
+}
 
 loadconfig(){
-	REPO=sm64pc
-	TARGET_WEB=0
-	TEXTSAVES=0
-	TOUCH_CONTROLS=1
-	LEGACY_RES=1
-	BASEPATH=$HOME
-	ARMONLY=1
-	DEBUG=0
-	IMMEDIATELOAD=1
-	source ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinuxcfg.txt
-	# the next one just for old config file with branch not 
-	if [ -z "$BRANCH" ]; then
-		BRANCH="$Branch"
+REPO=sm64pc
+TARGET_WEB=0
+TEXTSAVES=0
+TOUCH_CONTROLS=1
+LEGACY_RES=1
+BASEPATH=$HOME
+ARMONLY=1
+DEBUG=0
+IMMEDIATELOAD=1
+source ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinuxcfg.txt
+# the next one just for old config file with branch not 
+if [ -z "$BRANCH" ]; then
+	BRANCH="$Branch"
+fi
+if [ "$REPO" = "sm64pc" ] && [ "$BRANCH" = "nightly" ]; then
+	REPO=sm64ex
+elif [ "$REPO" = "Render96ex" ] || [ "$REPO" = "render96" ] || [ "$REPO" = "Render96" ]; then
+	REPO=render96ex
+elif [ "$REPO" = "CHEATERex" ] || [ "$REPO" = "CHEATEREX" ]; then
+	REPO=cheaterex
+fi
+if [ "$REPO" = "sm64-port" ]; then
+	EXTERNAL_DATA=0
+elif [ "$REPO" = "sm64-port-android-base" ]; then
+	REPO="sm64-port-android-base/app/jni/src"
+	ANDROID=1
+	if [ "$BRANCH" = "nightly" ] || [ "$BRANCH" = "sm64ex-nightly" ] || [ "$BRANCH" = "sm64exnightly" ]; then
+		BRANCH=sm64ex_nightly
 	fi
-	if [ "$REPO" = "sm64pc" ] && [ "$BRANCH" = "nightly" ]; then
-		REPO=sm64ex
-	elif [ "$REPO" = "Render96ex" ] || [ "$REPO" = "render96" ] || [ "$REPO" = "Render96" ]; then
-		REPO=render96ex
-	elif [ "$REPO" = "CHEATERex" ] || [ "$REPO" = "CHEATEREX" ]; then
-		REPO=cheaterex
-	fi
-	if [ "$REPO" = "sm64-port" ]; then
-		EXTERNAL_DATA=0
-	elif [ "$REPO" = "sm64-port-android-base" ]; then
-		REPO="sm64-port-android-base/app/jni/src"
-		ANDROID=1
-		if [ "$BRANCH" = "nightly" ] || [ "$BRANCH" = "sm64ex-nightly" ] || [ "$BRANCH" = "sm64exnightly" ]; then
-			BRANCH=sm64ex_nightly
+elif [ "$REPO" = "sm64nx" ]; then
+	EXTERNAL_DATA=0
+	BRANCH=master
+elif [ "$REPO" = "render96ex" ]; then
+	EXTERNAL_DATA=1
+	TEXTSAVES=1
+	SGI=1
+elif [ "$REPO" = "sm64ex-coop" ]; then
+	NODRAWINGDISTANCE=1
+fi
+if [ "$JOBS" = "-j" ]; then
+	if [ "$REPO" = "sm64nx" ]; then 
+		JOBS=-j$(($(nproc) - 1))
+		if [ ! -f ~/.smlinuxUpdate ]; then
+			echo WARNING: Jobs set to -j$(($(nproc) - 1)) because nuz nx has problems with unlimited.
 		fi
-	elif [ "$REPO" = "sm64nx" ]; then
-		EXTERNAL_DATA=0
-		BRANCH=master
-	elif [ "$REPO" = "render96ex" ]; then
-		EXTERNAL_DATA=1
-		TEXTSAVES=1
-		SGI=1
-	elif [ "$REPO" = "sm64ex-coop" ]; then
-		NODRAWINGDISTANCE=1
-	fi
-	if [ "$JOBS" = "-j" ]; then
-		if [ "$REPO" = "sm64nx" ]; then 
-			JOBS=-j$(($(nproc) - 1))
-			if [ ! -f ~/.smlinuxUpdate ]; then
-				echo WARNING: Jobs set to -j$(($(nproc) - 1)) because nuz nx has problems with unlimited.
-			fi
-		elif [ "$TARGET_WEB" = "1" ]; then
-			JOBS=-j`nproc`
-			if [ ! -f ~/.smlinuxUpdate ]; then
-				echo WARNING: Jobs set to -j`nproc` because nuz emsdk has problems with unlimited. 
-			fi
+	elif [ "$TARGET_WEB" = "1" ]; then
+		JOBS=-j`nproc`
+		if [ ! -f ~/.smlinuxUpdate ]; then
+			echo WARNING: Jobs set to -j`nproc` because nuz emsdk has problems with unlimited. 
 		fi
 	fi
-	if [ ! `uname -m` = "x86_64" ] || [ ! "$VERSION" = "us" ]; then
-		DISCORDRPC=0
-	fi
-	if [ "$TARGET_WEB" = 1 ]; then 
-		TARGET=web
-		EXTERNAL_DATA=0
-		DISCORDRPC=0
-	else
-		TARGET=pc
-	fi
-
+fi
+if [ ! `uname -m` = "x86_64" ] || [ ! "$VERSION" = "us" ]; then
+	DISCORDRPC=0
+fi
+if [ "$TARGET_WEB" = 1 ]; then 
+	TARGET=web
+	EXTERNAL_DATA=0
+	DISCORDRPC=0
+else
+	TARGET=pc
+fi
 	if [ "$2" = "--updatehd" ] || [ "$3" = "--updatehd" ] ||[ "$4" = "--updatehd" ] ||[ "$5" = "--updatehd" ]; then
-		UpdateHD=1
-	elif [ "$2" = "--hd" ] || [ "$3" = "--hd" ] ||[ "$4" = "--hd" ] ||[ "$5" = "--hd" ]; then
-		UpdateHD=1
-	fi
-	if [ "$2" = "--sgi" ] || [ "$3" = "--sgi" ] ||[ "$4" = "--sgi" ] ||[ "$5" = "--sgi" ]; then
-		SGI=1
-	elif [ "$2" = "--SGI" ] || [ "$3" = "--SGI" ] ||[ "$4" = "--SGI" ] ||[ "$5" = "--SGI" ]; then
-		SGI=1
-	fi
-	if [ "$2" = "--config" ] || [ "$3" = "--config" ] ||[ "$4" = "--config" ] ||[ "$5" = "--config" ]; then
-		CONFIG=1
-	elif [ "$2" = "config" ] || [ "$3" = "config" ] ||[ "$4" = "config" ] ||[ "$5" = "config" ]; then
-		CONFIG=1
-	fi
-	if [ "$2" = "--depends" ] || [ "$3" = "--depends" ] ||[ "$4" = "--depends" ] ||[ "$5" = "--depends" ]; then
-		DEPENDS=1
-	fi
-	}
+	UpdateHD=1
+elif [ "$2" = "--hd" ] || [ "$3" = "--hd" ] ||[ "$4" = "--hd" ] ||[ "$5" = "--hd" ]; then
+	UpdateHD=1
+fi
+if [ "$2" = "--sgi" ] || [ "$3" = "--sgi" ] ||[ "$4" = "--sgi" ] ||[ "$5" = "--sgi" ]; then
+	SGI=1
+elif [ "$2" = "--SGI" ] || [ "$3" = "--SGI" ] ||[ "$4" = "--SGI" ] ||[ "$5" = "--SGI" ]; then
+	SGI=1
+fi
+if [ "$2" = "--config" ] || [ "$3" = "--config" ] ||[ "$4" = "--config" ] ||[ "$5" = "--config" ]; then
+	CONFIG=1
+elif [ "$2" = "config" ] || [ "$3" = "config" ] ||[ "$4" = "config" ] ||[ "$5" = "config" ]; then
+	CONFIG=1
+fi
+if [ "$2" = "--depends" ] || [ "$3" = "--depends" ] ||[ "$4" = "--depends" ] ||[ "$5" = "--depends" ]; then
+	DEPENDS=1
+fi
+}
 
 doconfig(){
-	if(whiptail --title "Build Options" --yesno "$(cat ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinuxcfg.txt)" 28 77 --yes-button "Edit Options" --no-button "Proceed" --defaultno); then
-		whiptail --title "READ THIS NOW - IT WILL NOT REAPPEAR AUTOMATICALLY" --msgbox "The config file will open in a text editor.\n\nWhen you exit your editor, installation will continue.\n\nFor most people, default options which include community enhancements are reccommended.\n\nIf you mess up the config file, delete\n${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinuxcfg.txt \nand it will be recreated." 16 60
-	editconfig	
-	fi
-	}
+if(whiptail --title "Build Options" --yesno "$(cat ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinuxcfg.txt)" 28 77 --yes-button "Edit Options" --no-button "Proceed" --defaultno); then
+	whiptail --title "READ THIS NOW - IT WILL NOT REAPPEAR AUTOMATICALLY" --msgbox "The config file will open in a text editor.\n\nWhen you exit your editor, installation will continue.\n\nFor most people, default options which include community enhancements are reccommended.\n\nIf you mess up the config file, delete\n${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinuxcfg.txt \nand it will be recreated." 16 60
+editconfig	
+fi
+}
 
 editconfig(){
-	EDITORS=leafpad:epad:gedit:notepadqq:bluefish:geany:lime:kate:medit:nano:pico:micro:jed:emacs:vim:vi
-	local url=${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinuxcfg.txt 
-	local oldifs="$IFS"
-	IFS=":"
-	for editor in $EDITORS; do
-       		IFS="$oldifs"
-		if [ -z "$editor" ]; then
-       			continue
-       		fi
-		if echo "$editor" | grep -q %s; then
-       			shift $#
-       			for arg in $browser; do
-               			set -- "$@" "$(printf -- "$arg" "$url")"
-       			done
-       			"$@"
-       		else
-       			$editor "$url"
-       		fi
-		if [ $? -eq 0 ]; then
-			return
-       		fi
+EDITORS=leafpad:epad:gedit:notepadqq:bluefish:geany:lime:kate:medit:nano:pico:micro:jed:emacs:vim:vi
+local url=${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinuxcfg.txt 
+local oldifs="$IFS"
+IFS=":"
+for editor in $EDITORS; do
+	IFS="$oldifs"
+	if [ -z "$editor" ]; then
+		continue
+	fi
+	if echo "$editor" | grep -q %s; then
+		shift $#
+		for arg in $browser; do
+       			set -- "$@" "$(printf -- "$arg" "$url")"
 		done
-	}
+		"$@"
+	else
+		$editor "$url"
+	fi
+	if [ $? -eq 0 ]; then
+		return
+       	fi
+	done
+}
 
 loademsdk(){
-	if [ ! -d "$BASEPATH"/emsdk ]; then
-		cd "$BASEPATH"
-		git clone https://github.com/emscripten-core/emsdk.git
-		cd emsdk
-		./emsdk install latest
-		./emsdk activate latest
-	fi
-	source "$BASEPATH"/emsdk/emsdk_env.sh
-	}
+if [ ! -d "$BASEPATH"/emsdk ]; then
+	cd "$BASEPATH"
+	git clone https://github.com/emscripten-core/emsdk.git
+	cd emsdk
+	./emsdk install latest
+	./emsdk activate latest
+fi
+source "$BASEPATH"/emsdk/emsdk_env.sh
+}
 
 prepnx(){
-	mkdir "$BASEPATH"/"$REPO"/build
-	mkdir "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"
-	mkdir "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/romfs
-	ln -s ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64.sav "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/sm64.sav 
-	ln -s ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64.log "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/sm64.log 
-	ln -s ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/conf.bin "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/conf.bin
- 	ln -s ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/gamepad1.bindings.json "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/gamepad1.bindings.json
-	ln -s ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/keyboard1.bindings.json "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/keyboard1.bindings.json
-	ln -s ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/baserom."$VERSION".z64 "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/baserom."$VERSION".z64
-	cd "$BASEPATH"/"$REPO"/tools
-	make "$JOBS"
-	cd "$BASEPATH"/"$REPO"/import
-	echo Extracting Assets from ROM...
-	python3 extract_assets.py
-	python3 ../scripts/pak.py --source . --output "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/romfs/'!!base.pak'
-	if [ ! -f "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/romfs/'!!base.pak' ]; then
-		echo 
-		echo Unable to extract and pak ROM.
-		echo "smlinux exiting incomplete.  Contact #help-desk for support."
-		echo
-		xdg-open https://discord.gg/Ub6YHRm &disown
-		exit
-	fi
-	}
+mkdir "$BASEPATH"/"$REPO"/build
+mkdir "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"
+mkdir "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/romfs
+ln -s ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64.sav "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/sm64.sav 
+ln -s ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64.log "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/sm64.log 
+ln -s ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/conf.bin "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/conf.bin
+ln -s ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/gamepad1.bindings.json "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/gamepad1.bindings.json
+ln -s ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/keyboard1.bindings.json "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/keyboard1.bindings.json
+ln -s ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/baserom."$VERSION".z64 "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/baserom."$VERSION".z64
+cd "$BASEPATH"/"$REPO"/tools
+make "$JOBS"
+cd "$BASEPATH"/"$REPO"/import
+echo Extracting Assets from ROM...
+python3 extract_assets.py
+python3 ../scripts/pak.py --source . --output "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/romfs/'!!base.pak'
+if [ ! -f "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/romfs/'!!base.pak' ]; then
+	echo 
+	echo Unable to extract and pak ROM.
+	echo "smlinux exiting incomplete.  Contact #help-desk for support."
+	echo
+	xdg-open https://discord.gg/Ub6YHRm &disown
+	exit
+fi
+}
 
 dohd(){ 
-	if [ "$REPO" = "sm64nx" ]; then 
-		if [ ! -d "$BASEPATH"/"$REPO"/build ] ; then mkdir "$BASEPATH"/"$REPO"/build
+if [ "$REPO" = "sm64nx" ]; then 
+	if [ ! -d "$BASEPATH"/"$REPO"/build ] ; then mkdir "$BASEPATH"/"$REPO"/build
+	fi
+	if [ ! -d "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET" ] ; then mkdir "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"
+	fi
+	if [ ! -d "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/romfs ] ; then mkdir "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/romfs
+	fi
+	if [ ! -d "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/romfs/"Cleaner Aesthetics" ]; then
+		mkdir "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/romfs/"Cleaner Aesthetics"
+		cd "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/romfs/"Cleaner Aesthetics"
+		wget -q https://cdn.discordapp.com/attachments/730416836780490752/730430152957362191/cleaner.pak
+	fi
+	if [ ! -d "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/romfs/"HD Mario . Bowser" ]; then
+		mkdir "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/romfs/"HD Mario . Bowser"
+		cd "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/romfs/"HD Mario . Bowser"
+		wget -q https://cdn.discordapp.com/attachments/730416836780490752/730425308989227158/arredondo.pak
+	fi
+	if [ ! -d "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/romfs/"~SGI Models" ]; then
+		mkdir "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/romfs/"~SGI Models"
+		cd "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/romfs/"~SGI Models"
+		wget -q https://cdn.discordapp.com/attachments/730416836780490752/730645970693652591/sgi1.2.pak
+	fi
+	if [ ! -d "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/romfs/"~OWO Mod" ]; then
+		mkdir "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/romfs/"~OWO Mod"
+		cd "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/romfs/"~OWO Mod"
+		wget -q https://cdn.discordapp.com/attachments/730416836780490752/730420038024036362/owo.pak
+	fi
+	if [ ! -d "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/romfs/"~HD Luigi" ]; then
+		mkdir "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/romfs/"~HD Luigi"
+		cd "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/romfs/"~HD Luigi"
+		wget -q https://cdn.discordapp.com/attachments/730416836780490752/730425786452017222/luigi.pak
+	fi
+	if [ ! -d "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/romfs/"~NES Retro" ]; then
+		mkdir "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/romfs/"~NES Retro"
+		cd "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/romfs/"~NES Retro"
+		wget -q https://cdn.discordapp.com/attachments/730416836780490752/730431589749620736/nes.pak
+	fi
+else
+	if [ "$EXTERNAL_DATA" = 1 ] ; then
+		if [ ! -d "$BASEPATH"/"$REPO"/build ] ; then 
+			mkdir "$BASEPATH"/"$REPO"/build
 		fi
-		if [ ! -d "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET" ] ; then mkdir "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"
+		if [ ! -d "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET" ] ; then 
+			mkdir "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"
 		fi
-		if [ ! -d "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/romfs ] ; then mkdir "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/romfs
+		if [ -d "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/res/.git ] ; then
+			cd "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/res
+			git fetch
+			git reset --hard origin
+		elif [  -d "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/res ] ; then
+			mv "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/res "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/res.old
+			git clone --single-branch https://github.com/CrashCrod/Cleaner-Aesthetics.git "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/res
+			mv -n "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/res.old/* "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/res
+		elif [  ! -d "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/res ] ; then
+			git clone --single-branch https://github.com/CrashCrod/Cleaner-Aesthetics.git "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/res
 		fi
-		if [ ! -d "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/romfs/"Cleaner Aesthetics" ]; then
-			mkdir "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/romfs/"Cleaner Aesthetics"
-			cd "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/romfs/"Cleaner Aesthetics"
-			wget -q https://cdn.discordapp.com/attachments/730416836780490752/730430152957362191/cleaner.pak
+		if [ -d "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/res/gfx/textures/skyboxes ]; then
+			rm -rf "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/res/gfx/textures/skyboxes
 		fi
-		if [ ! -d "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/romfs/"HD Mario . Bowser" ]; then
-			mkdir "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/romfs/"HD Mario . Bowser"
-			cd "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/romfs/"HD Mario . Bowser"
-			wget -q https://cdn.discordapp.com/attachments/730416836780490752/730425308989227158/arredondo.pak
+		if [ ! -f "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/res/hq_sounds_v5.1.zip ]; then
+			cd "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/res	
+			wget -q https://github.com/MapAnon/sm64-pc-hq-sounds/releases/download/5.1/hq_sounds_v5.1.zip
 		fi
-		if [ ! -d "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/romfs/"~SGI Models" ]; then
-			mkdir "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/romfs/"~SGI Models"
-			cd "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/romfs/"~SGI Models"
-			wget -q https://cdn.discordapp.com/attachments/730416836780490752/730645970693652591/sgi1.2.pak
+	fi
+	if  [ ! "$SGI" = 1 ] && ([ ! -f "$BASEPATH"/"$REPO"/enhancements/Old_School_HD_SGI_Base_Models_V1.3_Refresh_11.7z ] || [ ! -f "$BASEPATH"/"$REPO"/enhancements/RENDER96_V1.3.7z ] ); then
+		if [ ! -f "$BASEPATH"/"$REPO"/enhancements/hd_bowser.rar ] && [ ! "$REPO" = "sm64ex-coop" ]; then
+			cd "$BASEPATH"/"$REPO"/enhancements
+			wget -q https://cdn.discordapp.com/attachments/716459185230970880/719758031990030427/Old_School_HD_Mario_Model.zip 
+			wget -q https://cdn.discordapp.com/attachments/716459185230970880/718990046442684456/hd_bowser.rar	
+			cd "$BASEPATH"/"$REPO"	
+			cp -Rn actors actors.bak
+			unzip -o enhancements/Old_School_HD_Mario_Model 
+			unrar x -o+ enhancements/hd_bowser
 		fi
-		if [ ! -d "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/romfs/"~OWO Mod" ]; then
-			mkdir "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/romfs/"~OWO Mod"
-			cd "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/romfs/"~OWO Mod"
-			wget -q https://cdn.discordapp.com/attachments/730416836780490752/730420038024036362/owo.pak
-		fi
-		if [ ! -d "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/romfs/"~HD Luigi" ]; then
-			mkdir "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/romfs/"~HD Luigi"
-			cd "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/romfs/"~HD Luigi"
-			wget -q https://cdn.discordapp.com/attachments/730416836780490752/730425786452017222/luigi.pak
-		fi
-		if [ ! -d "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/romfs/"~NES Retro" ]; then
-			mkdir "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/romfs/"~NES Retro"
-			cd "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/romfs/"~NES Retro"
-			wget -q https://cdn.discordapp.com/attachments/730416836780490752/730431589749620736/nes.pak
-		fi
-	else
-		if [ "$EXTERNAL_DATA" = 1 ] ; then
-			if [ ! -d "$BASEPATH"/"$REPO"/build ] ; then 
-				mkdir "$BASEPATH"/"$REPO"/build
-			fi
-			if [ ! -d "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET" ] ; then 
-				mkdir "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"
-			fi
-			if [ -d "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/res/.git ] ; then
-				cd "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/res
-				git fetch
-				git reset --hard origin
-			elif [  -d "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/res ] ; then
-				mv "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/res "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/res.old
-				git clone --single-branch https://github.com/CrashCrod/Cleaner-Aesthetics.git "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/res
-				mv -n "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/res.old/* "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/res
-			elif [  ! -d "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/res ] ; then
-				git clone --single-branch https://github.com/CrashCrod/Cleaner-Aesthetics.git "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/res
-			fi
-			if [ -d "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/res/gfx/textures/skyboxes ]; then
-				rm -rf "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/res/gfx/textures/skyboxes
-			fi
-			if [ ! -f "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/res/hq_sounds_v5.1.zip ]; then
-				cd "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/res	
-				wget -q https://github.com/MapAnon/sm64-pc-hq-sounds/releases/download/5.1/hq_sounds_v5.1.zip
-			fi
-		fi
-		if  [ ! "$SGI" = 1 ] && ([ ! -f "$BASEPATH"/"$REPO"/enhancements/Old_School_HD_SGI_Base_Models_V1.3_Refresh_11.7z ] || [ ! -f "$BASEPATH"/"$REPO"/enhancements/RENDER96_V1.3.7z ] ); then
-			if [ ! -f "$BASEPATH"/"$REPO"/enhancements/hd_bowser.rar ] && [ ! "$REPO" = "sm64ex-coop" ]; then
+		if [ ! -f "$BASEPATH"/"$REPO"/enhancements/3d_coin_v2*.patch ]; then
+			if [ "$REPO" = "sm64pc" ] || ([ "$REPO" = "sm64ex" ] && [ "$BRANCH" = "master" ]); then
 				cd "$BASEPATH"/"$REPO"/enhancements
-				wget -q https://cdn.discordapp.com/attachments/716459185230970880/719758031990030427/Old_School_HD_Mario_Model.zip 
-				wget -q https://cdn.discordapp.com/attachments/716459185230970880/718990046442684456/hd_bowser.rar	
-				cd "$BASEPATH"/"$REPO"	
-				cp -Rn actors actors.bak
-				unzip -o enhancements/Old_School_HD_Mario_Model 
-				unrar x -o+ enhancements/hd_bowser
+				wget -q https://cdn.discordapp.com/attachments/716459185230970880/718674249631662120/3d_coin_v2.patch
+			elif [ "$TOUCH_CONTROLS" = 1 ] || [ "$REPO" = "sm64ex" ] || [ "$REPO" = "sm64-port" ] || [ "$REPO" = "sm64-coop" ]; then
+				cd "$BASEPATH"/"$REPO"/enhancements
+				wget -q https://cdn.discordapp.com/attachments/721806706547490868/725041183700680807/3d_coin_v2_nightly.patch
 			fi
-			if [ ! -f "$BASEPATH"/"$REPO"/enhancements/3d_coin_v2*.patch ]; then
-				if [ "$REPO" = "sm64pc" ] || ([ "$REPO" = "sm64ex" ] && [ "$BRANCH" = "master" ]); then
-					cd "$BASEPATH"/"$REPO"/enhancements
-					wget -q https://cdn.discordapp.com/attachments/716459185230970880/718674249631662120/3d_coin_v2.patch
-				elif [ "$TOUCH_CONTROLS" = 1 ] || [ "$REPO" = "sm64ex" ] || [ "$REPO" = "sm64-port" ] || [ "$REPO" = "sm64-coop" ]; then
-					cd "$BASEPATH"/"$REPO"/enhancements
-					wget -q https://cdn.discordapp.com/attachments/721806706547490868/725041183700680807/3d_coin_v2_nightly.patch
-				fi
-				if [ -f "$BASEPATH"/"$REPO"/enhancements/3d_coin_v2*.patch ]; then
-					cd "$BASEPATH"/"$REPO"
- 					git apply enhancements/3d_coin_v2*.patch
-				fi
-			fi
-		fi
-		if [ `uname -m` = "x86_64" ] && [ -f "$BASEPATH"/"$REPO"/enhancements/60fps*.patch ] && (!( [ "$TARGET_WEB" = 1 ] || [ "$SGI" = 1 ] || [ "REPO" = "sm64ex-coop" ] )); then
-			cd "$BASEPATH"/"$REPO"
-			if [ ! -f "$BASEPATH"/"$REPO"/enhancements/60fps ]; then
-				echo Applying 60fps patch...
-				git apply enhancements/60fps*.patch
-				touch enhancements/60fps
-			fi
-			if [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64config.txt ]; then
-				sed -i 's/vsync false/vsync true/g' ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64config.txt
+			if [ -f "$BASEPATH"/"$REPO"/enhancements/3d_coin_v2*.patch ]; then
+				cd "$BASEPATH"/"$REPO"
+					git apply enhancements/3d_coin_v2*.patch
 			fi
 		fi
 	fi
-	}
+	if [ `uname -m` = "x86_64" ] && [ -f "$BASEPATH"/"$REPO"/enhancements/60fps*.patch ] && (!( [ "$TARGET_WEB" = 1 ] || [ "$SGI" = 1 ] || [ "REPO" = "sm64ex-coop" ] )); then
+		cd "$BASEPATH"/"$REPO"
+		if [ ! -f "$BASEPATH"/"$REPO"/enhancements/60fps ]; then
+			echo Applying 60fps patch...
+			git apply enhancements/60fps*.patch
+			touch enhancements/60fps
+		fi
+		if [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64config.txt ]; then
+			sed -i 's/vsync false/vsync true/g' ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64config.txt
+		fi
+	fi
+fi
+}
 
 dosgi(){
 	if (!( ([ "$REPO" = "sm64ex" ] && [ "$BRANCH" = "nightly" ]) || [ "$BRANCH" = "sm64ex_nightly" ] || [ "$REPO" = "render96ex" ] )) || [ "$TARGET_WEB" = 1 ]; then
@@ -636,6 +638,12 @@ fi
 }
 
 makedesktop(){
+if [ ! -d ${XDG_DATA_HOME:-$HOME/.local/share}/icons ]; then 
+	mkdir ${XDG_DATA_HOME:-$HOME/.local/share}/icons
+fi
+if [ ! -d ${XDG_DATA_HOME:-$HOME/.local/share}/applications ]; then 
+	mkdir ${XDG_DATA_HOME:-$HOME/.local/share}/applications
+fi
 if [ ! -f ${XDG_DATA_HOME:-$HOME/.local/share}/icons/"$REPO".* ]; then
 	echo Getting Icon...
 	if [ "$REPO" = "sm64ex" ]; then
@@ -741,22 +749,16 @@ fi
 if [ ! -d ${XDG_DATA_HOME:-$HOME/.local/share} ]; then 
 	mkdir ${XDG_DATA_HOME:-$HOME/.local/share}
 fi
-if [ ! -d ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc ]; then mkdir ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc
-fi
-if [ ! -d ${XDG_DATA_HOME:-$HOME/.local/share}/icons ]; then mkdir ${XDG_DATA_HOME:-$HOME/.local/share}/icons
-fi
-if [ ! -d ${XDG_DATA_HOME:-$HOME/.local/share}/applications ]; then mkdir ${XDG_DATA_HOME:-$HOME/.local/share}/applications
-fi
 if [ ! -f ~/.smlinuxUpdate ]; then
 	if [ "$1" = "config" ]; then
 		editconfig
+		echo "Thank you for editing your smlinux config file." 
+		echo "Do you know how to write a GUI to edit it?"
+		echo "If so I would love to use it as a front end."
 		echo
 		exit
-	fi
-	
-	echo Loading ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinuxcfg.txt...
-	if [ ! -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinuxcfg.txt ]; then
-		echo File not found, so making a new one...
+	elif [ ! -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinuxcfg.txt ]; then
+		echo smlinux configuration file not found, so making a new one...
 		makeconfig
 		doconfig
 	else
@@ -765,6 +767,7 @@ if [ ! -f ~/.smlinuxUpdate ]; then
 			doconfig
 		fi
 	fi
+	echo Loading ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinuxcfg.txt...
 	loadconfig "$@"
 	#Play a sound clip for no reason - thank you for playing my game.
 	if [ -f /usr/bin/mplayer ] || [ -f /bin/mplayer ]; then
@@ -772,6 +775,8 @@ if [ ! -f ~/.smlinuxUpdate ]; then
 			sh -c 'mplayer -nolirc -really-quiet "$BASEPATH"/sm64pc/sound/samples/sfx_mario_peach/0D.aiff&'
 		elif [ -f "$BASEPATH"/sm64ex/sound/samples/sfx_mario_peach/0D.aiff ]; then
 			sh -c 'mplayer -nolirc -really-quiet "$BASEPATH"/sm64ex/sound/samples/sfx_mario_peach/0D.aiff&'
+		elif [ -f "$BASEPATH"/render96ex/sound/samples/sfx_mario_peach/0D.aiff ]; then
+			sh -c 'mplayer -nolirc -really-quiet "$BASEPATH"/render96ex/sound/samples/sfx_mario_peach/0D.aiff&'
 		elif [ -f "$BASEPATH"/sm64-port/sound/samples/sfx_mario_peach/0D.aiff ]; then
 			sh -c 'mplayer -nolirc -really-quiet "$BASEPATH"/sm64-port/sound/samples/sfx_mario_peach/0D.aiff&'
 		fi
