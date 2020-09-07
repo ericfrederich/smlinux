@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0906-1914
+# 2020-0906-1925
 
 domake(){
 #Here We go & music to build to
@@ -728,10 +728,10 @@ rungame(){
 				echo Just wait...
 			fi
 		elif [ "$EXTERNAL_DATA" = 1 ]; then
-			zenity --info --text="Your Android device was not connected so app could not be installed.\nYou must put the base textures (base.zip or hdbase.zip) into\nInternal Storage/Android/data/com.vdavid003.sm64port/files\nThis folder will be created when you launch the apk." --title="Transfer External Resources!" --width=470
+			zenity --info --text="Your Android device was not detected so app could not be installed.\nYou must put base assets (base.zip or hdbase.zip) into\nInternal Storage/Android/data/com.vdavid003.sm64port/files\nThis folder will be created when you launch the apk." --title="Transfer External Resources!" --width=470
 			echo
-			echo "Your Android device was not connected so app could not be installed."
-			echo "You must put the base textures (base.zip or hdbase.zip) into "
+			echo "Your Android device was not detected so app could not be installed."
+			echo "You must put base assets (base.zip or hdbase.zip) into"
 			echo "Internal Storage/Android/data/com.vdavid003.sm64port/files"
 			echo 
 		fi
