@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0907-1942
+# 2020-0908-1023
 
 domake(){
 #Here We go & music to build to
@@ -1274,10 +1274,10 @@ if  [ "$REPO" = "sm64ex" ] || [ "$BRANCH" = "sm64ex_nightly" ] || [ "$BRANCH" = 
 		unzip CHEATER
 		rm CHEATER.zip
 	else
-		wget https://cdn.discordapp.com/attachments/710283360794181633/752653776715907092/CHEATER-coop.v.1.release.patch
+		wget -q https://cdn.discordapp.com/attachments/710283360794181633/752941642671194205/CHEATER-coop.v.1.hotfix.patch
 	fi
 	cd "$BASEPATH"/"$REPO"
-	echo Apply Cheats...
+	echo Appling Cheats...
 	git apply enhancements/CHEATER*.patch
 	echo Applying Menu Arrows...
 	git apply enhancements/menu-arrows.patch
