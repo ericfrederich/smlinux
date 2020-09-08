@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0908-1023
+# 2020-0908-1405
 
 domake(){
 #Here We go & music to build to
@@ -323,7 +323,7 @@ fi
 }
 
 editconfig(){
-EDITORS=leafpad:epad:gedit:notepadqq:bluefish:geany:lime:kate:medit:nano:pico:micro:jed:emacs:vim:vi
+EDITORS=kate:leafpad:epad:gedit:notepadqq:bluefish:geany:lime:medit:nano:pico:micro:jed:emacs:vim:vi
 IFS=":"
 for editor in $EDITORS; do
 	if [ -z "$editor" ]; then
