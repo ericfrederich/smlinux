@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0908-1405
+# 2020-0908-1452
 
 domake(){
 #Here We go & music to build to
@@ -480,10 +480,10 @@ else
 			echo Applying 60fps patch...
 			git apply enhancements/60fps*.patch
 			touch enhancements/60fps
-		fi
-		if [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64config.txt ] && [ -f "$BASEPATH"/"$REPO"/enhancements/60fps ]; then
-			echo Enabling Vsync...
-			sed -i 's/vsync false/vsync true/g' ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64config.txt
+			if [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64config.txt ] && [ -f "$BASEPATH"/"$REPO"/enhancements/60fps ]; then
+				echo Enabling Vsync...
+				sed -i 's/vsync false/vsync true/g' ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64config.txt
+			fi
 		fi
 	fi
 fi
@@ -690,24 +690,24 @@ Categories=Game;'>${XDG_DATA_HOME:-$HOME/.local/share}/applications/"$REPO".desk
 echo Icon=${XDG_DATA_HOME:-$HOME/.local/share}/icons/"$REPO".png >>${XDG_DATA_HOME:-$HOME/.local/share}/applications/"$REPO".desktop
 echo Name=Super Mario 64 \("$REPO"\) >>${XDG_DATA_HOME:-$HOME/.local/share}/applications/"$REPO".desktop
 	if [ "$REPO" = "sm64pc" ] || [ "$REPO" = "sm64ex" ] ; then
-		echo Path="$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET" >>${XDG_DATA_HOME:-$HOME/.local/share}/applications/"$REPO".desktop
-		echo Exec="$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/sm64."$VERSION".f3dex2e --cheats>>${XDG_DATA_HOME:-$HOME/.local/share}/applications/"$REPO".desktop
+		echo Path=$BASEPATH/"$REPO"/build/"$VERSION"_"$TARGET" >>${XDG_DATA_HOME:-$HOME/.local/share}/applications/"$REPO".desktop
+		echo Exec=\""$BASEPATH"\"/"$REPO"/build/"$VERSION"_"$TARGET"/sm64."$VERSION".f3dex2e --cheats>>${XDG_DATA_HOME:-$HOME/.local/share}/applications/"$REPO".desktop
 	elif [ "$REPO" = "render96ex" ]; then
-		echo Path="$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET" >>${XDG_DATA_HOME:-$HOME/.local/share}/applications/"$REPO".desktop
-		echo Exec="$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/sm64."$VERSION".f3dex2e --cheats --savepath ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO">>${XDG_DATA_HOME:-$HOME/.local/share}/applications/"$REPO".desktop
+		echo Path=$BASEPATH/"$REPO"/build/"$VERSION"_"$TARGET" >>${XDG_DATA_HOME:-$HOME/.local/share}/applications/"$REPO".desktop
+		echo Exec=\""$BASEPATH"\"/"$REPO"/build/"$VERSION"_"$TARGET"/sm64."$VERSION".f3dex2e --cheats --savepath ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO">>${XDG_DATA_HOME:-$HOME/.local/share}/applications/"$REPO".desktop
 	elif [ "$REPO" = "cheaterex" ]; then
-		echo Path="$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET" >>${XDG_DATA_HOME:-$HOME/.local/share}/applications/"$REPO".desktop
-		echo Exec="$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/sm64."$VERSION".f3dex2e --cheats --savepath ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO">>${XDG_DATA_HOME:-$HOME/.local/share}/applications/"$REPO".desktop
+		echo Path=$BASEPATH/"$REPO"/build/"$VERSION"_"$TARGET" >>${XDG_DATA_HOME:-$HOME/.local/share}/applications/"$REPO".desktop
+		echo Exec=\""$BASEPATH"\"/"$REPO"/build/"$VERSION"_"$TARGET"/sm64."$VERSION".f3dex2e --cheats --savepath ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO">>${XDG_DATA_HOME:-$HOME/.local/share}/applications/"$REPO".desktop
 	elif [ "$REPO" = "sm64ex-coop" ]; then
-		echo Path="$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET" >>${XDG_DATA_HOME:-$HOME/.local/share}/applications/"$REPO".desktop
-		echo 'Exec=zenity --info --text="Your IP Address is `curl ifconfig.me`\nServer must provide this address to host." --title="IP Address" --width 300&/home/bodhi/sm64ex-coop/build/us_pc/sm64.us.f3dex2e --cheats --skip-intro --savepath '${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO">>${XDG_DATA_HOME:-$HOME/.local/share}/applications/"$REPO".desktop
+		echo Path=$BASEPATH/"$REPO"/build/"$VERSION"_"$TARGET" >>${XDG_DATA_HOME:-$HOME/.local/share}/applications/"$REPO".desktop
+		echo 'Exec=zenity --info --text="Your IP Address is `curl ifconfig.me`  \nServer must provide this address to host." --title="IP Address" --width 300&/home/bodhi/sm64ex-coop/build/us_pc/sm64.us.f3dex2e --cheats --skip-intro --savepath '${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO">>${XDG_DATA_HOME:-$HOME/.local/share}/applications/"$REPO".desktop
 	elif [ "$REPO" = "sm64-port" ]; then
 		echo Path=${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO" >>${XDG_DATA_HOME:-$HOME/.local/share}/applications/"$REPO".desktop
 		printf "Exec=sh -c \"" >>${XDG_DATA_HOME:-$HOME/.local/share}/applications/"$REPO".desktop
-		echo "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/sm64."$VERSION".f3dex2e';echo'\" >>${XDG_DATA_HOME:-$HOME/.local/share}/applications/"$REPO".desktop
+		echo \""$BASEPATH"\"/"$REPO"/build/"$VERSION"_"$TARGET"/sm64."$VERSION".f3dex2e';echo'\" >>${XDG_DATA_HOME:-$HOME/.local/share}/applications/"$REPO".desktop
 	else
-		echo Path="$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET" >>${XDG_DATA_HOME:-$HOME/.local/share}/applications/"$REPO".desktop
-		echo Exec="$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/sm64."$VERSION".f3dex2e>>${XDG_DATA_HOME:-$HOME/.local/share}/applications/"$REPO".desktop
+		echo Path=$BASEPATH/"$REPO"/build/"$VERSION"_"$TARGET" >>${XDG_DATA_HOME:-$HOME/.local/share}/applications/"$REPO".desktop
+		echo Exec=\""$BASEPATH"\"/"$REPO"/build/"$VERSION"_"$TARGET"/sm64."$VERSION".f3dex2e>>${XDG_DATA_HOME:-$HOME/.local/share}/applications/"$REPO".desktop
 	fi
 	if [ -d ${XDG_DESKTOP_DIR:-$HOME/Desktop} ]; then
 		cp ${XDG_DATA_HOME:-$HOME/.local/share}/applications/"$REPO".desktop ${XDG_DESKTOP_DIR:-$HOME/Desktop}
@@ -1107,6 +1107,7 @@ if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ] || [ "$1" = "
 		unzip CHEATER*
 		rm CHEATER.zip
 		cd ..
+		echo Applying latest cheats...
 		git apply enhancements/CHEATER.patch
 		if [ ! -f "$BASEPATH"/"$REPO"/enhancements/menu-arrows.patch ]; then
 			cp ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/menu-arrows.patch enhancements
