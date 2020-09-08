@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0906-1925
+# 2020-0907-1704
 
 domake(){
 #Here We go & music to build to
@@ -251,6 +251,8 @@ elif [ "$REPO" = "Render96ex" ] || [ "$REPO" = "render96" ] || [ "$REPO" = "Rend
 	REPO=render96ex
 elif [ "$REPO" = "CHEATERex" ] || [ "$REPO" = "CHEATEREX" ]; then
 	REPO=cheaterex
+elif [ "$BRANCH" = "coop" ]; then
+	REPO=sm64ex-coop
 fi
 if [ "$REPO" = "sm64-port" ]; then
 	EXTERNAL_DATA=0
@@ -274,12 +276,12 @@ if [ "$JOBS" = "-j" ]; then
 	if [ "$REPO" = "sm64nx" ]; then 
 		JOBS=-j$(($(nproc) - 1))
 		if [ ! -f ~/.smlinuxUpdate ]; then
-			echo WARNING: Jobs set to -j$(($(nproc) - 1)) because nuz nx has problems with unlimited.
+			echo WARNING: JOBS set to -j$(($(nproc) - 1)) because nuz nx has problems with unlimited.
 		fi
 	elif [ "$TARGET_WEB" = "1" ]; then
 		JOBS=-j`nproc`
 		if [ ! -f ~/.smlinuxUpdate ]; then
-			echo WARNING: Jobs set to -j`nproc` because nuz emsdk has problems with unlimited. 
+			echo WARNING: JOBS set to -j`nproc` because nuz emsdk has problems with unlimited. 
 		fi
 	fi
 fi
@@ -322,33 +324,22 @@ fi
 
 editconfig(){
 EDITORS=leafpad:epad:gedit:notepadqq:bluefish:geany:lime:kate:medit:nano:pico:micro:jed:emacs:vim:vi
-local url=${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinuxcfg.txt 
-local oldifs="$IFS"
 IFS=":"
 for editor in $EDITORS; do
-	IFS="$oldifs"
 	if [ -z "$editor" ]; then
 		continue
 	fi
-	if echo "$editor" | grep -q %s; then
-		shift $#
-		for arg in $browser; do
-       			set -- "$@" "$(printf -- "$arg" "$url")"
-		done
-		"$@"
-	else
-		$editor "$url"
-	fi
+	$editor ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinuxcfg.txt
 	if [ $? -eq 0 ]; then
 		return
-       	fi
-	done
+	fi
+done
 }
 
 loademsdk(){
 if [ ! -d "$BASEPATH"/emsdk ]; then
 	cd "$BASEPATH"
-	git clone https://github.com/emscripten-core/emsdk.git
+	git clone https://github.com/emscripten-core/emsdk
 	cd emsdk
 	./emsdk install latest
 	./emsdk activate latest
@@ -384,6 +375,7 @@ fi
 
 dohd(){ 
 if [ "$REPO" = "sm64nx" ]; then 
+	echo Getting Add-on Paks
 	if [ ! -d "$BASEPATH"/"$REPO"/build ] ; then mkdir "$BASEPATH"/"$REPO"/build
 	fi
 	if [ ! -d "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET" ] ; then mkdir "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"
@@ -429,14 +421,17 @@ else
 			mkdir "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"
 		fi
 		if [ -d "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/res/.git ] ; then
+			echo Updating Textures...
 			cd "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/res
 			git fetch
 			git reset --hard origin
 		elif [  -d "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/res ] ; then
 			mv "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/res "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/res.old
+			echo Downloading Cleaner Aesthetics Textures...
 			git clone --single-branch https://github.com/CrashCrod/Cleaner-Aesthetics.git "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/res
 			mv -n "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/res.old/* "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/res
 		elif [  ! -d "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/res ] ; then
+			echo Downloading Cleaner Aesthetics Textures...
 			git clone --single-branch https://github.com/CrashCrod/Cleaner-Aesthetics.git "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/res
 		fi
 		if [ -d "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/res/gfx/textures/skyboxes ]; then
@@ -444,30 +439,38 @@ else
 		fi
 		if [ ! -f "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/res/hq_sounds_v5.1.zip ]; then
 			cd "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/res	
+			echo Getting High Quality Sounds...
 			wget -q https://github.com/MapAnon/sm64-pc-hq-sounds/releases/download/5.1/hq_sounds_v5.1.zip
 		fi
 	fi
 	if  [ ! "$SGI" = 1 ] && ([ ! -f "$BASEPATH"/"$REPO"/enhancements/Old_School_HD_SGI_Base_Models_V1.3_Refresh_11.7z ] || [ ! -f "$BASEPATH"/"$REPO"/enhancements/RENDER96_V1.3.7z ] ); then
-		if [ ! -f "$BASEPATH"/"$REPO"/enhancements/hd_bowser.rar ] && [ ! "$REPO" = "sm64ex-coop" ]; then
+		if [ ! -f "$BASEPATH"/"$REPO"/enhancements/hd_bowser.rar ]; then
 			cd "$BASEPATH"/"$REPO"/enhancements
-			wget -q https://cdn.discordapp.com/attachments/716459185230970880/719758031990030427/Old_School_HD_Mario_Model.zip 
+			if [ ! "$REPO" = "sm64ex-coop" ]; then
+				wget -q https://cdn.discordapp.com/attachments/716459185230970880/719758031990030427/Old_School_HD_Mario_Model.zip 
+			fi
 			wget -q https://cdn.discordapp.com/attachments/716459185230970880/718990046442684456/hd_bowser.rar	
 			cd "$BASEPATH"/"$REPO"	
 			cp -Rn actors actors.bak
-			unzip -o enhancements/Old_School_HD_Mario_Model 
+			if [ ! "$REPO" = "sm64ex-coop" ]; then
+				echo Extracting HD Mario...
+				unzip -o enhancements/Old_School_HD_Mario_Model 
+			fi
+			echo Extracing HD Bowser...
 			unrar x -o+ enhancements/hd_bowser
 		fi
 		if [ ! -f "$BASEPATH"/"$REPO"/enhancements/3d_coin_v2*.patch ]; then
 			if [ "$REPO" = "sm64pc" ] || ([ "$REPO" = "sm64ex" ] && [ "$BRANCH" = "master" ]); then
 				cd "$BASEPATH"/"$REPO"/enhancements
 				wget -q https://cdn.discordapp.com/attachments/716459185230970880/718674249631662120/3d_coin_v2.patch
-			elif [ "$TOUCH_CONTROLS" = 1 ] || [ "$REPO" = "sm64ex" ] || [ "$REPO" = "sm64-port" ] || [ "$REPO" = "sm64-coop" ]; then
+			elif [ "$REPO" = "sm64ex" ] || [ "$REPO" = "sm64-port" ] || [ "$REPO" = "cheaterex" ]; then
 				cd "$BASEPATH"/"$REPO"/enhancements
 				wget -q https://cdn.discordapp.com/attachments/721806706547490868/725041183700680807/3d_coin_v2_nightly.patch
 			fi
 			if [ -f "$BASEPATH"/"$REPO"/enhancements/3d_coin_v2*.patch ]; then
 				cd "$BASEPATH"/"$REPO"
-					git apply enhancements/3d_coin_v2*.patch
+				echo Applying 3D Coin Patch...
+				git apply enhancements/3d_coin_v2*.patch
 			fi
 		fi
 	fi
@@ -478,7 +481,8 @@ else
 			git apply enhancements/60fps*.patch
 			touch enhancements/60fps
 		fi
-		if [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64config.txt ]; then
+		if [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64config.txt ] && [ -f -f "$BASEPATH"/"$REPO"/enhancements/60fps ]; then
+			echo Enabling Vsync...
 			sed -i 's/vsync false/vsync true/g' ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64config.txt
 		fi
 	fi
@@ -486,76 +490,75 @@ fi
 }
 
 dosgi(){
-	if (!( ([ "$REPO" = "sm64ex" ] && [ "$BRANCH" = "nightly" ]) || [ "$BRANCH" = "sm64ex_nightly" ] || [ "$REPO" = "render96ex" ] )) || [ "$TARGET_WEB" = 1 ]; then
- 			if(whiptail --title "SGI Model Warning" --yesno "SGI Model Pack V1.3 is unlikely to succeed unless REPO=sm64ex BRANCH=nightly and TARGET_WEB=0." 10 50 --yes-button "Continue Anyway" --no-button "Cancel" --defaultno); then
-			echo WARNING: sgi 1.3 is unlikely to succeed on anything besides sm64ex-nightly
-			echo Proceeding anyway, but it may not be succesful.
+if (!( ([ "$REPO" = "sm64ex" ] && [ "$BRANCH" = "nightly" ]) || [ "$BRANCH" = "sm64ex_nightly" ] || [ "$REPO" = "render96ex" ] )) || [ "$TARGET_WEB" = 1 ]; then
+			if(whiptail --title "SGI Model Warning" --yesno "SGI Model Pack V1.3 is unlikely to succeed unless REPO=sm64ex BRANCH=nightly and TARGET_WEB=0." 10 50 --yes-button "Continue Anyway" --no-button "Cancel" --defaultno); then
+		echo WARNING: sgi 1.3 is unlikely to succeed on anything besides sm64ex-nightly
+		echo Proceeding anyway, but it may not be succesful.
+	else
+		exit
+	fi
+fi
+if [ "$REPO" = "render96ex" ] && [ -f "$BASEPATH"/"$REPO"/enhancements/RENDER96_V1.4.2_Luigi* ] ; then 
+	echo Render96 V1.4.2 Models Already Installed...
+	return
+elif [ ! "$REPO" = "render96ex" ] && ( [ -f "$BASEPATH"/"$REPO"/enhancements/Old_School_HD_SGI_Base_Models_V1.3_Refresh_11.7z ] || [ -f "$BASEPATH"/"$REPO"/enhancements/RENDER96_V1.3.7z ]); then
+	echo Render96 Models V1.3 Already Installed...
+	return 
+fi
+if [ ! -f /usr/bin/7z ]; then 
+	if [ ! -f /bin/7z ]; then
+		echo "SGI Models comes as a 7z file but you don't have 7z to extract it."
+		if [ -f /usr/bin/apt ]; then
+			echo Please provide your password to install...
+			sudo apt install p7zip-full
 		else
+			echo This script checks for /usr/bin/7z.  The ubuntu package is called p7zip.
+			echo Please install whatever package gets you 7z and run smlinux again.
+			echo Also please let author know what package and distro so I can add it
+			echo to depdencency list so others avoid this message.  
 			exit
 		fi
 	fi
-	if [ "$REPO" = "render96ex" ] && [ -f "$BASEPATH"/"$REPO"/enhancements/RENDER96_V1.4.2_Luigi* ] ; then 
-		echo Render96 V1.4.2 Models Already Installed...
-		return
-	elif [ ! "$REPO" = "render96ex" ] && ( [ -f "$BASEPATH"/"$REPO"/enhancements/Old_School_HD_SGI_Base_Models_V1.3_Refresh_11.7z ] || [ -f "$BASEPATH"/"$REPO"/enhancements/RENDER96_V1.3.7z ]); then
-		echo Render96 Models V1.3 Already Installed...
-		return 
-	fi
-	
-	if [ ! -f /usr/bin/7z ]; then 
-		if [ ! -f /bin/7z ]; then
-			echo "SGI Models comes as a 7z file but you don't have 7z to extract it."
-			if [ -f /usr/bin/apt ]; then
-				echo Please provide your password to install...
-				sudo apt install p7zip-full
-			else
-				echo This script checks for /usr/bin/7z.  The ubuntu package is called p7zip.
-				echo Please install whatever package gets you 7z and run smlinux again.
-				echo Also please let author know what package and distro so I can add it
-				echo to depdencency list so others avoid this message.  
-				exit
-			fi
-		fi
-	fi
-	if [ -d "$BASEPATH"/"$REPO"/actors.bak ]; then
-		echo Restoring default actors...
-		cd "$BASEPATH"/"$REPO"/enhancements
-		rm -rf "$BASEPATH"/"$REPO"/actors
-		mv "$BASEPATH"/"$REPO"/actors.bak "$BASEPATH"/"$REPO"/actors
-		rm hd_bowser.rar Old_School_HD_Mario_Model.zip
-	fi
-	if [ -f "$BASEPATH"/"$REPO"/enhancements/3d_coin*.patch ]; then
-		echo Removing 3D coins...
-		cd "$BASEPATH"/"$REPO"
-		git apply -R enhancements/3d_coin*.patch
-		rm enhancements/3d_coin*.patch
-	fi
-	if [ -f "$BASEPATH"/"$REPO"/enhancements/60fps ]; then
-		cd "$BASEPATH"/"$REPO"
-		git apply -R enhancements/60fps*.patch
-		rm enhancements/60fps
-		if [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64config.txt ]; then
-			sed -i 's/vsync true/vsync false/g' ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64config.txt
-		fi
-	fi
-	if [ "$REPO" = "render96ex" ] ; then
-		cd "$BASEPATH"/"$REPO"/enhancements 
-		wget -q https://cdn.discordapp.com/attachments/730551213376143431/745382037560492132/RENDER96_V1.4.2_Luigi_Fixed_Sound.zip
-		SGIFILE=RENDER96_V1.4.2_Luigi_Fixed_Sound.zip
-	else
-		cd "$BASEPATH"/"$REPO"/enhancements
-		wget -q https://cdn.discordapp.com/attachments/727722992137666573/745038574918828112/RENDER96_V1.3.7z
-		SGIFILE=RENDER96_V1.3.7z
-	fi
-	if  [ -f "$BASEPATH"/"$REPO"/enhancements/CHEATER*.patch ]; then
-		cd echo Removing cheater...
-		cd "$BASEPATH"/"$REPO"
-		git apply -R enhancements/CHEATER*.patch
-		rm enhancements/CHEATER*
-	fi
+fi
+if [ -d "$BASEPATH"/"$REPO"/actors.bak ]; then
+	echo Restoring default actors...
+	cd "$BASEPATH"/"$REPO"/enhancements
+	rm -rf "$BASEPATH"/"$REPO"/actors
+	mv "$BASEPATH"/"$REPO"/actors.bak "$BASEPATH"/"$REPO"/actors
+	rm hd_bowser.rar Old_School_HD_Mario_Model.zip
+fi
+if [ -f "$BASEPATH"/"$REPO"/enhancements/3d_coin*.patch ]; then
+	echo Removing 3D coins...
 	cd "$BASEPATH"/"$REPO"
-	7z x enhancements/"$SGIFILE" -aoa 
-	}
+	git apply -R enhancements/3d_coin*.patch
+	rm enhancements/3d_coin*.patch
+fi
+if [ -f "$BASEPATH"/"$REPO"/enhancements/60fps ]; then
+	cd "$BASEPATH"/"$REPO"
+	git apply -R enhancements/60fps*.patch
+	rm enhancements/60fps
+	if [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64config.txt ]; then
+		sed -i 's/vsync true/vsync false/g' ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64config.txt
+	fi
+fi
+if [ "$REPO" = "render96ex" ] ; then
+	cd "$BASEPATH"/"$REPO"/enhancements 
+	wget -q https://cdn.discordapp.com/attachments/730551213376143431/745382037560492132/RENDER96_V1.4.2_Luigi_Fixed_Sound.zip
+	SGIFILE=RENDER96_V1.4.2_Luigi_Fixed_Sound.zip
+else
+	cd "$BASEPATH"/"$REPO"/enhancements
+	wget -q https://cdn.discordapp.com/attachments/727722992137666573/745038574918828112/RENDER96_V1.3.7z
+	SGIFILE=RENDER96_V1.3.7z
+fi
+if  [ -f "$BASEPATH"/"$REPO"/enhancements/CHEATER*.patch ]; then
+	cd echo Removing cheater...
+	cd "$BASEPATH"/"$REPO"
+	git apply -R enhancements/CHEATER*.patch
+	rm enhancements/CHEATER*
+fi
+cd "$BASEPATH"/"$REPO"
+7z x enhancements/"$SGIFILE" -aoa 
+}
 	
 scriptUpdate(){
 if [ ! -f ~/.smlinuxUpdate ]; then 
@@ -663,7 +666,6 @@ if [ ! -f ${XDG_DATA_HOME:-$HOME/.local/share}/icons/"$REPO".* ]; then
 	elif [ "$REPO" = "sm64ex-coop" ]; then 
 		wget -q https://cdn.discordapp.com/attachments/710334795674288139/741732375074963556/luigihudicon.png
 		mv luigihudicon.png ${XDG_DATA_HOME:-$HOME/.local/share}/icons/"$REPO".png
-		chmod +x ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/cooplauncher
 	elif [ -f "$BASEPATH"/"$REPO"/textures/segment2/segment2.05A00.rgba16.png ]; then
 		cp "$BASEPATH"/"$REPO"/textures/segment2/segment2.05A00.rgba16.png ${XDG_DATA_HOME:-$HOME/.local/share}/icons/"$REPO".png
 		echo 16x16 image from ROM used.  Reccommend replacing ${XDG_DATA_HOME:-$HOME/.local/share}/icons/"$REPO".png
@@ -693,7 +695,7 @@ echo Name=Super Mario 64 \("$REPO"\) >>${XDG_DATA_HOME:-$HOME/.local/share}/appl
 		echo Exec="$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/sm64."$VERSION".f3dex2e --cheats --savepath ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO">>${XDG_DATA_HOME:-$HOME/.local/share}/applications/"$REPO".desktop
 	elif [ "$REPO" = "sm64ex-coop" ]; then
 		echo Path="$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET" >>${XDG_DATA_HOME:-$HOME/.local/share}/applications/"$REPO".desktop
-		echo Exec=${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/cooplauncher >>${XDG_DATA_HOME:-$HOME/.local/share}/applications/"$REPO".desktop
+		echo Exec="$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/sm64."$VERSION".f3dex2e --cheats --skip-intro --savepath ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO">>${XDG_DATA_HOME:-$HOME/.local/share}/applications/"$REPO".desktop
 	elif [ "$REPO" = "sm64-port" ]; then
 		echo Path=${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO" >>${XDG_DATA_HOME:-$HOME/.local/share}/applications/"$REPO".desktop
 		printf "Exec=sh -c \"" >>${XDG_DATA_HOME:-$HOME/.local/share}/applications/"$REPO".desktop
@@ -710,38 +712,38 @@ else
 fi
 }
 rungame(){
-	if [ "$TARGET_WEB"  = 1 ]; then 
-		cd "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"
-		ln -s sm64.us.f3dex2e.html index.html
-		python3 -m http.server 8100 &
-		if [ -f /usr/bin/firefox ]; then
-			firefox --new-window http://localhost:8100&disown
-		else
-			xdg-open http://localhost:8100&disown
-		fi
-	elif [ "$ANDROID"  = 1 ] ; then
-		if [ "$GOTPHONE" = 1 ]; then
-			adb shell am start -n com.vdavid003.sm64port/.sm64portActivity
-			if [ "$EXTERNAL_DATA" = 1 ]; then
-				echo 
-				echo When SM64 is launched screen will appear blank while external assets are loaded.
-				echo Just wait...
-			fi
-		elif [ "$EXTERNAL_DATA" = 1 ]; then
-			zenity --info --text="Your Android device was not detected so app could not be installed.\nYou must put base assets (base.zip or hdbase.zip) into\nInternal Storage/Android/data/com.vdavid003.sm64port/files\nThis folder will be created when you launch the apk." --title="Transfer External Resources!" --width=470
-			echo
-			echo "Your Android device was not detected so app could not be installed."
-			echo "You must put base assets (base.zip or hdbase.zip) into"
-			echo "Internal Storage/Android/data/com.vdavid003.sm64port/files"
-			echo 
-		fi
-		xdg-open "$BASEPATH"/"$REPO"/../../build/outputs/apk/debug &disown
-	elif [ "$REPO"  = "sm64ex-coop" ] ; then
-		cd "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"
-		${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/cooplauncher local &disown
-	else 
-		gtk-launch "$REPO"&disown
+if [ "$TARGET_WEB"  = 1 ]; then 
+	cd "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"
+	ln -s sm64.us.f3dex2e.html index.html
+	python3 -m http.server 8100 &
+	if [ -f /usr/bin/firefox ]; then
+		firefox --new-window http://localhost:8100&disown
+	else
+		xdg-open http://localhost:8100&disown
 	fi
+elif [ "$ANDROID"  = 1 ] ; then
+	if [ "$GOTPHONE" = 1 ]; then
+		adb shell am start -n com.vdavid003.sm64port/.sm64portActivity
+		if [ "$EXTERNAL_DATA" = 1 ]; then
+			echo 
+			echo When SM64 is launched screen will appear blank while external assets are loaded.
+			echo Just wait...
+		fi
+	elif [ "$EXTERNAL_DATA" = 1 ]; then
+		zenity --info --text="Your Android device was not detected so app could not be installed.\nYou must put base assets (base.zip or hdbase.zip) into\nInternal Storage/Android/data/com.vdavid003.sm64port/files\nThis folder will be created when you launch the apk." --title="Transfer External Resources!" --width=470
+		echo
+		echo "Your Android device was not detected so app could not be installed."
+		echo "You must put base assets (base.zip or hdbase.zip) into"
+		echo "Internal Storage/Android/data/com.vdavid003.sm64port/files"
+		echo 
+	fi
+	xdg-open "$BASEPATH"/"$REPO"/../../build/outputs/apk/debug &disown
+elif [ "$REPO"  = "sm64ex-coop" ] ; then
+	cd "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"
+	${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/cooplauncher local &disown
+else 
+	gtk-launch "$REPO"&disown
+fi
 }
 
 ####################################### The Beginning ########################################
@@ -840,6 +842,63 @@ if [ ! -f ~/.smlinuxUpdate ]; then
 			echo WARNING: No ROM file found.  Please specify a romfile when you are ready to build.
 		fi
 	fi
+	echo
+	if [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64config.txt ] || [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/CHEATERex_config.txt ]; then
+		echo Configuration file already exists from previous build.
+	elif [ "$REPO" = "sm64-port" ] || [ "$REPO" = "sm64nx" ] || [ ! -d ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO" ]; then
+		echo No compatible config files for this version, game will create one.
+	elif [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64ex/sm64config.txt ]; then
+		cp ${XDG_DATA_HOME:-$HOME/.local/share}/sm64ex/sm64config.txt ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"
+		echo Copied configuration from sm64ex.
+	elif [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/sm64config.txt ]; then
+		cp ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/sm64config.txt ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"
+		echo Copied configuration from sm64pc.
+	elif [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/render96ex/sm64config.txt ]; then
+		cp ${XDG_DATA_HOME:-$HOME/.local/share}/render96ex/sm64config.txt ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"
+		echo Copied configuration from render96ex
+	elif [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64ex-coop/sm64config.txt ]; then
+		cp ${XDG_DATA_HOME:-$HOME/.local/share}/sm64ex-coop/sm64config.txt ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"
+		echo Copied configuration from sm64ex-coop
+	elif [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/cheaterex/CHEATERex_config.txt ]; then
+		cp ${XDG_DATA_HOME:-$HOME/.local/share}/cheaterex/CHEATERex_config.txt ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64config.txt
+		echo Copied configuration from CHEATERex
+	else
+		echo No compatible configuration file found, game will create one.
+	fi
+	if [ "$REPO" = "cheaterex" ] && [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64config.txt ]; then
+		mv ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64config.txt ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/CHEATERex_config.txt
+	fi
+	if [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64_save_file.bin ] || [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/CHEATERex_save_file.bin ] || [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64.sav ]; then
+		echo Save file already exists from previous build.
+	elif [ ! -d ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO" ] || [ "TEXTSAVES" = 1 ]; then
+		echo No compatible save files for this version.
+	elif [ "$REPO" = "sm64-port" ] && [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64nx/sm64.sav ]; then
+		cp ${XDG_DATA_HOME:-$HOME/.local/share}/sm64nx/sm64.sav ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64_save_file.bin
+		echo Copied save file from sm64nx.
+	elif [ "$REPO" = "sm64nx" ] && [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64-port/sm64_save_file.bin ]; then
+		cp ${XDG_DATA_HOME:-$HOME/.local/share}/sm64-port/sm64_save_file.bin ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64.sav
+		echo Copied save file from sm64-port.
+	elif [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64ex/sm64_save_file.bin ]; then
+		cp ${XDG_DATA_HOME:-$HOME/.local/share}/sm64ex/sm64_save_file.bin ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"
+		echo Copied save file from sm64ex.
+	elif [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64-port/sm64_save_file.bin ]; then
+		cp ${XDG_DATA_HOME:-$HOME/.local/share}/sm64-port/sm64_save_file.bin ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"
+		echo Copied save file from sm64-port.
+	elif [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/sm64_save_file.bin ]; then
+		cp ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/sm64_save_file.bin ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"
+		echo Copied save file from sm64pc.
+	elif [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/cheaterex/CHEATERex_save_file.bin ]; then
+		cp ${XDG_DATA_HOME:-$HOME/.local/share}/cheaterex/CHEATERex_save_file.bin ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64_save_file.bin
+		echo Copied save file from cheaterex
+	elif [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64nx/sm64.sav ]; then
+		cp ${XDG_DATA_HOME:-$HOME/.local/share}/sm64nx/sm64.sav ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64_save_file.bin
+		echo Copied save file from sm64nx.
+	else
+		No compatible save file found.
+	fi
+	if [ "$REPO" = "cheaterex" ] && [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64_save_file.bin ]; then
+		mv ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64_save_file.bin ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/CHEATERex_save_file.bin
+	fi
 else
 	loadconfig "$@"
 fi
@@ -852,25 +911,34 @@ if [ "$1" = "--purge" ] || [ "$1" = "purge" ]; then
 	rm -rf "$BASEPATH"/sm64-port
 	rm -rf "$BASEPATH"/sm64nx
 	rm -rf "$BASEPATH"/render96ex
+	rm -rf "$BASEPATH"/cheaterex
+	rm -rf "$BASEPATH"/sm64ex-coop
 	rm -rf "$BASEPATH"/sm64-port-android.base
 	rm -rf "$BASEPATH"/sm64pc.old
 	rm -rf "$BASEPATH"/sm64ex.old
 	rm -rf "$BASEPATH"/sm64-port.old
 	rm -rf "$BASEPATH"/sm64nx.old
 	rm -rf "$BASEPATH"/render96ex.old
+	rm -rf "$BASEPATH"/cheaterex.old
+	rm -rf "$BASEPATH"/sm64ex-coop.old
 	rm -rf "$BASEPATH"/sm64-port-android.base.old
 	rm -rf ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc
 	rm -rf ${XDG_DATA_HOME:-$HOME/.local/share}/sm64ex	
 	rm -rf ${XDG_DATA_HOME:-$HOME/.local/share}/sm64-port
 	rm -rf ${XDG_DATA_HOME:-$HOME/.local/share}/sm64nx
 	rm -rf ${XDG_DATA_HOME:-$HOME/.local/share}/render96ex
+	rm -rf ${XDG_DATA_HOME:-$HOME/.local/share}/cheaterex
+	rm -rf ${XDG_DATA_HOME:-$HOME/.local/share}/sm64ex-coop
 	rm ${XDG_DATA_HOME:-$HOME/.local/share}/icons/sm64*
 	rm ${XDG_DATA_HOME:-$HOME/.local/share}/icons/render96ex*
+	rm ${XDG_DATA_HOME:-$HOME/.local/share}/icons/cheaterex*
 	rm ${XDG_DATA_HOME:-$HOME/.local/share}/applications/sm64*
 	rm ${XDG_DATA_HOME:-$HOME/.local/share}/applications/render96ex*
+	rm ${XDG_DATA_HOME:-$HOME/.local/share}/applications/cheaterex*
 	rm ${XDG_DESKTOP_DIR:-$HOME/Desktop}/sm64*.desktop
 	rm ${XDG_DESKTOP_DIR:-$HOME/Desktop}/render96ex*.desktop
-	rm "$BASEPATH"/Downloads/smlinux.*
+	rm ${XDG_DESKTOP_DIR:-$HOME/Desktop}/cheaterex*.desktop
+	rm $HOME/Downloads/smlinux.*
 	echo Note this did not remove any packages installed as build tools or dependencies.
 	echo Remove those with your package manager.  Devel libraries can always safely be removed.
 	echo And of course you must delete smlinux itself from "${MAPFILE[0]}"
@@ -1036,6 +1104,7 @@ if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ] || [ "$1" = "
 		git apply enhancements/CHEATER.patch
 		if [ ! -f "$BASEPATH"/"$REPO"/enhancements/menu-arrows.patch ]; then
 			cp ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/menu-arrows.patch enhancements
+			echo Applying Menu Arrows...
 			git apply enhancements/menu-arrows.patch
 		fi
 	fi
@@ -1178,64 +1247,7 @@ else
 	cd "$BASEPATH"/"$REPO"
 	./extract_assets.py "$VERSION"
 fi
-echo
-echo "Checking for exisiting configuration and save files..."
-if [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64config.txt ] || [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/CHEATERex_config.txt ]; then
-	echo Configuration file already exists from previous build.
-elif [ "$REPO" = "sm64-port" ] || [ "$REPO" = "sm64nx" ] || [ ! -d ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO" ]; then
-	echo No compatible config files for this version, game will create one.
-elif [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64ex/sm64config.txt ]; then
-	cp ${XDG_DATA_HOME:-$HOME/.local/share}/sm64ex/sm64config.txt ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"
-	echo Copied configuration from sm64ex.
-elif [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/sm64config.txt ]; then
-	cp ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/sm64config.txt ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"
-	echo Copied configuration from sm64pc.
-elif [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/render96ex/sm64config.txt ]; then
-	cp ${XDG_DATA_HOME:-$HOME/.local/share}/render96ex/sm64config.txt ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"
-	echo Copied configuration from render96ex
-elif [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64ex-coop/sm64config.txt ]; then
-	cp ${XDG_DATA_HOME:-$HOME/.local/share}/sm64ex-coop/sm64config.txt ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"
-	echo Copied configuration from sm64ex-coop
-elif [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/cheaterex/CHEATERex_config.txt ]; then
-	cp ${XDG_DATA_HOME:-$HOME/.local/share}/cheaterex/CHEATERex_config.txt ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64config.txt
-	echo Copied configuration from CHEATERex
-else
-	echo No compatible configuration file found, game will create one.
-fi
-if [ "$REPO" = "cheaterex" ] && [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64config.txt ]; then
-	mv ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64config.txt ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/CHEATERex_config.txt
-fi
-if [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64_save_file.bin ] || [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/CHEATERex_save_file.bin ] || [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64.sav ]; then
-	echo Save file already exists from previous build.
-elif [ ! -d ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO" ] || [ "TEXTSAVES" = 1 ]; then
-	echo No compatible save files for this version.
-elif [ "$REPO" = "sm64-port" ] && [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64nx/sm64.sav ]; then
-	cp ${XDG_DATA_HOME:-$HOME/.local/share}/sm64nx/sm64.sav ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64_save_file.bin
-	echo Copied save file from sm64nx.
-elif [ "$REPO" = "sm64nx" ] && [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64-port/sm64_save_file.bin ]; then
-	cp ${XDG_DATA_HOME:-$HOME/.local/share}/sm64-port/sm64_save_file.bin ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64.sav
-	echo Copied save file from sm64-port.
-elif [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64ex/sm64_save_file.bin ]; then
-	cp ${XDG_DATA_HOME:-$HOME/.local/share}/sm64ex/sm64_save_file.bin ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"
-	echo Copied save file from sm64ex.
-elif [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64-port/sm64_save_file.bin ]; then
-	cp ${XDG_DATA_HOME:-$HOME/.local/share}/sm64-port/sm64_save_file.bin ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"
-	echo Copied save file from sm64-port.
-elif [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/sm64_save_file.bin ]; then
-	cp ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/sm64_save_file.bin ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"
-	echo Copied save file from sm64pc.
-elif [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/cheaterex/CHEATERex_save_file.bin ]; then
-	cp ${XDG_DATA_HOME:-$HOME/.local/share}/cheaterex/CHEATERex_save_file.bin ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64_save_file.bin
-	echo Copied save file from cheaterex
-elif [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64nx/sm64.sav ]; then
-	cp ${XDG_DATA_HOME:-$HOME/.local/share}/sm64nx/sm64.sav ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64_save_file.bin
-	echo Copied save file from sm64nx.
-else
-	No compatible save file found.
-fi
-if [ "$REPO" = "cheaterex" ] && [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64_save_file.bin ]; then
-	mv ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64_save_file.bin ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/CHEATERex_save_file.bin
-fi
+
 echo
 echo [5] Applying Community Enhancements...
 echo
@@ -1244,23 +1256,30 @@ if [ "$SGI" = 1 ]; then
 	dosgi
 fi
 if [ "$InstallHD" = 1 ]; then 
-	echo Install HD Enhancements...
 	dohd
 else
 	echo "WARNING: InstallHD Disabled in Config File."
 fi
-if  [ "$REPO" = "sm64ex" ] || [ "$BRANCH" = "sm64ex_nightly" ] || [ "$BRANCH" = "sm64ex" ] || [ "$REPO" = render96ex ]; then 
+if  [ "$REPO" = "sm64ex" ] || [ "$BRANCH" = "sm64ex_nightly" ] || [ "$BRANCH" = "sm64ex" ] || [ "$REPO" = "render96ex" ] || [ "$REPO" = "sm64ex-coop" ]; then 
 	cd "$BASEPATH"/"$REPO"/enhancements
 	cp ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/menu-arrows.patch .
-	wget -q https://cdn.discordapp.com/attachments/716459185230970880/750380998373671012/CHEATER.zip
-	unzip CHEATER
-	rm CHEATER.zip
-	cd ..
-	git apply enhancements/CHEATER.patch
+	if [ ! "$REPO" = "sm64ex-coop" ]; then
+		wget -q https://cdn.discordapp.com/attachments/716459185230970880/750380998373671012/CHEATER.zip
+		unzip CHEATER
+		rm CHEATER.zip
+	else
+		wget https://cdn.discordapp.com/attachments/710283360794181633/752653776715907092/CHEATER-coop.v.1.release.patch
+	fi
+	cd "$BASEPATH"/"$REPO"
+	echo Apply Cheats...
+	git apply enhancements/CHEATER*.patch
+	echo Applying Menu Arrows...
 	git apply enhancements/menu-arrows.patch
 fi
 if [ "$BRANCH" = "sm64ex_nightly" ] && [ ! "$TOUCH_CONTROLS" = 1 ]; then
+	cd "$BASEPATH"/"$REPO"
 	cp ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/pro1.patch enhancements
+	echo "Applying Pro¹ Configuration File..."
 	git apply enhancements/pro1.patch
 fi
 echo
