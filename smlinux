@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0907-1704
+# 2020-0907-1942
 
 domake(){
 #Here We go & music to build to
@@ -481,7 +481,7 @@ else
 			git apply enhancements/60fps*.patch
 			touch enhancements/60fps
 		fi
-		if [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64config.txt ] && [ -f -f "$BASEPATH"/"$REPO"/enhancements/60fps ]; then
+		if [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64config.txt ] && [ -f "$BASEPATH"/"$REPO"/enhancements/60fps ]; then
 			echo Enabling Vsync...
 			sed -i 's/vsync false/vsync true/g' ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64config.txt
 		fi
@@ -676,6 +676,11 @@ if [ ! -f ${XDG_DATA_HOME:-$HOME/.local/share}/icons/"$REPO".* ]; then
 else
 	echo Icon already exists...
 fi
+if [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/cooplauncher ] && [ "$REPO" = "sm64ex-coop" ] && [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/applications/"$REPO".desktop ]; then
+	rm ${XDG_DATA_HOME:-$HOME/.local/share}/applications/"$REPO".desktop
+	rm ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/cooplauncher
+fi
+
 if [ ! -f ${XDG_DATA_HOME:-$HOME/.local/share}/applications/"$REPO".desktop ]; then
 	echo '[Desktop Entry]
 Encoding=UTF-8
@@ -695,7 +700,7 @@ echo Name=Super Mario 64 \("$REPO"\) >>${XDG_DATA_HOME:-$HOME/.local/share}/appl
 		echo Exec="$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/sm64."$VERSION".f3dex2e --cheats --savepath ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO">>${XDG_DATA_HOME:-$HOME/.local/share}/applications/"$REPO".desktop
 	elif [ "$REPO" = "sm64ex-coop" ]; then
 		echo Path="$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET" >>${XDG_DATA_HOME:-$HOME/.local/share}/applications/"$REPO".desktop
-		echo Exec="$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/sm64."$VERSION".f3dex2e --cheats --skip-intro --savepath ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO">>${XDG_DATA_HOME:-$HOME/.local/share}/applications/"$REPO".desktop
+		echo 'Exec=zenity --info --text="Your IP Address is `curl ifconfig.me`\nServer must provide this address to host." --title="IP Address" --width 300&/home/bodhi/sm64ex-coop/build/us_pc/sm64.us.f3dex2e --cheats --skip-intro --savepath '${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO">>${XDG_DATA_HOME:-$HOME/.local/share}/applications/"$REPO".desktop
 	elif [ "$REPO" = "sm64-port" ]; then
 		echo Path=${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO" >>${XDG_DATA_HOME:-$HOME/.local/share}/applications/"$REPO".desktop
 		printf "Exec=sh -c \"" >>${XDG_DATA_HOME:-$HOME/.local/share}/applications/"$REPO".desktop
@@ -740,7 +745,8 @@ elif [ "$ANDROID"  = 1 ] ; then
 	xdg-open "$BASEPATH"/"$REPO"/../../build/outputs/apk/debug &disown
 elif [ "$REPO"  = "sm64ex-coop" ] ; then
 	cd "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"
-	${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/cooplauncher local &disown
+	./sm64.us.f3dex2e --server 27015 --cheats --savepath ${XDG_DATA_HOME:-$HOME/.local/share}/sm64ex-coop --skip-intro --configfile sm64config.server-local.txt &disown
+	./sm64.us.f3dex2e --client 127.0.0.1 27015 --cheats --savepath ${XDG_DATA_HOME:-$HOME/.local/share}/sm64ex-coop --skip-intro &disown
 else 
 	gtk-launch "$REPO"&disown
 fi
@@ -1162,7 +1168,7 @@ if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ] || [ "$1" = "
 		rm -rf gfx
 	fi
 	echo
-	if [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/applications/"$REPO".desktop ] || [ "$TARGET" = "web" ]; then
+	if [ "$TARGET" = "web" ]; then
 		echo [7] Update Complete.  Testing Application...
 	elif [ "$ANDROID" = 1 ] && [ ! -f "$BASEPATH"/"$REPO"/../../build/outputs/apk/debug/app-debug.apk ]; then
 		echo
@@ -1175,7 +1181,7 @@ if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ] || [ "$1" = "
 		makedesktop
 		echo
 		echo [8] Update Complete.  Testing Application...
-	else
+	elif [ "$ANDROID" = 1 ]; then
 		mv "$BASEPATH"/"$REPO"/../../build/outputs/apk/debug/app-debug.apk "$BASEPATH"/"$REPO"/../../build/outputs/apk/debug/sm64."$VERSION".f3dex2e.apk
 		echo [7] Update Complete. 
 	fi
