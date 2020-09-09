@@ -3,7 +3,7 @@
 # Other distros edit config file when prompted to change Linux= to command to get your dependencies.
 # Dependencies for many distros are listed on the github FAQ.  Please let me know if incorrect
 # or if you have another distro to add.
-# 2020-0908-1452
+# 2020-0909-1301
 
 domake(){
 #Here We go & music to build to
@@ -197,8 +197,8 @@ REPO=sm64ex
 BRANCH=nightly
 InstallHD=1
 JOBS=-j
-# [ sm64ex and its forks ] 
 TARGET_WEB=0
+# [ sm64ex and its forks ] 
 BETTERCAMERA=1
 NODRAWINGDISTANCE=1
 TEXTURE_FIX=1
@@ -224,7 +224,7 @@ CONFIG=1
 BASEPATH=$HOME
 # Set AutoUpdate=0 to prevent smlinux updating itself automatically when ran
 AutoUpdate=1
-# Set UpdateHD=0 if you dont want smlinux up update addons when rebuilding
+# Set UpdateHD=0 to prevent smlinux updating addons when rebuilding
 UpdateHD=1
 # Linux must be set to command appropriate to your distribution. See FAQ.
 Linux="sudo apt install -y build-essential git python3 libaudiofile-dev libglew-dev libsdl2-dev binutils libusb-1.0-0-dev libzstd-dev python3-pip p7zip-full mplayer"'> ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinuxcfg.txt
@@ -423,19 +423,26 @@ else
 		if [ -d "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/res/.git ] ; then
 			echo Updating Textures...
 			cd "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/res
-			git fetch
-			git reset --hard origin
+			git pull
 		elif [  -d "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/res ] ; then
 			mv "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/res "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/res.old
 			echo Downloading Cleaner Aesthetics Textures...
 			git clone --single-branch https://github.com/CrashCrod/Cleaner-Aesthetics.git "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/res
 			mv -n "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/res.old/* "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/res
 		elif [  ! -d "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/res ] ; then
-			echo Downloading Cleaner Aesthetics Textures...
-			git clone --single-branch https://github.com/CrashCrod/Cleaner-Aesthetics.git "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/res
+			if [ "$REPO" = "render96ex" ]; then
+				echo Downloading Render96 Textures... 
+				git clone --single-branch https://github.com/pokeheadroom/RENDER96-HD-TEXTURE-PACK "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/res
+			else
+				echo Downloading Cleaner Aesthetics Textures...
+				git clone --single-branch https://github.com/CrashCrod/Cleaner-Aesthetics "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/res
+			fi
 		fi
 		if [ -d "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/res/gfx/textures/skyboxes ]; then
 			rm -rf "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/res/gfx/textures/skyboxes
+		fi
+		if [ -d "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/res/screenshots ]; then
+			rm -rf "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/res/screenshots
 		fi
 		if [ ! -f "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/res/hq_sounds_v5.1.zip ]; then
 			cd "$BASEPATH"/"$REPO"/build/"$VERSION"_"$TARGET"/res	
@@ -443,7 +450,9 @@ else
 			wget -q https://github.com/MapAnon/sm64-pc-hq-sounds/releases/download/5.1/hq_sounds_v5.1.zip
 		fi
 	fi
-	if  [ ! "$SGI" = 1 ] && ([ ! -f "$BASEPATH"/"$REPO"/enhancements/Old_School_HD_SGI_Base_Models_V1.3_Refresh_11.7z ] || [ ! -f "$BASEPATH"/"$REPO"/enhancements/RENDER96_V1.3.7z ] ); then
+	if  [ "$SGI" = 1 ] && ([ ! -f "$BASEPATH"/"$REPO"/enhancements/Old_School_HD_SGI_Base_Models_V1.3_Refresh_11.7z ] || [ ! -f "$BASEPATH"/"$REPO"/enhancements/RENDER96_V* ] ); then
+		dosgi
+	elif  [ ! "$SGI" = 1 ] && ([ ! -f "$BASEPATH"/"$REPO"/enhancements/Old_School_HD_SGI_Base_Models_V1.3_Refresh_11.7z ] || [ ! -f "$BASEPATH"/"$REPO"/enhancements/RENDER96_V* ] ); then
 		if [ ! -f "$BASEPATH"/"$REPO"/enhancements/hd_bowser.rar ]; then
 			cd "$BASEPATH"/"$REPO"/enhancements
 			if [ ! "$REPO" = "sm64ex-coop" ]; then
@@ -772,6 +781,12 @@ if [ ! -f ~/.smlinuxUpdate ]; then
 		echo "If so I would love to use it as a front end."
 		echo
 		exit
+	elif [ "$1" = "reset" ]; then
+		rm ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinuxcfg.txt
+		makeconfig
+		echo
+		echo smlinux configuration file has been reset to default.
+		echo
 	elif [ ! -f ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/smlinuxcfg.txt ]; then
 		echo smlinux configuration file not found, so making a new one...
 		makeconfig
@@ -999,8 +1014,7 @@ else
 	echo "|                                                                             |"
 	echo "|      Super Mario 64 Install * Build * Update Script for Linux               |"
 	echo "|                                                                             |"
-	echo "| Installation & First Build: chmod +x smlinux                                |"
-	echo "|                             ./smlinux <romfile> <options>                   |"
+	echo "| Installation & First Build: ./smlinux <romfile>                             |"
 	echo "|  for example:                                                               |"
 	echo "|   ./smlinux ~/roms/n64/sm64.z64  or  ./smlinux \"Super Mario 64 (U) [!].z64\" |"
 	echo "|                                                                             |"
@@ -1011,6 +1025,7 @@ else
 	echo "|  build:  Gets new source from github and builds. (Renames existing folder)  |"
 	echo "|  config: Opens smlinuxcfg.txt in text editor without building               |"
 	echo "|  purge:  Removes all files created by this script, including sm64           |"
+	echo "|  reset:  Resets smlinux configuration file to default settings              |"
 	echo "|                                                                             |"
 	echo "| Options: --config   prompt to edit config file before build                 |"
 	echo "|          --depends  reinstall dependencies                                  |"
@@ -1091,8 +1106,7 @@ if [ "$1" = "-u" ] || [ "$1" = "--update" ] || [ "$1" = "update" ] || [ "$1" = "
 	if [ "$UpdateHD" = 1 ]; then
 		printf "\nUpdating Community Upscale Enhancements...\n\n"
 		dohd
-	fi
-	if [ "$SGI" = 1 ]; then
+	elif [ "$SGI" = 1 ]; then
 		printf "\nAdding SGI Models...\n\n"
 		dosgi
 	fi
@@ -1258,12 +1272,11 @@ fi
 echo
 echo [5] Applying Community Enhancements...
 echo
-if [ "$SGI" = 1 ]; then
-	echo Installing SGI Models...
-	dosgi
-fi
+
 if [ "$InstallHD" = 1 ]; then 
 	dohd
+elif [ "$SGI" = 1 ]; then
+	dosgi
 else
 	echo "WARNING: InstallHD Disabled in Config File."
 fi
