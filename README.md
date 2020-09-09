@@ -189,10 +189,13 @@ openSuSE:
 Solus:
 	
 	sudo eopkg install make gcc python3 audiofile-devel glew-devel sdl2-devel
-
 Void: 
 
 	sudo xbps-install -S base-devel python3 audiofile-devel SDL2-devel glew-devel zstd 
+Alpine:
+
+	sudo apk add build-base python3 audiofile-dev sdl2-dev glew-dev 
+
 	
 
 
