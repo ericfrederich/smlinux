@@ -571,7 +571,7 @@ cd "$BASEPATH"/"$REPO"
 	
 scriptUpdate(){
 if [ ! -f ~/.smlinuxUpdate ]; then 
-	if [ ! -f "${MAPFILE[0]}"/smlinux ] || [ ! -d ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/.git] ; then
+	if [ ! -f "${MAPFILE[0]}"/smlinux ] || [ ! -d ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/.git ] ; then
 		echo Installing Script... 		
 		if [ -d ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc ]; then
 			if [ -d ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc.baq ]; then
@@ -584,7 +584,7 @@ if [ ! -f ~/.smlinuxUpdate ]; then
 			cp -Rn ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc.baq/* ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/
 			rm -rf ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc.baq
 		fi
-		if [ ! -d ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/.git] ; then
+		if [ ! -d ${XDG_DATA_HOME:-$HOME/.local/share}/sm64pc/.git ] ; then
 			echo ERROR: Cannot connect to github. Run without AutoUpdate enabled.  
 			echo smlinux exiting incomplete.
 			exit
