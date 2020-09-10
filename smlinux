@@ -915,7 +915,7 @@ if [ ! -f ~/.smlinuxUpdate ]; then
 		cp ${XDG_DATA_HOME:-$HOME/.local/share}/sm64nx/sm64.sav ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64_save_file.bin
 		echo Copied save file from sm64nx.
 	else
-		No compatible save file found.
+		echo No compatible save file found.
 	fi
 	if [ "$REPO" = "cheaterex" ] && [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64_save_file.bin ]; then
 		mv ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/sm64_save_file.bin ${XDG_DATA_HOME:-$HOME/.local/share}/"$REPO"/CHEATERex_save_file.bin
